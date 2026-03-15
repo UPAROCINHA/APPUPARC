@@ -27,67 +27,36 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
             color: var(--text-main);
-            background: linear-gradient(rgba(240, 244, 248, 0.94), rgba(240, 244, 248, 0.94)), 
-                        url('logoazul.jpeg');
-            background-size: 250px;
-            background-attachment: fixed;
+            background: linear-gradient(rgba(240, 244, 248, 0.94), rgba(240, 244, 248, 0.94)), url('logoazul.jpeg');
+            background-size: 250px; background-attachment: fixed;
         }
 
-        /* --- TICKER --- */
-        .ticker-wrap {
-            width: 100%;
-            background: var(--warning);
-            color: #000;
-            padding: 8px 0;
-            font-size: 0.9rem;
-            font-weight: bold;
-            overflow: hidden;
-            white-space: nowrap;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-        .ticker { display: inline-block; animation: ticker 30s linear infinite; padding-left: 100%; }
-        @keyframes ticker { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        /* --- TICKER (LETREIRO AMARELO) --- */
+        .ticker-wrap { width: 100%; background: var(--warning); color: #000; padding: 8px 0; font-size: 0.9rem; font-weight: bold; overflow: hidden; white-space: nowrap; border-bottom: 1px solid rgba(0,0,0,0.1); text-align: center; }
+        .ticker { display: inline-block; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (AZUL - RECRIAÇÃO FIEL) --- */
         .header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            width: 100%;
-            height: 120px;
-            padding: 0 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-sizing: border-box;
-            border-bottom: 4px solid var(--accent);
-            position: sticky; top: 0; z-index: 1000;
+            background-color: #1e3a8a; color: white;
+            width: 100%; height: 120px; padding: 0 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
+            border-bottom: 3px solid #007bff; position: sticky; top: 0; z-index: 1000;
         }
+        .header-left { display: flex; flex-direction: column; align-items: center; }
+        .logo-img { max-width: 120px; margin-bottom: 2px; }
+        .logo-sub { font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
 
-        .header-left { z-index: 2; }
-        .logo-img { max-width: 120px; border-radius: 8px; }
-
-        .brand-titles {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            text-align: center; display: flex; flex-direction: column; gap: 2px;
-        }
-        .brand-titles span:first-child { font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.8; }
-        .brand-titles span:last-child { font-size: 1.6rem; font-weight: 900; white-space: nowrap; }
-
-        .header-right { display: flex; flex-direction: column; align-items: flex-end; z-index: 2; }
-        .info-row { display: flex; align-items: center; gap: 10px; }
-        .info-row .icon-header { font-size: 1.6rem; }
-        #relogio { font-size: 2rem; font-weight: 900; color: #ffffff; line-height: 1; }
-        #data { font-size: 1rem; font-weight: 600; color: #93c5fd; text-transform: capitalize; }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; }
+        .info-row { display: flex; align-items: center; gap: 8px; }
+        .icon-header { font-size: 1.8rem; }
+        #relogio { font-size: 2.8rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
+        #data { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; }
 
         /* --- STATUS BAR --- */
         .status-bar {
-            width: 92%; max-width: 600px; background: white; margin-top: 15px; padding: 15px;
+            width: 92%; max-width: 600px; background: white; margin-top: 20px; padding: 15px;
             border-radius: 15px; display: flex; justify-content: space-around;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
         }
@@ -102,9 +71,8 @@
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
         .card {
-            background: var(--glass); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.5); border-radius: 20px;
-            padding: 22px 10px; text-align: center; text-decoration: none;
+            background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px; padding: 22px 10px; text-align: center; text-decoration: none;
             color: var(--primary); font-weight: 700; font-size: 0.85rem;
             display: flex; flex-direction: column; align-items: center; transition: all 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
@@ -114,57 +82,39 @@
         .card-destaque { grid-column: span 2; background: #fffbeb; border: 2px solid #fde047; color: #92400e; }
         .card .icon { font-size: 2.2rem; margin-bottom: 8px; }
 
-        /* --- BOTÃO CONFIG DISCRETO --- */
-        .btn-config-float {
-            position: fixed; bottom: 20px; right: 20px; background: none; border: none;
-            font-size: 1.8rem; cursor: pointer; opacity: 0.1; transition: 0.3s; z-index: 100;
-        }
-        .btn-config-float:hover { opacity: 0.8; }
-
         /* --- MODAIS --- */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); z-index: 2000; justify-content: center; align-items: center; padding: 15px; }
         .modal { background: white; width: 100%; max-width: 550px; padding: 35px; border-radius: 30px; animation: slideUp 0.3s ease-out; box-sizing: border-box; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        
-        .btn-link-modal { display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #f8fafc; margin-bottom: 12px; border-radius: 18px; text-decoration: none; color: var(--primary); font-weight: 800; border: 1px solid #e2e8f0; cursor: pointer; font-size: 1.1rem; }
-        
-        input, select, textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 2px solid #e2e8f0; box-sizing: border-box; font-size: 1rem; font-weight: bold; color: var(--primary); font-family: inherit; }
-        
         .btn-calc { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; font-size: 1.1rem; text-transform: uppercase; }
-
-        .resultado-box { margin-top:20px; font-weight:900; text-align:center; padding:20px; border-radius:18px; font-size: 1.4rem; }
-        .risco-alto { background: #fee2e2; color: #ef4444; border: 2px solid #fca5a5; }
-        .risco-baixo { background: #dcfce7; color: #16a34a; border: 2px solid #86efac; }
-        .res-vent-box { background: #f0f9ff; color: #0369a1; border: 2px solid #bae6fd; text-align: left; }
         
-        .calc-header { color: var(--primary); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 3px solid #f1f5f9; padding-bottom: 10px; display: block; font-weight: 900; text-align: center; }
-
         footer { padding: 30px; font-size: 0.8rem; color: #64748b; text-align: center; font-weight: bold; }
-        
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="ticker-wrap">
-        <div class="ticker" id="letreiro">Carregando avisos...</div>
-    </div>
+    <div class="ticker-wrap"><div class="ticker" id="letreiro">Sincronizando com a planilha...</div></div>
 
     <header class="header">
-        <div class="header-left"><img class="logo-img" src="logo.png" alt="Logo"></div>
+        <div class="header-left">
+            <img class="logo-img" src="logo.png" alt="Prefeitura Rio">
+            <div class="logo-sub">UPA ROCINHA</div>
+        </div>
         <div class="header-right">
             <div class="info-row">
                 <span id="periodo-icon" class="icon-header">☀️</span>
                 <span id="relogio">00:00</span>
             </div>
             <div class="info-row">
-                <span class="icon-header" style="font-size: 1.3rem; opacity: 0.8;">📅</span>
+                <span class="icon-header" style="font-size: 1.3rem;">📅</span>
                 <span id="data">...</span>
             </div>
         </div>
     </header>
 
     <div class="status-bar" id="painelStatus">
-        </div>
+        <div class="status-item">Sincronizando Fluxo...</div>
+    </div>
 
     <div class="container">
         <div class="grid">
@@ -173,32 +123,33 @@
             </a>
 
             <div class="card card-destaque">
-                <span class="icon" style="font-size: 1.5rem; margin-bottom: 2px;">🏆</span>
-                <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Destaque do Mês</span>
+                <span class="icon">🏆</span>
+                <span style="font-size: 0.7rem; text-transform: uppercase;">Destaque do Mês</span>
                 <div id="txtDestaque" style="font-weight: 900; font-size: 1.1rem;">Aguardando...</div>
             </div>
 
             <div class="card" onclick="abrirModal('modalPharma')" style="background: #fff1f2; color: #9f1239;">
                 <span class="icon">💊</span>MEDICAMENTOS
-                <small>Faltas e Estoque</small>
             </div>
 
-            <div class="card" onclick="abrirModal('modalVent')" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+            <div class="card" onclick="abrirModal('modalVent')" style="background: #e0f2fe; color: #0369a1;">
                 <span class="icon">😷</span>SUPORTE VENT.
-                <small>Protocolo Pediátrico</small>
             </div>
 
-            <div class="card" onclick="abrirModal('modalFluxo')" style="background: #fffbeb; color: #92400e;">
+            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')" style="background: #fffbeb;">
                 <span class="icon">📋</span>FLUXOGRAMAS
-                <small>Condutas Rápidas</small>
             </div>
 
-            <div class="card" onclick="abrirModal('modalLinks')" style="background: #eef2ff;">
+            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')" style="background: #f0fdf4;">
+                <span class="icon">🧮</span>CALCULADORAS
+            </div>
+
+            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')" style="background: #eef2ff;">
                 <span class="icon">💻</span>SISTEMAS
             </div>
 
-            <div class="card" onclick="abrirModal('modalCalc')" style="background: #f0fdf4;">
-                <span class="icon">🧮</span>CALCULADORAS
+            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')">
+                <span class="icon">📂</span>DOCUMENTOS
             </div>
 
             <a href="https://uparocinha.github.io/TROCADEPLANTAO/" target="_blank" class="card">
@@ -213,214 +164,71 @@
                 <span class="icon">📄</span>ATESTADO
             </a>
 
-            <a href="https://uparocinha.github.io/NOTIFICAEVENTO/" target="_blank" class="card" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
+            <a href="https://uparocinha.github.io/NOTIFICAEVENTO/" target="_blank" class="card" style="background: #fef2f2; color: #991b1b;">
                 <span class="icon">⚠️</span>EVENTO ADVERSO
-                <small>Notificar Incidente</small>
             </a>
-
-            <div class="card" onclick="abrirModal('modalDocs')">
-                <span class="icon">📂</span>DOCUMENTOS
-            </div>
-        </div>
-    </div>
-
-    <div class="overlay" id="modalVent">
-        <div class="modal">
-            <span class="calc-header">😷 Ventilação Pediátrica</span>
-            <label>IDADE DA CRIANÇA:</label>
-            <select id="v_idade" onchange="calcVent()">
-                <option value="0">Recém-nascido</option>
-                <option value="0.5">Lactente (< 1 ano)</option>
-                <option value="2">2 anos</option>
-                <option value="4">4 anos</option>
-                <option value="6">6 anos</option>
-                <option value="8">8 anos</option>
-                <option value="10">10 anos</option>
-                <option value="12">12 anos</option>
-            </select>
-            <label>PESO ESTIMADO (kg):</label>
-            <input type="number" id="v_peso" placeholder="Ex: 10" oninput="calcVent()">
-            
-            <div id="resVent" class="resultado-box res-vent-box">
-                Insira o peso para calcular os parâmetros.
-            </div>
-            
-            <button onclick="fecharModal('modalVent')" class="btn-calc" style="background:#cbd5e1; color:#000; margin-top:20px">VOLTAR</button>
-        </div>
-    </div>
-
-    <button class="btn-config-float" onclick="verificarLogin()">⚙️</button>
-
-    <div class="overlay" id="modalAdmin">
-        <div class="modal">
-            <h2 style="text-align:center; color:var(--primary)">⚙️ Configurações</h2>
-            <label>TEMPO DE ESPERA:</label>
-            <input type="text" id="inputEspera">
-            <label>STATUS DO FLUXO:</label>
-            <select id="inputFluxo">
-                <option value="NORMAL">NORMAL</option>
-                <option value="INTENSO">INTENSO</option>
-                <option value="CRÍTICO">CRÍTICO</option>
-            </select>
-            <label>DESTAQUE DO MÊS:</label>
-            <input type="text" id="inputDestaque">
-            <label>AVISO DO LETREIRO:</label>
-            <textarea id="inputTicker" rows="2"></textarea>
-            <label>MEDICAMENTOS EM FALTA (um por linha):</label>
-            <textarea id="inputFaltas" rows="3"></textarea>
-            <button onclick="salvarConfig()" class="btn-calc">SALVAR ALTERAÇÕES</button>
-            <button onclick="fecharModal('modalAdmin')" class="btn-calc" style="background:#cbd5e1; color:#000; margin-top:10px">CANCELAR</button>
-        </div>
-    </div>
-
-    <div class="overlay" id="modalCalc">
-        <div class="modal">
-            <h2 style="margin-top:0; color:var(--primary); text-align:center;">🧮 Calculadoras Clínicas</h2>
-            <div id="menuCalculadoras">
-                <div onclick="mostrarSubCalc('calcPediatrica')" class="btn-link-modal">👶 Dose Pediátrica <span>➔</span></div>
-                <div onclick="mostrarSubCalc('calcBraden')" class="btn-link-modal">🛏️ Escala de Braden <span>➔</span></div>
-                <div onclick="mostrarSubCalc('calcMorse')" class="btn-link-modal">🚶 Escala de Morse <span>➔</span></div>
-                <div onclick="mostrarSubCalc('calcGotejamento')" class="btn-link-modal">💧 Gotejamento <span>➔</span></div>
-            </div>
-            <div id="calcPediatrica" style="display:none;">
-                <span class="calc-header">👶 Cálculo Pediátrico</span>
-                <input type="number" id="pedPresc" placeholder="Dose Prescrita (mg)">
-                <input type="number" id="pedApres" placeholder="Apresentação (mg)">
-                <input type="number" id="pedDilu" placeholder="Diluente (ml)">
-                <button onclick="calcularPediatria()" class="btn-calc">CALCULAR</button>
-                <div id="resPed" class="resultado-box" style="display:none;"></div>
-                <button onclick="voltarMenuCalc()" class="btn-calc" style="background:#cbd5e1; color:#000; margin-top:20px">VOLTAR</button>
-            </div>
-            <button onclick="fecharModal('modalCalc')" id="btnSairGeral" class="btn-calc" style="background:#f1f5f9; color:#64748b;">FECHAR</button>
         </div>
     </div>
 
     <div class="overlay" id="modalPharma">
         <div class="modal">
-            <h2 style="margin-top:0; color:var(--danger); text-align:center;">💊 Medicamentos em Falta</h2>
-            <div id="listaFaltas"></div>
-            <button onclick="fecharModal('modalPharma')" class="btn-calc" style="background:#f1f5f9; color:#000; margin-top:20px">VOLTAR</button>
+            <h2 style="text-align:center; color:var(--danger)">💊 Medicamentos em Falta</h2>
+            <div id="listaFaltas">Sincronizando com a planilha...</div>
+            <button onclick="fecharModal('modalPharma')" class="btn-calc" style="background:#cbd5e1; color:#000">VOLTAR</button>
         </div>
     </div>
 
     <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
 
     <script>
-        let dadosPortal = {
-            espera: "45 MIN",
-            fluxo: "NORMAL",
-            destaque: "Equipe de Higienização",
-            ticker: "⚠️ ATENÇÃO: Nova atualização do Protocolo de Manejo de Dengue disponível.",
-            faltas: "Dipirona EV\nTenoxicam\nSoro 500ml"
-        };
+        // URL DO SEU CSV PUBLICADO (MANTER A MESMA)
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
 
-        function atualizarDashboard() {
+        async function buscarDadosPlanilha() {
+            try {
+                const response = await fetch(SHEET_CSV_URL);
+                const data = await response.text();
+                const linhas = data.split('\n');
+                const colunas = linhas[1].split(',');
+
+                const dados = {
+                    espera: colunas[0] || "---",
+                    fluxo: colunas[1] || "NORMAL",
+                    destaque: colunas[2] || "Aguardando..."
+                };
+
+                renderizarDashboard(dados);
+            } catch (error) { console.error("Erro planilha:", error); }
+        }
+
+        function renderizarDashboard(dados) {
+            let cor = "bg-success";
+            if(dados.fluxo.trim() === "INTENSO") cor = "bg-warning";
+            if(dados.fluxo.trim() === "CRÍTICO") cor = "bg-danger";
+
+            document.getElementById('painelStatus').innerHTML = `
+                <div class="status-item"><span class="status-indicator ${cor}"></span>FLUXO: ${dados.fluxo}</div>
+                <div class="status-item"><span class="status-indicator bg-warning"></span>ESPERA: ${dados.espera}</div>
+            `;
+            document.getElementById('txtDestaque').innerText = dados.destaque;
+            document.getElementById('letreiro').innerText = `⚠️ AVISO: Fluxo ${dados.fluxo} | Espera: ${dados.espera} | Destaque: ${dados.destaque}`;
+        }
+
+        function atualizarRelogio() {
             const agora = new Date();
             const hora = agora.getHours();
             document.getElementById('periodo-icon').textContent = (hora >= 6 && hora < 18) ? "☀️" : "🌙";
-            document.getElementById('relogio').textContent = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('relogio').textContent = agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('data').textContent = agora.toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
-
-            let corFluxo = "bg-success";
-            if(dadosPortal.fluxo === "INTENSO") corFluxo = "bg-warning";
-            if(dadosPortal.fluxo === "CRÍTICO") corFluxo = "bg-danger";
-
-            document.getElementById('painelStatus').innerHTML = `
-                <div class="status-item"><span class="status-indicator ${corFluxo}"></span>FLUXO: ${dadosPortal.fluxo}</div>
-                <div class="status-item"><span class="status-indicator bg-warning"></span>ESPERA: ${dadosPortal.espera}</div>
-            `;
-
-            document.getElementById('txtDestaque').innerText = dadosPortal.destaque;
-            document.getElementById('letreiro').innerText = dadosPortal.ticker;
-
-            const lista = document.getElementById('listaFaltas');
-            const itens = dadosPortal.faltas.split('\n');
-            lista.innerHTML = itens.map(i => i.trim() ? `<div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee; font-weight:bold;"><span>${i}</span> <span style="color:red">FALTANDO</span></div>` : '').join('');
-        }
-
-        function calcVent() {
-            let idade = parseFloat(document.getElementById('v_idade').value);
-            let peso = parseFloat(document.getElementById('v_peso').value);
-            let res = document.getElementById('resVent');
-
-            if (!peso || peso <= 0) {
-                res.innerHTML = "Insira o peso para calcular.";
-                res.className = "resultado-box res-vent-box";
-                return;
-            }
-
-            let tot_sem = (idade / 4) + 4;
-            let tot_com = (idade / 4) + 3.5;
-            let fr = idade < 1 ? 30 : (idade < 5 ? 25 : 20);
-            let vc = peso * 7; 
-            let ti = idade < 1 ? 0.5 : 0.8;
-
-            res.className = "resultado-box risco-baixo";
-            res.innerHTML = `
-                <strong>Cálculos Sugeridos:</strong><br>
-                • TOT s/ balonete: <strong>${tot_sem.toFixed(1)}</strong><br>
-                • TOT c/ balonete: <strong>${tot_com.toFixed(1)}</strong><br>
-                • Fixação (lábio): <strong>${(tot_sem * 3).toFixed(1)} cm</strong><br><br>
-                <strong>Parâmetros VM:</strong><br>
-                • Modo: <strong>PCV ou VCV</strong><br>
-                • Vol. Corrente: <strong>${vc.toFixed(0)} mL</strong><br>
-                • Freq. Resp: <strong>${fr} ipm</strong><br>
-                • Tempo Insp: <strong>${ti}s</strong><br>
-                • PEEP: <strong>5 cmH2O</strong>
-            `;
-        }
-
-        function verificarLogin() {
-            if(prompt("Usuário:") === "UPARC2026" && prompt("Senha:") === "08032010") {
-                document.getElementById('inputEspera').value = dadosPortal.espera;
-                document.getElementById('inputFluxo').value = dadosPortal.fluxo;
-                document.getElementById('inputDestaque').value = dadosPortal.destaque;
-                document.getElementById('inputTicker').value = dadosPortal.ticker;
-                document.getElementById('inputFaltas').value = dadosPortal.faltas;
-                abrirModal('modalAdmin');
-            } else { alert("Acesso negado!"); }
-        }
-
-        function salvarConfig() {
-            dadosPortal.espera = document.getElementById('inputEspera').value;
-            dadosPortal.fluxo = document.getElementById('inputFluxo').value;
-            dadosPortal.destaque = document.getElementById('inputDestaque').value;
-            dadosPortal.ticker = document.getElementById('inputTicker').value;
-            dadosPortal.faltas = document.getElementById('inputFaltas').value;
-            atualizarDashboard();
-            fecharModal('modalAdmin');
         }
 
         function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
         function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function mostrarSubCalc(id) {
-            document.getElementById('menuCalculadoras').style.display = 'none';
-            document.getElementById('btnSairGeral').style.display = 'none';
-            document.getElementById(id).style.display = 'block';
-        }
 
-        function voltarMenuCalc() {
-            ['calcPediatrica'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el) el.style.display = 'none';
-            });
-            document.getElementById('menuCalculadoras').style.display = 'block';
-            document.getElementById('btnSairGeral').style.display = 'block';
-        }
-
-        function calcularPediatria() {
-            const p = document.getElementById('pedPresc').value, a = document.getElementById('pedApres').value, d = document.getElementById('pedDilu').value;
-            if(p && a && d) {
-                const res = (p * d) / a;
-                const el = document.getElementById('resPed');
-                el.style.display = 'block'; el.className = 'resultado-box risco-baixo';
-                el.innerHTML = `ASPIRAR: ${res.toFixed(2)} ml`;
-            }
-        }
-
-        setInterval(atualizarDashboard, 1000);
-        atualizarDashboard();
+        setInterval(atualizarRelogio, 1000);
+        setInterval(buscarDadosPlanilha, 30000);
+        atualizarRelogio();
+        buscarDadosPlanilha();
     </script>
 </body>
 </html>

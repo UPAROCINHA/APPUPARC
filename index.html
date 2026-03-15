@@ -45,7 +45,7 @@
         .ticker {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker-animation 20s linear infinite;
+            animation: ticker-animation 40s linear infinite;
         }
         @keyframes ticker-animation {
             0% { transform: translate(0, 0); }
@@ -327,9 +327,17 @@
     <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
 
     <script>
-        const SHEET_CSV_DIRETO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
-        const PROXY = 'https://corsproxy.io/?';
-        const SHEET_CSV_URL = PROXY + encodeURIComponent(SHEET_CSV_DIRETO);
+        // -------------------------------------------------------
+        // Google Sheets publicada como JSON (sem CORS, sem proxy)
+        // Substitua o ID abaixo pelo ID da SUA planilha se mudar
+        // -------------------------------------------------------
+        const SHEET_ID  = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
+        const SHEET_GID = '0'; // gid da aba CONFIG_PORTAL
+
+        // URL JSON pública do Google Sheets (não precisa de API key)
+        function getSheetURL() {
+            return `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${SHEET_GID}&single=true&output=csv`;
+        }
 
         // -------------------------------------------------------
         // Parse de CSV seguro: lida com vírgulas dentro de aspas
@@ -354,39 +362,50 @@
         }
 
         // -------------------------------------------------------
-        // Buscar dados da planilha Google
+        // Buscar via fetch com mode no-cors como fallback
         // -------------------------------------------------------
         async function buscarDadosPlanilha() {
-            try {
-                const response = await fetch(PROXY + encodeURIComponent(SHEET_CSV_DIRETO + '&cachebust=' + Date.now()));
+            const tentativas = [
+                // Tentativa 1: direto
+                () => fetch(getSheetURL()),
+                // Tentativa 2: proxy corsproxy.io
+                () => fetch('https://corsproxy.io/?' + encodeURIComponent(getSheetURL())),
+                // Tentativa 3: proxy allorigins
+                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(getSheetURL())),
+            ];
 
-                if (!response.ok) throw new Error('Resposta inválida: ' + response.status);
-
-                const text = await response.text();
-                const linhas = text.trim().split('\n');
-
-                // Linha 0 = cabeçalho, Linha 1 = dados
-                if (linhas.length < 2) throw new Error('Planilha sem dados na linha 2');
-
-                const colunas = parseCSVLine(linhas[1]);
-
-                const dados = {
-                    espera:   colunas[0] || "---",
-                    fluxo:    colunas[1] || "NORMAL",
-                    destaque: colunas[2] || "---",
-                    faltas:   colunas[3] || "",
-                    criticos: colunas[4] || "",
-                    avisos:   colunas[5] || "Nenhum aviso no momento",
-                    docs:     colunas[6] || "Nenhum documento novo"
-                };
-
-                renderizarInterface(dados);
-                mostrarStatusConexao(true);
-
-            } catch (error) {
-                console.error("Erro ao buscar planilha:", error);
-                mostrarStatusConexao(false, error.message);
+            for (let i = 0; i < tentativas.length; i++) {
+                try {
+                    const response = await tentativas[i]();
+                    if (!response.ok) continue;
+                    const text = await response.text();
+                    // allorigins retorna JSON com campo "contents"
+                    let csv = text;
+                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
+                    processarCSV(csv);
+                    mostrarStatusConexao(true);
+                    return;
+                } catch (e) {
+                    console.warn(`Tentativa ${i+1} falhou:`, e.message);
+                }
             }
+            mostrarStatusConexao(false, 'Todas as tentativas falharam');
+        }
+
+        function processarCSV(text) {
+            const linhas = text.trim().split('\n');
+            if (linhas.length < 2) throw new Error('Planilha sem dados na linha 2');
+            const colunas = parseCSVLine(linhas[1]);
+            const dados = {
+                espera:   colunas[0] || "---",
+                fluxo:    colunas[1] || "NORMAL",
+                destaque: colunas[2] || "---",
+                faltas:   colunas[3] || "",
+                criticos: colunas[4] || "",
+                avisos:   colunas[5] || "Nenhum aviso no momento",
+                docs:     colunas[6] || "Nenhum documento novo"
+            };
+            renderizarInterface(dados);
         }
 
         // -------------------------------------------------------
@@ -395,7 +414,6 @@
         function mostrarStatusConexao(ok, msg) {
             const existe = document.getElementById('conexaoStatus');
             if (existe) existe.remove();
-
             const div = document.createElement('div');
             div.id = 'conexaoStatus';
             div.style.cssText = `
@@ -404,13 +422,11 @@
                 color: white; font-size: 0.72rem; font-weight: bold;
                 padding: 6px 12px; border-radius: 20px;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                z-index: 9999; cursor: default;
+                z-index: 9999;
             `;
-            div.title = ok ? 'Planilha sincronizada com sucesso' : ('Erro: ' + msg);
+            div.title = ok ? 'Planilha sincronizada!' : ('Erro: ' + msg);
             div.textContent = ok ? '🟢 Planilha OK' : '🔴 Erro na Planilha';
             document.body.appendChild(div);
-
-            // Some depois de 5s se estiver OK
             if (ok) setTimeout(() => { if(div) div.remove(); }, 5000);
         }
 
@@ -418,12 +434,11 @@
         // Renderizar dados na interface
         // -------------------------------------------------------
         function renderizarInterface(dados) {
-
-            // Status Bar — cor do fluxo
             let cor = "bg-success";
-            const fluxoNorm = dados.fluxo.trim().toUpperCase();
+            const fluxoNorm = dados.fluxo.trim().toUpperCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove acentos
             if (fluxoNorm === "INTENSO") cor = "bg-warning";
-            if (fluxoNorm === "CRÍTICO" || fluxoNorm === "CRITICO") cor = "bg-danger";
+            if (fluxoNorm === "CRITICO") cor = "bg-danger";
 
             document.getElementById('painelStatus').innerHTML = `
                 <div class="status-item">
@@ -434,10 +449,8 @@
                 </div>
             `;
 
-            // Destaque do mês
             document.getElementById('txtDestaque').innerText = dados.destaque;
 
-            // Ticker (faixa laranja) — repete para não ter buraco
             const textoTicker =
                 `🚨 FLUXO: ${dados.fluxo}` +
                 `  |  📢 AVISOS: ${dados.avisos}` +
@@ -445,7 +458,6 @@
                 `  |  🕒 ESPERA: ${dados.espera}`;
             document.getElementById('letreiro').innerText = textoTicker + '          ' + textoTicker;
 
-            // Modal Medicamentos
             let htmlMeds = "";
             if (dados.faltas) {
                 dados.faltas.split(';').forEach(i => {
@@ -498,9 +510,10 @@
         // Iniciar
         // -------------------------------------------------------
         setInterval(atualizarRelogio, 1000);
-        setInterval(buscarDadosPlanilha, 30000); // atualiza a cada 30 segundos
+        setInterval(buscarDadosPlanilha, 30000);
         atualizarRelogio();
         buscarDadosPlanilha();
     </script>
+
 </body>
 </html>

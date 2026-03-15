@@ -147,6 +147,18 @@
             line-height: 1.7;
         }
 
+
+        /* --- CALCULADORAS --- */
+        .calc-item { margin-bottom: 12px; }
+        .calc-label { display:block; font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:4px; }
+        .calc-select, .calc-input {
+            width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1;
+            border-radius: 10px; font-size: 0.85rem; color: #1e293b;
+            background: white; box-sizing: border-box;
+            appearance: none; outline: none;
+        }
+        .calc-select:focus, .calc-input:focus { border-color: #3b82f6; }
+
         footer { padding: 30px; font-size: 0.8rem; color: #64748b; text-align: center; font-weight: bold; }
     </style>
 </head>
@@ -199,7 +211,7 @@
             </div>
 
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📋</span>FLUXOGRAMAS</div>
-            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">🧮</span>CALCULADORAS</div>
+            <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">💻</span>SISTEMAS</div>
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📂</span>DOCUMENTOS</div>
 
@@ -323,6 +335,239 @@
             <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1;">FECHAR</button>
         </div>
     </div>
+
+    
+    <!-- ===================== MODAL MENU CALCULADORAS ===================== -->
+    <div class="overlay" id="modalCalcMenu">
+        <div class="modal" style="max-height:85vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#1e3a8a; margin-top:0;">🧮 Calculadoras</h2>
+            <p style="text-align:center; font-size:0.8rem; color:#64748b; margin-top:-10px;">Selecione a calculadora desejada</p>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+                <button onclick="trocarModal('modalCalcMenu','modalBraden')" style="padding:18px; background:#fef3c7; border:2px solid #f59e0b; border-radius:15px; font-size:1rem; font-weight:800; color:#92400e; cursor:pointer; text-align:left;">
+                    🛏️ Escala de Braden<br><span style="font-size:0.75rem; font-weight:400;">Risco de lesão por pressão</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalMorse')" style="padding:18px; background:#ede9fe; border:2px solid #7c3aed; border-radius:15px; font-size:1rem; font-weight:800; color:#4c1d95; cursor:pointer; text-align:left;">
+                    🚶 Escala de Morse<br><span style="font-size:0.75rem; font-weight:400;">Risco de queda</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalMedInfantil')" style="padding:18px; background:#dcfce7; border:2px solid #16a34a; border-radius:15px; font-size:1rem; font-weight:800; color:#14532d; cursor:pointer; text-align:left;">
+                    💉 Cálculo de Medicação Infantil<br><span style="font-size:0.75rem; font-weight:400;">Dose por peso (mg/kg) e gotejamento</span>
+                </button>
+            </div>
+            <button onclick="fecharModal('modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL BRADEN ===================== -->
+    <div class="overlay" id="modalBraden">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#92400e; margin-top:0;">🛏️ Escala de Braden</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Avaliação de risco de lesão por pressão</p>
+
+            <div id="bradenForm">
+                <!-- 1. Percepção Sensorial -->
+                <div class="calc-item">
+                    <label class="calc-label">1. Percepção Sensorial</label>
+                    <select id="b1" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Completamente limitada</option>
+                        <option value="2">2 – Muito limitada</option>
+                        <option value="3">3 – Levemente limitada</option>
+                        <option value="4">4 – Nenhuma limitação</option>
+                    </select>
+                </div>
+                <!-- 2. Umidade -->
+                <div class="calc-item">
+                    <label class="calc-label">2. Umidade</label>
+                    <select id="b2" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Constantemente úmida</option>
+                        <option value="2">2 – Muito úmida</option>
+                        <option value="3">3 – Ocasionalmente úmida</option>
+                        <option value="4">4 – Raramente úmida</option>
+                    </select>
+                </div>
+                <!-- 3. Atividade -->
+                <div class="calc-item">
+                    <label class="calc-label">3. Atividade</label>
+                    <select id="b3" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Acamado</option>
+                        <option value="2">2 – Restrito à cadeira</option>
+                        <option value="3">3 – Anda ocasionalmente</option>
+                        <option value="4">4 – Anda frequentemente</option>
+                    </select>
+                </div>
+                <!-- 4. Mobilidade -->
+                <div class="calc-item">
+                    <label class="calc-label">4. Mobilidade</label>
+                    <select id="b4" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Completamente imóvel</option>
+                        <option value="2">2 – Muito limitada</option>
+                        <option value="3">3 – Levemente limitada</option>
+                        <option value="4">4 – Sem limitações</option>
+                    </select>
+                </div>
+                <!-- 5. Nutrição -->
+                <div class="calc-item">
+                    <label class="calc-label">5. Nutrição</label>
+                    <select id="b5" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Muito pobre</option>
+                        <option value="2">2 – Inadequada</option>
+                        <option value="3">3 – Adequada</option>
+                        <option value="4">4 – Excelente</option>
+                    </select>
+                </div>
+                <!-- 6. Fricção e Cisalhamento -->
+                <div class="calc-item">
+                    <label class="calc-label">6. Fricção e Cisalhamento</label>
+                    <select id="b6" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Problema</option>
+                        <option value="2">2 – Problema em potencial</option>
+                        <option value="3">3 – Nenhum problema aparente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="resultadoBraden" style="margin-top:16px; padding:16px; border-radius:14px; text-align:center; display:none;">
+            </div>
+
+            <button onclick="limparBraden()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalBraden','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MORSE ===================== -->
+    <div class="overlay" id="modalMorse">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#4c1d95; margin-top:0;">🚶 Escala de Morse</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Avaliação de risco de queda</p>
+
+            <div id="morseForm">
+                <!-- 1. Histórico de quedas -->
+                <div class="calc-item">
+                    <label class="calc-label">1. Histórico de quedas nos últimos 3 meses</label>
+                    <select id="m1" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="25">25 – Sim</option>
+                    </select>
+                </div>
+                <!-- 2. Diagnóstico secundário -->
+                <div class="calc-item">
+                    <label class="calc-label">2. Diagnóstico secundário</label>
+                    <select id="m2" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="15">15 – Sim</option>
+                    </select>
+                </div>
+                <!-- 3. Auxílio para deambulação -->
+                <div class="calc-item">
+                    <label class="calc-label">3. Auxílio para deambulação</label>
+                    <select id="m3" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Nenhum / acamado / cadeira de rodas</option>
+                        <option value="15">15 – Muleta / bengala / andador</option>
+                        <option value="30">30 – Apoia-se em mobília</option>
+                    </select>
+                </div>
+                <!-- 4. Terapia intravenosa -->
+                <div class="calc-item">
+                    <label class="calc-label">4. Terapia intravenosa / heparina</label>
+                    <select id="m4" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="20">20 – Sim</option>
+                    </select>
+                </div>
+                <!-- 5. Marcha -->
+                <div class="calc-item">
+                    <label class="calc-label">5. Marcha / transferência</label>
+                    <select id="m5" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Normal / acamado / imóvel</option>
+                        <option value="10">10 – Fraca</option>
+                        <option value="20">20 – Comprometida / cambaleante</option>
+                    </select>
+                </div>
+                <!-- 6. Estado mental -->
+                <div class="calc-item">
+                    <label class="calc-label">6. Estado mental</label>
+                    <select id="m6" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Orientado / coerente</option>
+                        <option value="15">15 – Superestima capacidade / esquece limitações</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="resultadoMorse" style="margin-top:16px; padding:16px; border-radius:14px; text-align:center; display:none;">
+            </div>
+
+            <button onclick="limparMorse()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalMorse','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MEDICAÇÃO INFANTIL ===================== -->
+    <div class="overlay" id="modalMedInfantil">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#14532d; margin-top:0;">💉 Medicação Infantil</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Cálculo de dose por peso e gotejamento</p>
+
+            <!-- SEÇÃO 1: Dose por peso -->
+            <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:14px; padding:16px; margin-bottom:16px;">
+                <p style="font-weight:800; color:#14532d; margin:0 0 12px;">📌 Dose por Peso (mg/kg)</p>
+
+                <div class="calc-item">
+                    <label class="calc-label">Peso do paciente (kg)</label>
+                    <input id="med_peso" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 12.5" oninput="calcMedInfantil()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Dose prescrita (mg/kg/dose)</label>
+                    <input id="med_dose_kg" type="number" step="0.01" min="0" class="calc-input" placeholder="Ex: 10" oninput="calcMedInfantil()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Concentração do medicamento (mg/mL)</label>
+                    <input id="med_conc" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 50 (Dipirona 500mg/10mL = 50mg/mL)" oninput="calcMedInfantil()">
+                </div>
+
+                <div id="resultadoDose" style="margin-top:12px; padding:14px; border-radius:12px; background:#dcfce7; display:none; text-align:center;">
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: Gotejamento -->
+            <div style="background:#eff6ff; border:1px solid #93c5fd; border-radius:14px; padding:16px;">
+                <p style="font-weight:800; color:#1e3a8a; margin:0 0 12px;">💧 Gotejamento / Velocidade de Infusão</p>
+
+                <div class="calc-item">
+                    <label class="calc-label">Volume total (mL)</label>
+                    <input id="got_vol" type="number" step="1" min="0" class="calc-input" placeholder="Ex: 100" oninput="calcGotejamento()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Tempo de infusão (horas)</label>
+                    <input id="got_tempo" type="number" step="0.5" min="0" class="calc-input" placeholder="Ex: 2" oninput="calcGotejamento()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Tipo de equipo</label>
+                    <select id="got_equipo" class="calc-select" onchange="calcGotejamento()">
+                        <option value="20">Macrogotas (20 gts/mL)</option>
+                        <option value="60">Microgotas (60 gts/mL)</option>
+                    </select>
+                </div>
+
+                <div id="resultadoGot" style="margin-top:12px; padding:14px; border-radius:12px; background:#dbeafe; display:none; text-align:center;">
+                </div>
+            </div>
+
+            <button onclick="limparMedInfantil()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:14px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalMedInfantil','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
 
     <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
 
@@ -479,6 +724,135 @@
             }
             document.getElementById('listaFaltas').innerHTML = htmlMeds ||
                 "<div style='text-align:center; padding:24px; color:#10b981; font-weight:bold; font-size:1.1rem;'>✅ Tudo em estoque!</div>";
+        }
+
+
+        // -------------------------------------------------------
+        // Utilitário: troca de modal
+        // -------------------------------------------------------
+        function trocarModal(fechar, abrir) {
+            fecharModal(fechar);
+            abrirModal(abrir);
+        }
+
+        // -------------------------------------------------------
+        // BRADEN
+        // -------------------------------------------------------
+        function calcBraden() {
+            const ids = ['b1','b2','b3','b4','b5','b6'];
+            let total = 0, todos = true;
+            ids.forEach(id => {
+                const v = document.getElementById(id).value;
+                if (!v) { todos = false; } else { total += parseInt(v); }
+            });
+            const el = document.getElementById('resultadoBraden');
+            if (!todos) { el.style.display = 'none'; return; }
+
+            let risco, cor, bg;
+            if (total <= 9)       { risco = 'Risco Muito Alto';  cor = '#7f1d1d'; bg = '#fee2e2'; }
+            else if (total <= 12) { risco = 'Risco Alto';        cor = '#991b1b'; bg = '#fecaca'; }
+            else if (total <= 14) { risco = 'Risco Moderado';    cor = '#92400e'; bg = '#fef3c7'; }
+            else if (total <= 18) { risco = 'Risco Baixo';       cor = '#065f46'; bg = '#d1fae5'; }
+            else                  { risco = 'Sem Risco';         cor = '#064e3b'; bg = '#a7f3d0'; }
+
+            el.style.display = 'block';
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:2rem; font-weight:900; color:${cor};">${total}</div>
+                <div style="font-size:1rem; font-weight:800; color:${cor}; margin-top:4px;">${risco}</div>
+                <div style="font-size:0.72rem; color:#475569; margin-top:6px;">Pontuação de 6 a 23 — quanto menor, maior o risco</div>
+            `;
+        }
+
+        function limparBraden() {
+            ['b1','b2','b3','b4','b5','b6'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoBraden').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // MORSE
+        // -------------------------------------------------------
+        function calcMorse() {
+            const ids = ['m1','m2','m3','m4','m5','m6'];
+            let total = 0, todos = true;
+            ids.forEach(id => {
+                const v = document.getElementById(id).value;
+                if (v === '') { todos = false; } else { total += parseInt(v); }
+            });
+            const el = document.getElementById('resultadoMorse');
+            if (!todos) { el.style.display = 'none'; return; }
+
+            let risco, cor, bg, conduta;
+            if (total < 25)       { risco = 'Risco Baixo';   cor = '#064e3b'; bg = '#d1fae5'; conduta = 'Nenhuma intervenção necessária'; }
+            else if (total <= 50) { risco = 'Risco Médio';   cor = '#92400e'; bg = '#fef3c7'; conduta = 'Implementar precauções padrão de queda'; }
+            else                  { risco = 'Risco Alto';    cor = '#7f1d1d'; bg = '#fee2e2'; conduta = 'Implementar protocolo de alto risco de queda'; }
+
+            el.style.display = 'block';
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:2rem; font-weight:900; color:${cor};">${total}</div>
+                <div style="font-size:1rem; font-weight:800; color:${cor}; margin-top:4px;">${risco}</div>
+                <div style="font-size:0.75rem; color:#475569; margin-top:6px; font-style:italic;">${conduta}</div>
+            `;
+        }
+
+        function limparMorse() {
+            ['m1','m2','m3','m4','m5','m6'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoMorse').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // MEDICAÇÃO INFANTIL — Dose por peso
+        // -------------------------------------------------------
+        function calcMedInfantil() {
+            const peso    = parseFloat(document.getElementById('med_peso').value);
+            const doseKg  = parseFloat(document.getElementById('med_dose_kg').value);
+            const conc    = parseFloat(document.getElementById('med_conc').value);
+            const el      = document.getElementById('resultadoDose');
+
+            if (!peso || !doseKg) { el.style.display = 'none'; return; }
+
+            const doseMg = peso * doseKg;
+            let html = `
+                <div style="font-size:0.8rem; color:#166534;">Dose total:</div>
+                <div style="font-size:1.8rem; font-weight:900; color:#14532d;">${doseMg.toFixed(2)} mg</div>
+            `;
+            if (conc > 0) {
+                const volML = doseMg / conc;
+                html += `<div style="font-size:1rem; font-weight:700; color:#166534; margin-top:6px;">= ${volML.toFixed(2)} mL</div>`;
+            }
+            el.style.display = 'block';
+            el.innerHTML = html;
+        }
+
+        // -------------------------------------------------------
+        // MEDICAÇÃO INFANTIL — Gotejamento
+        // -------------------------------------------------------
+        function calcGotejamento() {
+            const vol    = parseFloat(document.getElementById('got_vol').value);
+            const tempo  = parseFloat(document.getElementById('got_tempo').value);
+            const equipo = parseInt(document.getElementById('got_equipo').value);
+            const el     = document.getElementById('resultadoGot');
+
+            if (!vol || !tempo) { el.style.display = 'none'; return; }
+
+            const mlHora  = vol / tempo;
+            const gtsMin  = (vol * equipo) / (tempo * 60);
+
+            el.style.display = 'block';
+            el.innerHTML = `
+                <div style="font-size:0.8rem; color:#1e3a8a;">Velocidade de infusão:</div>
+                <div style="font-size:1.6rem; font-weight:900; color:#1e3a8a;">${mlHora.toFixed(1)} mL/h</div>
+                <div style="font-size:1rem; font-weight:700; color:#1d4ed8; margin-top:4px;">${gtsMin.toFixed(0)} gts/min</div>
+                <div style="font-size:0.7rem; color:#475569; margin-top:4px;">${equipo === 60 ? 'Microgotas (60 gts/mL)' : 'Macrogotas (20 gts/mL)'}</div>
+            `;
+        }
+
+        function limparMedInfantil() {
+            ['med_peso','med_dose_kg','med_conc','got_vol','got_tempo'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('got_equipo').value = '20';
+            document.getElementById('resultadoDose').style.display = 'none';
+            document.getElementById('resultadoGot').style.display = 'none';
         }
 
         // -------------------------------------------------------

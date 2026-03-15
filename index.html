@@ -33,7 +33,7 @@
         /* --- TICKER LARANJA MÓVEL --- */
         .ticker-wrap {
             width: 100%;
-            background: #ff9800; /* Laranja mais vivo */
+            background: #ff9800;
             color: #000;
             padding: 10px 0;
             font-size: 0.95rem;
@@ -87,25 +87,77 @@
             border-radius: 20px; padding: 20px 10px; text-align: center; text-decoration: none;
             color: var(--primary); font-weight: 700; font-size: 0.85rem;
             display: flex; flex-direction: column; align-items: center; transition: 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
         }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         .card-highlight { grid-column: span 2; background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); color: white; border: none; }
         .card-destaque { grid-column: span 2; background: #fffbeb; border: 2px solid #fde047; color: #92400e; }
         .card .icon { font-size: 2rem; margin-bottom: 5px; }
 
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .modal { background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 25px; }
-        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; }
+        /* --- MODAIS --- */
+        .overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal {
+            background: white; width: 100%; max-width: 560px;
+            padding: 25px; border-radius: 25px;
+            max-height: 88vh; overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .btn-fechar {
+            width: 100%; padding: 14px;
+            border: none; border-radius: 15px;
+            font-weight: bold; font-size: 1rem;
+            cursor: pointer; margin-top: 18px;
+            color: white;
+        }
+
+        /* --- TABELA VENTILATÓRIO --- */
+        .vent-table-wrap { overflow-x: auto; margin-top: 10px; }
+        .vent-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.78rem; text-align: center;
+            min-width: 420px;
+        }
+        .vent-table thead tr {
+            background: #0369a1; color: white;
+        }
+        .vent-table th {
+            padding: 9px 6px; font-weight: 700;
+        }
+        .vent-table td {
+            padding: 9px 6px; border-bottom: 1px solid #e2e8f0;
+        }
+        .vent-table tbody tr:nth-child(odd) { background: #f0f9ff; }
+        .vent-table tbody tr:hover { background: #bae6fd; transition: 0.15s; }
+        .faixa-nome { font-weight: 800; font-size: 0.82rem; }
+        .faixa-idade { font-size: 0.7rem; color: #64748b; font-weight: 400; }
+
+        .vent-aviso {
+            margin-top: 14px;
+            background: #fffbeb;
+            border: 1px solid #fde047;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.76rem;
+            color: #92400e;
+            line-height: 1.7;
+        }
 
         footer { padding: 30px; font-size: 0.8rem; color: #64748b; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
+    <!-- TICKER -->
     <div class="ticker-wrap">
         <div class="ticker" id="letreiro">Sincronizando avisos importantes...</div>
     </div>
 
+    <!-- HEADER -->
     <header class="header">
         <div class="header-left">
             <img class="logo-img" src="logo.png" alt="Prefeitura Rio">
@@ -119,12 +171,15 @@
         </div>
     </header>
 
+    <!-- STATUS BAR -->
     <div class="status-bar" id="painelStatus">
         <div class="status-item">Carregando dados...</div>
     </div>
 
+    <!-- GRID DE CARDS -->
     <div class="container">
         <div class="grid">
+
             <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSbq6ZnMiyajRo7jIert83s9CDKlr0FK0MSJGbCQzbGZufPivuy4wgk1f20sHDcgmysnNgg9H4xmwr5/pubhtml?widget=true&gridlines=false" target="_blank" class="card card-highlight">
                 <span class="icon">📢</span>AVISOS GERAIS
             </a>
@@ -152,84 +207,300 @@
             <a href="https://uparocinha.github.io/PLANTAOEXTRA/" target="_blank" class="card"><span class="icon">➕</span>PLANTÃO EXTRA</a>
             <a href="https://uparocinha.github.io/NOTIFICAEVENTO/" target="_blank" class="card" style="background: #fef2f2; color: #991b1b;"><span class="icon">⚠️</span>EVENTO ADVERSO</a>
             <a href="https://forms.gle/NfBnmCjDwH7tdoZu5" target="_blank" class="card"><span class="icon">📄</span>ATESTADO</a>
+
         </div>
     </div>
 
+    <!-- ===================== MODAL MEDICAMENTOS ===================== -->
     <div class="overlay" id="modalPharma">
         <div class="modal">
-            <h2 style="text-align:center; color:var(--danger)">💊 Medicamentos</h2>
+            <h2 style="text-align:center; color:#ef4444; margin-top:0;">💊 Medicamentos</h2>
             <div id="listaFaltas"></div>
-            <button onclick="fecharModal('modalPharma')" class="btn-calc" style="background:#ccc; color:#000; margin-top:20px">VOLTAR</button>
+            <button onclick="fecharModal('modalPharma')" class="btn-fechar" style="background:#94a3b8;">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL SUPORTE VENTILATÓRIO ===================== -->
+    <div class="overlay" id="modalVent">
+        <div class="modal">
+            <h2 style="text-align:center; color:#0369a1; margin-top:0;">😷 Suporte Ventilatório Pediátrico</h2>
+            <p style="font-size:0.75rem; color:#64748b; text-align:center; margin-top:-10px; margin-bottom:14px;">
+                Parâmetros iniciais sugeridos — ajuste conforme resposta clínica
+            </p>
+
+            <div class="vent-table-wrap">
+                <table class="vent-table">
+                    <thead>
+                        <tr>
+                            <th>Faixa Etária</th>
+                            <th>Peso (kg)</th>
+                            <th>Vc (mL)</th>
+                            <th>FR (rpm)</th>
+                            <th>PEEP (cmH₂O)</th>
+                            <th>PIP (cmH₂O)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">RN Prematuro</div>
+                                <div class="faixa-idade">&lt; 37 semanas</div>
+                            </td>
+                            <td>0,5 – 1,5</td>
+                            <td>3 – 12</td>
+                            <td>40 – 60</td>
+                            <td>4 – 5</td>
+                            <td>14 – 20</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">RN a Termo</div>
+                                <div class="faixa-idade">0 – 28 dias</div>
+                            </td>
+                            <td>2,5 – 4</td>
+                            <td>15 – 32</td>
+                            <td>40 – 60</td>
+                            <td>4 – 5</td>
+                            <td>16 – 22</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Lactente</div>
+                                <div class="faixa-idade">1 – 12 meses</div>
+                            </td>
+                            <td>4 – 10</td>
+                            <td>24 – 80</td>
+                            <td>30 – 50</td>
+                            <td>4 – 6</td>
+                            <td>16 – 24</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Pré-escolar</div>
+                                <div class="faixa-idade">1 – 5 anos</div>
+                            </td>
+                            <td>10 – 18</td>
+                            <td>60 – 144</td>
+                            <td>20 – 30</td>
+                            <td>5 – 6</td>
+                            <td>18 – 25</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Escolar</div>
+                                <div class="faixa-idade">6 – 12 anos</div>
+                            </td>
+                            <td>18 – 40</td>
+                            <td>108 – 320</td>
+                            <td>16 – 24</td>
+                            <td>5 – 8</td>
+                            <td>18 – 28</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Adolescente</div>
+                                <div class="faixa-idade">13 – 17 anos</div>
+                            </td>
+                            <td>40 – 70</td>
+                            <td>240 – 560</td>
+                            <td>12 – 20</td>
+                            <td>5 – 8</td>
+                            <td>20 – 30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vent-aviso">
+                <strong>⚠️ Lembretes importantes:</strong><br>
+                • Vc ideal: <strong>6 – 8 mL/kg</strong> de peso predito<br>
+                • Limite PIP: <strong>&lt; 30 cmH₂O</strong> sempre que possível<br>
+                • Ajustar FiO₂ para SpO₂ <strong>94 – 98%</strong><br>
+                • Reavalie gasometria após <strong>30 min</strong> de ventilação<br>
+                • Em caso de dúvida, acione o médico responsável imediatamente
+            </div>
+
+            <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1;">FECHAR</button>
         </div>
     </div>
 
     <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
 
     <script>
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
+        const SHEET_CSV_DIRETO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
+        const PROXY = 'https://corsproxy.io/?';
+        const SHEET_CSV_URL = PROXY + encodeURIComponent(SHEET_CSV_DIRETO);
 
+        // -------------------------------------------------------
+        // Parse de CSV seguro: lida com vírgulas dentro de aspas
+        // -------------------------------------------------------
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        // -------------------------------------------------------
+        // Buscar dados da planilha Google
+        // -------------------------------------------------------
         async function buscarDadosPlanilha() {
             try {
-                const response = await fetch(SHEET_CSV_URL);
-                const data = await response.text();
-                const linhas = data.split('\n');
-                const colunas = linhas[1].split(',');
+                const response = await fetch(PROXY + encodeURIComponent(SHEET_CSV_DIRETO + '&cachebust=' + Date.now()));
 
-                // Mapeamento baseado na sua imagem:
-                // A: Espera, B: Fluxo, C: Destaque, D: Falta, E: Crítico, F: Avisos, G: Documentos
+                if (!response.ok) throw new Error('Resposta inválida: ' + response.status);
+
+                const text = await response.text();
+                const linhas = text.trim().split('\n');
+
+                // Linha 0 = cabeçalho, Linha 1 = dados
+                if (linhas.length < 2) throw new Error('Planilha sem dados na linha 2');
+
+                const colunas = parseCSVLine(linhas[1]);
+
                 const dados = {
-                    espera: colunas[0] || "---",
-                    fluxo: colunas[1] || "NORMAL",
+                    espera:   colunas[0] || "---",
+                    fluxo:    colunas[1] || "NORMAL",
                     destaque: colunas[2] || "---",
-                    faltas: colunas[3] || "",
+                    faltas:   colunas[3] || "",
                     criticos: colunas[4] || "",
-                    avisos: colunas[5] || "Nenhum aviso no momento",
-                    docs: colunas[6] || "Nenhum documento novo"
+                    avisos:   colunas[5] || "Nenhum aviso no momento",
+                    docs:     colunas[6] || "Nenhum documento novo"
                 };
 
                 renderizarInterface(dados);
-            } catch (error) { console.error("Erro planilha:", error); }
+                mostrarStatusConexao(true);
+
+            } catch (error) {
+                console.error("Erro ao buscar planilha:", error);
+                mostrarStatusConexao(false, error.message);
+            }
         }
 
+        // -------------------------------------------------------
+        // Indicador visual de conexão com a planilha
+        // -------------------------------------------------------
+        function mostrarStatusConexao(ok, msg) {
+            const existe = document.getElementById('conexaoStatus');
+            if (existe) existe.remove();
+
+            const div = document.createElement('div');
+            div.id = 'conexaoStatus';
+            div.style.cssText = `
+                position: fixed; bottom: 12px; right: 12px;
+                background: ${ok ? '#10b981' : '#ef4444'};
+                color: white; font-size: 0.72rem; font-weight: bold;
+                padding: 6px 12px; border-radius: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                z-index: 9999; cursor: default;
+            `;
+            div.title = ok ? 'Planilha sincronizada com sucesso' : ('Erro: ' + msg);
+            div.textContent = ok ? '🟢 Planilha OK' : '🔴 Erro na Planilha';
+            document.body.appendChild(div);
+
+            // Some depois de 5s se estiver OK
+            if (ok) setTimeout(() => { if(div) div.remove(); }, 5000);
+        }
+
+        // -------------------------------------------------------
+        // Renderizar dados na interface
+        // -------------------------------------------------------
         function renderizarInterface(dados) {
-            // Status Bar
+
+            // Status Bar — cor do fluxo
             let cor = "bg-success";
-            if(dados.fluxo.trim() === "INTENSO") cor = "bg-warning";
-            if(dados.fluxo.trim() === "CRÍTICO") cor = "bg-danger";
+            const fluxoNorm = dados.fluxo.trim().toUpperCase();
+            if (fluxoNorm === "INTENSO") cor = "bg-warning";
+            if (fluxoNorm === "CRÍTICO" || fluxoNorm === "CRITICO") cor = "bg-danger";
+
             document.getElementById('painelStatus').innerHTML = `
-                <div class="status-item"><span class="status-indicator ${cor}"></span>FLUXO: ${dados.fluxo}</div>
-                <div class="status-item"><span class="status-indicator bg-warning"></span>ESPERA: ${dados.espera}</div>
+                <div class="status-item">
+                    <span class="status-indicator ${cor}"></span>FLUXO: ${dados.fluxo}
+                </div>
+                <div class="status-item">
+                    <span class="status-indicator bg-warning"></span>ESPERA: ${dados.espera}
+                </div>
             `;
 
-            // Destaque
+            // Destaque do mês
             document.getElementById('txtDestaque').innerText = dados.destaque;
 
-            // TICKER (Texto móvel)
-            const textoTicker = `🚨 FLUXO: ${dados.fluxo} | 📢 AVISOS: ${dados.avisos} | 📂 NOVOS DOCUMENTOS: ${dados.docs} | 🕒 ESPERA: ${dados.espera}`;
-            document.getElementById('letreiro').innerText = textoTicker + " | " + textoTicker; // Repete para evitar buracos
+            // Ticker (faixa laranja) — repete para não ter buraco
+            const textoTicker =
+                `🚨 FLUXO: ${dados.fluxo}` +
+                `  |  📢 AVISOS: ${dados.avisos}` +
+                `  |  📂 NOVOS DOCUMENTOS: ${dados.docs}` +
+                `  |  🕒 ESPERA: ${dados.espera}`;
+            document.getElementById('letreiro').innerText = textoTicker + '          ' + textoTicker;
 
             // Modal Medicamentos
             let htmlMeds = "";
-            if(dados.faltas) dados.faltas.split(';').forEach(i => htmlMeds += `<div style="padding:10px; border-bottom:1px solid #eee;">❌ ${i} (FALTA)</div>`);
-            if(dados.criticos) dados.criticos.split(';').forEach(i => htmlMeds += `<div style="padding:10px; border-bottom:1px solid #eee; background:#fff1f2; color:red;">🚨 ${i} (CRÍTICO)</div>`);
-            document.getElementById('listaFaltas').innerHTML = htmlMeds || "Tudo em estoque!";
+            if (dados.faltas) {
+                dados.faltas.split(';').forEach(i => {
+                    const item = i.trim();
+                    if (item) htmlMeds += `
+                        <div style="padding:10px 12px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:8px;">
+                            ❌ <span>${item}</span> <strong style="margin-left:auto; color:#ef4444;">FALTA</strong>
+                        </div>`;
+                });
+            }
+            if (dados.criticos) {
+                dados.criticos.split(';').forEach(i => {
+                    const item = i.trim();
+                    if (item) htmlMeds += `
+                        <div style="padding:10px 12px; border-bottom:1px solid #fca5a5; background:#fff1f2; display:flex; align-items:center; gap:8px;">
+                            🚨 <span>${item}</span> <strong style="margin-left:auto; color:#dc2626;">CRÍTICO</strong>
+                        </div>`;
+                });
+            }
+            document.getElementById('listaFaltas').innerHTML = htmlMeds ||
+                "<div style='text-align:center; padding:24px; color:#10b981; font-weight:bold; font-size:1.1rem;'>✅ Tudo em estoque!</div>";
         }
 
+        // -------------------------------------------------------
+        // Relógio
+        // -------------------------------------------------------
         function atualizarRelogio() {
             const agora = new Date();
-            const hora = agora.getHours();
-            document.getElementById('periodo-icon').textContent = (hora >= 6 && hora < 18) ? "☀️" : "🌙";
-            document.getElementById('relogio').innerHTML = `<span id="periodo-icon">${(hora >= 6 && hora < 18) ? "☀️" : "🌙"}</span> ${agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
-            document.getElementById('data').textContent = agora.toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'}).toUpperCase();
+            const hora  = agora.getHours();
+            const icone = (hora >= 6 && hora < 18) ? "☀️" : "🌙";
+            const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('relogio').innerHTML = `<span>${icone}</span> ${horaFormatada}`;
+            document.getElementById('data').textContent  =
+                agora.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
         }
 
-        function abrirModal(id) { document.getElementById(id).style.display = 'flex'; }
+        // -------------------------------------------------------
+        // Modais
+        // -------------------------------------------------------
+        function abrirModal(id)  { document.getElementById(id).style.display = 'flex'; }
         function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
 
+        document.querySelectorAll('.overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) fecharModal(this.id);
+            });
+        });
+
+        // -------------------------------------------------------
+        // Iniciar
+        // -------------------------------------------------------
         setInterval(atualizarRelogio, 1000);
-        setInterval(buscarDadosPlanilha, 30000); // 30s
+        setInterval(buscarDadosPlanilha, 30000); // atualiza a cada 30 segundos
         atualizarRelogio();
         buscarDadosPlanilha();
     </script>
 </body>
-</html>         
+</html>

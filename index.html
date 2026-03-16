@@ -151,6 +151,25 @@
 
 
 
+
+        /* --- DOCUMENTOS --- */
+        .doc-categoria {
+            font-size: 0.68rem; font-weight: 900; letter-spacing: 1px;
+            text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+            display: inline-block; margin-bottom: 8px; margin-top: 14px;
+        }
+        .doc-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: 12px; text-decoration: none;
+            border: 1px solid #e2e8f0; background: white;
+            margin-bottom: 8px; transition: box-shadow 0.2s;
+        }
+        .doc-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .doc-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .doc-item-nome { font-weight: 700; font-size: 0.83rem; color: #1e293b; }
+        .doc-item-desc { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+        .doc-item-seta { margin-left: auto; color: #94a3b8; font-size: 1rem; flex-shrink: 0; }
+        .doc-vazio { text-align:center; padding: 30px; color: #94a3b8; font-size: 0.85rem; }
         /* --- SISTEMAS --- */
         .sistema-btn {
             display: flex; align-items: center; gap: 14px;
@@ -245,7 +264,7 @@
             <div class="card" onclick="abrirModal('modalFluxoMenu')"><span class="icon">📋</span>FLUXOGRAMAS</div>
             <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
             <div class="card" onclick="abrirModal('modalSistemas')"><span class="icon">💻</span>SISTEMAS</div>
-            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📂</span>DOCUMENTOS</div>
+            <div class="card" onclick="abrirModal('modalDocs')"><span class="icon">📂</span>DOCUMENTOS</div>
 
             <a href="https://uparocinha.github.io/TROCADEPLANTAO/" target="_blank" class="card"><span class="icon">🔄</span>TROCA PLANTÃO</a>
             <a href="https://uparocinha.github.io/PLANTAOEXTRA/" target="_blank" class="card"><span class="icon">➕</span>PLANTÃO EXTRA</a>
@@ -370,6 +389,24 @@
 
     
 
+
+
+    <!-- ===================== MODAL DOCUMENTOS ===================== -->
+    <div class="overlay" id="modalDocs">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                <h2 style="color:#1e3a8a;margin:0;">📂 Documentos</h2>
+                <span id="badgeDocs" style="background:#3b82f6;color:white;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;display:none;"></span>
+            </div>
+            <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:16px;">
+                Documentos atualizados pela gestão via planilha
+            </p>
+            <div id="listaDocs">
+                <div class="doc-vazio">⏳ Carregando documentos...</div>
+            </div>
+            <button onclick="fecharModal('modalDocs')" class="btn-fechar" style="background:#1e3a8a;margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
 
     <!-- ===================== MODAL SISTEMAS ===================== -->
     <div class="overlay" id="modalSistemas">
@@ -1026,6 +1063,121 @@
 
 
 
+
+        // -------------------------------------------------------
+        // Buscar documentos da aba DOCUMENTOS na planilha
+        // -------------------------------------------------------
+        const DOCS_ID  = ''; // Deixar vazio = usa a mesma planilha dos avisos
+        // Estrutura da planilha: Categoria | Nome | Descrição | Link | Ativo
+
+        const CATEGORIA_CONFIG = {
+            'POP':        { icon: '📘', cor: '#1e3a8a', bg: '#eff6ff' },
+            'PROTOCOLO':  { icon: '📗', cor: '#16a34a', bg: '#f0fdf4' },
+            'FORMULARIO': { icon: '📄', cor: '#7c3aed', bg: '#f5f3ff' },
+            'ATA':        { icon: '📝', cor: '#f59e0b', bg: '#fffbeb' },
+            'MANUAL':     { icon: '🔧', cor: '#dc2626', bg: '#fef2f2' },
+            'OUTRO':      { icon: '📎', cor: '#64748b', bg: '#f8fafc' },
+        };
+
+        async function buscarDocumentos() {
+            // Usa a mesma planilha dos avisos, aba DOCUMENTOS (gid diferente)
+            // O usuário deve fornecer o GID da aba DOCUMENTOS
+            const GID_DOCS = window.DOCS_GID || '';
+            if (!GID_DOCS) {
+                document.getElementById('listaDocs').innerHTML =
+                    `<div class="doc-vazio">⚙️ Configure o GID da aba DOCUMENTOS no código.<br><br>
+                    <span style="font-size:0.7rem;">Crie a aba DOCUMENTOS na planilha, publique como CSV e informe o GID.</span></div>`;
+                return;
+            }
+
+            const sheetId = AVISOS_ID; // mesma planilha dos avisos
+            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?gid=${GID_DOCS}&single=true&output=csv`;
+            const tentativas = [
+                () => fetch(url),
+                () => fetch('https://corsproxy.io/?' + encodeURIComponent(url)),
+                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
+            ];
+
+            for (let i = 0; i < tentativas.length; i++) {
+                try {
+                    const response = await tentativas[i]();
+                    if (!response.ok) continue;
+                    const text = await response.text();
+                    let csv = text;
+                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
+                    renderizarDocumentos(csv);
+                    return;
+                } catch(e) { console.warn('Docs tentativa ' + (i+1) + ' falhou:', e.message); }
+            }
+            document.getElementById('listaDocs').innerHTML =
+                '<div class="doc-vazio">❌ Não foi possível carregar os documentos.</div>';
+        }
+
+        function renderizarDocumentos(csv) {
+            const linhas = csv.trim().split('\n');
+            // Cabeçalho: Categoria | Nome | Descrição | Link | Ativo
+            const docs = [];
+            for (let i = 1; i < linhas.length; i++) {
+                const cols = parseCSVLine(linhas[i]);
+                const categoria = (cols[0] || 'OUTRO').trim().toUpperCase();
+                const nome      = (cols[1] || '').trim();
+                const descricao = (cols[2] || '').trim();
+                const link      = (cols[3] || '').trim();
+                const ativo     = (cols[4] || '').trim().toUpperCase();
+                if (nome && link && ativo === 'SIM') {
+                    docs.push({ categoria, nome, descricao, link });
+                }
+            }
+
+            const container = document.getElementById('listaDocs');
+            if (docs.length === 0) {
+                container.innerHTML = '<div class="doc-vazio">📭 Nenhum documento disponível no momento.</div>';
+                return;
+            }
+
+            // Agrupar por categoria
+            const grupos = {};
+            docs.forEach(d => {
+                if (!grupos[d.categoria]) grupos[d.categoria] = [];
+                grupos[d.categoria].push(d);
+            });
+
+            const nomesCategorias = {
+                'POP': 'POPs — Procedimentos Operacionais Padrão',
+                'PROTOCOLO': 'Protocolos Clínicos',
+                'FORMULARIO': 'Formulários e Fichas',
+                'ATA': 'Atas e Resoluções',
+                'MANUAL': 'Manuais de Equipamentos',
+                'OUTRO': 'Outros Documentos',
+            };
+
+            let html = '';
+            Object.keys(grupos).forEach(cat => {
+                const cfg = CATEGORIA_CONFIG[cat] || CATEGORIA_CONFIG['OUTRO'];
+                html += `<div class="doc-categoria" style="background:${cfg.bg};color:${cfg.cor};">
+                    ${cfg.icon} ${nomesCategorias[cat] || cat}
+                </div>`;
+                grupos[cat].forEach(doc => {
+                    html += `
+                        <a href="${doc.link}" target="_blank" class="doc-item">
+                            <span class="doc-item-icon">${cfg.icon}</span>
+                            <div>
+                                <div class="doc-item-nome">${doc.nome}</div>
+                                ${doc.descricao ? `<div class="doc-item-desc">${doc.descricao}</div>` : ''}
+                            </div>
+                            <span class="doc-item-seta">↗</span>
+                        </a>`;
+                });
+            });
+
+            container.innerHTML = html;
+
+            // Badge com total de documentos
+            const badge = document.getElementById('badgeDocs');
+            badge.textContent = docs.length + ' docs';
+            badge.style.display = 'inline-block';
+        }
+
         // -------------------------------------------------------
         // Buscar avisos da aba AVISOS
         // -------------------------------------------------------
@@ -1253,12 +1405,15 @@
         // -------------------------------------------------------
         // Iniciar
         // -------------------------------------------------------
+        window.DOCS_GID = '849673271'; // GID da aba DOCUMENTOS
         setInterval(atualizarRelogio, 1000);
         setInterval(buscarDadosPlanilha, 30000);
         setInterval(buscarAvisos, 30000);
+        setInterval(buscarDocumentos, 60000);
         atualizarRelogio();
         buscarDadosPlanilha();
         buscarAvisos();
+        buscarDocumentos();
     </script>
 
 </body>

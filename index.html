@@ -69,11 +69,11 @@
 
         /* --- STATUS & GRID --- */
         .status-bar {
-            width: 92%; max-width: 600px; background: white; margin-top: 20px; padding: 15px;
-            border-radius: 15px; display: flex; justify-content: space-around;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            width: 92%; max-width: 600px; background: white; margin-top: 20px; padding: 15px 20px;
+            border-radius: 15px; display: flex; justify-content: space-around; gap: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap;
         }
-        .status-item { font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; }
+        .status-item { font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .status-indicator { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
         .bg-success { background: var(--success); }
         .bg-warning { background: var(--warning); }
@@ -85,9 +85,10 @@
         .card {
             background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);
             border-radius: 20px; padding: 20px 10px; text-align: center; text-decoration: none;
-            color: var(--primary); font-weight: 700; font-size: 0.85rem;
+            color: var(--primary); font-weight: 700; font-size: 0.78rem;
             display: flex; flex-direction: column; align-items: center; transition: 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
+            word-break: break-word; text-align: center; line-height: 1.3;
         }
         .card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         .card-highlight { grid-column: span 2; background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); color: white; border: none; }
@@ -148,6 +149,25 @@
         }
 
 
+
+        /* --- FLUXOGRAMAS --- */
+        .fluxo-btn {
+            width: 100%; padding: 14px 16px; border: none; border-radius: 12px;
+            font-size: 0.95rem; font-weight: 800; cursor: pointer; text-align: left;
+            transition: opacity 0.2s;
+        }
+        .fluxo-btn:hover { opacity: 0.85; }
+        .fluxo-step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+        .fluxo-num {
+            min-width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 0.75rem; color: white; flex-shrink: 0;
+        }
+        .fluxo-title { font-weight: 800; font-size: 0.83rem; color: #1e293b; }
+        .fluxo-desc { font-size: 0.73rem; color: #475569; margin-top: 2px; line-height: 1.5; }
+        .fluxo-arrow { text-align: center; color: #94a3b8; font-size: 1.1rem; margin: 1px 0; }
+        .fluxo-alerta { padding: 10px 14px; border-radius: 10px; font-size: 0.76rem; font-weight: 700; margin: 10px 0; }
+        .fluxo-section { font-size: 0.68rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8; margin: 12px 0 7px; }
         /* --- CALCULADORAS --- */
         .calc-item { margin-bottom: 12px; }
         .calc-label { display:block; font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:4px; }
@@ -210,7 +230,7 @@
                 <span class="icon">😷</span>SUPORTE VENT.
             </div>
 
-            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📋</span>FLUXOGRAMAS</div>
+            <div class="card" onclick="abrirModal('modalFluxoMenu')"><span class="icon">📋</span>FLUXOGRAMAS</div>
             <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">💻</span>SISTEMAS</div>
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📂</span>DOCUMENTOS</div>
@@ -337,6 +357,177 @@
     </div>
 
     
+
+    <!-- ===================== MODAL MENU FLUXOGRAMAS ===================== -->
+    <div class="overlay" id="modalFluxoMenu">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">📋 Fluxogramas Clínicos</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Protocolos de atendimento rápido</p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoSepse')"     class="fluxo-btn" style="border-left:5px solid #ef4444;background:#fef2f2;color:#7f1d1d;">🦠 Sepse</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoAVC')"       class="fluxo-btn" style="border-left:5px solid #8b5cf6;background:#f5f3ff;color:#4c1d95;">🧠 AVC / AVE</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoIAM')"       class="fluxo-btn" style="border-left:5px solid #dc2626;background:#fff1f2;color:#7f1d1d;">❤️ Dor Torácica / IAM</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoHAS')"       class="fluxo-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;color:#78350f;">🩺 Crise Hipertensiva</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoPCR')"       class="fluxo-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;color:#1e3a8a;">💓 PCR / RCP</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoConvulsao')" class="fluxo-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;color:#0c4a6e;">⚡ Convulsão</button>
+                <button onclick="trocarModal('modalFluxoMenu','modalFluxoTrauma')"    class="fluxo-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;color:#14532d;">🩹 Trauma</button>
+            </div>
+            <button onclick="fecharModal('modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:16px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- SEPSE -->
+    <div class="overlay" id="modalFluxoSepse">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#ef4444;margin-top:0;">🦠 Protocolo de Sepse</h2>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ Cada hora sem antibiótico aumenta a mortalidade em ~7%</div>
+            <div class="fluxo-section">Bundle da 1ª hora</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">1</div><div><div class="fluxo-title">Identificar suspeita clínica</div><div class="fluxo-desc">Infecção + qSOFA ≥2: FR≥22, Glasgow&lt;15 ou PAS≤100 mmHg</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">2</div><div><div class="fluxo-title">Coletar hemoculturas (x2)</div><div class="fluxo-desc">Colher antes do ATB — não atrasar o antibiótico pela coleta</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">3</div><div><div class="fluxo-title">Dosar lactato</div><div class="fluxo-desc">≥2 mmol/L = hipoperfusão | ≥4 mmol/L = choque séptico</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">4</div><div><div class="fluxo-title">Antibioticoterapia empírica</div><div class="fluxo-desc">Iniciar em até 1h. Escolher conforme foco provável</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">5</div><div><div class="fluxo-title">Ressuscitação volêmica</div><div class="fluxo-desc">SF 0,9% ou Ringer Lactato 30 mL/kg em até 3h se hipotensão ou lactato ≥4</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">6</div><div><div class="fluxo-title">Vasopressor se PAM &lt; 65 mmHg</div><div class="fluxo-desc">Noradrenalina preferencial. Acesso venoso central se possível</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 Metas: PAM ≥65 | Diurese ≥0,5 mL/kg/h | Lactato clearance ≥10% em 2h</div>
+            <button onclick="trocarModal('modalFluxoSepse','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- AVC -->
+    <div class="overlay" id="modalFluxoAVC">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#8b5cf6;margin-top:0;">🧠 Protocolo AVC / AVE</h2>
+            <div class="fluxo-alerta" style="background:#ede9fe;color:#4c1d95;">⚠️ "Tempo é cérebro" — 1,9 milhão de neurônios morrem por minuto</div>
+            <div class="fluxo-section">Triagem e avaliação</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">1</div><div><div class="fluxo-title">Aplicar escala FAST</div><div class="fluxo-desc">Face (assimetria) | Arm (fraqueza) | Speech (fala alterada) | Time (registrar hora)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">2</div><div><div class="fluxo-title">Registrar hora exata do início</div><div class="fluxo-desc">Janela trombólise: até 4,5h | Trombectomia: até 24h</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">3</div><div><div class="fluxo-title">Acesso venoso + exames urgentes</div><div class="fluxo-desc">Glicemia, coagulograma, hemograma, eletrólitos. Glicemia &lt;60 ou &gt;400 = corrigir antes</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">4</div><div><div class="fluxo-title">TC de crânio sem contraste — URGENTE</div><div class="fluxo-desc">Diferenciar AVC isquêmico de hemorrágico antes de qualquer conduta</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA, SatO2, ECG. Manter SatO2 ≥94%. Cabeceira 30° se rebaixamento</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">6</div><div><div class="fluxo-title">Acionar neurologista / SAMU regulação</div><div class="fluxo-desc">Para avaliação de trombólise (Alteplase 0,9 mg/kg, máx 90mg) ou transferência</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚫 NÃO reduzir PA agressivamente (exceto se &gt;220x120 no isquêmico ou &gt;180x105 no hemorrágico)</div>
+            <button onclick="trocarModal('modalFluxoAVC','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- IAM -->
+    <div class="overlay" id="modalFluxoIAM">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#dc2626;margin-top:0;">❤️ Dor Torácica / IAM</h2>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ Todo ECG deve ser realizado em até 10 minutos da chegada</div>
+            <div class="fluxo-section">Avaliação inicial</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">1</div><div><div class="fluxo-title">ECG 12 derivações — imediato</div><div class="fluxo-desc">Identificar supradesnivelamento de ST (IAMCSST) ou bloqueio de ramo novo</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">2</div><div><div class="fluxo-title">Acesso venoso + monitorização</div><div class="fluxo-desc">PA, FC, SatO2, oximetria. Oxigênio se SatO2 &lt;94%</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">3</div><div><div class="fluxo-title">AAS 200mg VO — mastigar</div><div class="fluxo-desc">Se não houver contraindicação. Dose de ataque imediata</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">Colher troponina, CK-MB, BNP</div><div class="fluxo-desc">Hemograma, coagulograma, eletrólitos, função renal</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">5</div><div><div class="fluxo-title">Morfina / Nitrato se dor intensa</div><div class="fluxo-desc">Nitrato: contraindicado se PAS &lt;90 ou uso de sildenafil. Morfina: 2-4mg EV</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">6</div><div><div class="fluxo-title">Acionar hemodinâmica / transferência</div><div class="fluxo-desc">IAMCSST: angioplastia em até 90min (porta-balão). Se indisponível: trombólise</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 Mnemônico MONAB: Morfina | Oxigênio | Nitrato | AAS | Beta-bloqueador</div>
+            <button onclick="trocarModal('modalFluxoIAM','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- CRISE HIPERTENSIVA -->
+    <div class="overlay" id="modalFluxoHAS">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#f59e0b;margin-top:0;">🩺 Crise Hipertensiva</h2>
+            <div class="fluxo-alerta" style="background:#fffbeb;color:#78350f;">⚠️ Urgência: PA elevada sem lesão de órgão-alvo | Emergência: PA elevada COM lesão</div>
+            <div class="fluxo-section">Classificação e conduta</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">1</div><div><div class="fluxo-title">Aferir PA em ambos os membros</div><div class="fluxo-desc">Confirmar com 2 medidas. PAS ≥180 e/ou PAD ≥120 mmHg = crise hipertensiva</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">2</div><div><div class="fluxo-title">Avaliar lesão de órgão-alvo</div><div class="fluxo-desc">Neurológico (cefaleia, confusão, AVC) | Cardíaco (dor, dispneia) | Renal (oligúria) | Ocular (turvação)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">3</div><div><div class="fluxo-title">URGÊNCIA hipertensiva</div><div class="fluxo-desc">Captopril 25mg SL ou VO | Meta: reduzir 25% em 24-48h. Sem pressa excessiva</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">EMERGÊNCIA hipertensiva</div><div class="fluxo-desc">Nitroprussiato EV ou Labetalol EV | Reduzir PA 25% na 1ª hora. UTI/internação</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA a cada 15-30 min. ECG, função renal, fundo de olho se disponível</div></div></div>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">🚫 NÃO reduzir PA rapidamente na urgência — risco de isquemia cerebral e coronariana</div>
+            <button onclick="trocarModal('modalFluxoHAS','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- PCR -->
+    <div class="overlay" id="modalFluxoPCR">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💓 PCR / RCP</h2>
+            <div class="fluxo-alerta" style="background:#eff6ff;color:#1e3a8a;">⚠️ Iniciar RCP imediatamente — cada minuto sem compressão reduz sobrevida em 10%</div>
+            <div class="fluxo-section">Sequência BLS / ACLS</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">1</div><div><div class="fluxo-title">Checar responsividade e chamar ajuda</div><div class="fluxo-desc">Estimular, gritar, acionar equipe. Iniciar cronômetro</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">2</div><div><div class="fluxo-title">Compressões torácicas — IMEDIATO</div><div class="fluxo-desc">100-120/min | Profundidade 5-6cm | Permitir reexpansão total | Mínimo de interrupções</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">3</div><div><div class="fluxo-title">Desfibrilador — ligar imediatamente</div><div class="fluxo-desc">Ritmos chocáveis: FV e TV sem pulso. Choque assim que disponível</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">4</div><div><div class="fluxo-title">Via aérea e ventilação</div><div class="fluxo-desc">30:2 sem via aérea avançada | Com IOT: 10 vent/min sem pausar compressões</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">5</div><div><div class="fluxo-title">Adrenalina 1mg EV a cada 3-5 min</div><div class="fluxo-desc">Ritmos não chocáveis (AESP/Assistolia): adrenalina o mais rápido possível</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">6</div><div><div class="fluxo-title">Tratar causas reversíveis — 5H5T</div><div class="fluxo-desc">Hipóxia, Hipovolemia, H+ (acidose), Hipo/Hipercalemia, Hipotermia | Tamponamento, Tensão (pneumotórax), Trombose (IAM/TEP), Tóxicos</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔄 Checar pulso a cada 2 min. Revezar compressor a cada 2 min para evitar fadiga</div>
+            <button onclick="trocarModal('modalFluxoPCR','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- CONVULSÃO -->
+    <div class="overlay" id="modalFluxoConvulsao">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#0369a1;margin-top:0;">⚡ Protocolo de Convulsão</h2>
+            <div class="fluxo-alerta" style="background:#f0f9ff;color:#0c4a6e;">⚠️ Status epiléptico = convulsão &gt;5 min ou 2 crises sem recuperação. Emergência!</div>
+            <div class="fluxo-section">Conduta imediata</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">1</div><div><div class="fluxo-title">Proteger e posicionar</div><div class="fluxo-desc">Decúbito lateral, afastar objetos, NÃO conter forçadamente, NÃO colocar nada na boca</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">2</div><div><div class="fluxo-title">Via aérea e O2</div><div class="fluxo-desc">O2 por máscara ou cateter. Aspirar secreções se necessário. SatO2 ≥94%</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">3</div><div><div class="fluxo-title">Glicemia capilar imediata</div><div class="fluxo-desc">Hipoglicemia = causa tratável. Se &lt;60: glicose 50% 50mL EV (adulto)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">4</div><div><div class="fluxo-title">Benzodiazepínico — 1ª linha (0-5 min)</div><div class="fluxo-desc">Diazepam 10mg EV lento | Midazolam 10mg IM | Diazepam 20mg retal</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">5</div><div><div class="fluxo-title">2ª linha se refratário (5-20 min)</div><div class="fluxo-desc">Fenitoína 20mg/kg EV (máx 50mg/min) | Valproato 40mg/kg EV | Fenobarbital 20mg/kg EV</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">6</div><div><div class="fluxo-title">Status refratário (&gt;30 min) — UTI</div><div class="fluxo-desc">Midazolam ou Propofol em infusão contínua. IOT e monitorização EEG</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔍 Investigar causa: HIC, meningite, distúrbio metabólico, intoxicação, abstinência</div>
+            <button onclick="trocarModal('modalFluxoConvulsao','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- TRAUMA -->
+    <div class="overlay" id="modalFluxoTrauma">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#16a34a;margin-top:0;">🩹 Protocolo de Trauma</h2>
+            <div class="fluxo-alerta" style="background:#f0fdf4;color:#14532d;">⚠️ Avaliação primária pelo método ABCDE — tratar ameaças à vida na ordem encontrada</div>
+            <div class="fluxo-section">Avaliação primária — ABCDE</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">A</div><div><div class="fluxo-title">Airway — Via aérea com proteção cervical</div><div class="fluxo-desc">Colar cervical. Aspirar, posicionar, IOT se necessário. Falar com paciente = via aérea pérvia</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">B</div><div><div class="fluxo-title">Breathing — Ventilação e respiração</div><div class="fluxo-desc">Ausculta, inspeção, palpação. Tratar pneumotórax hipertensivo, hemotórax, tórax instável</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">C</div><div><div class="fluxo-title">Circulation — Controle de hemorragia</div><div class="fluxo-desc">Compressão direta, torniquete. 2 acessos calibrosos. Reposição: cristaloide + hemoderivados</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">D</div><div><div class="fluxo-title">Disability — Neurológico</div><div class="fluxo-desc">Glasgow, pupilas, glicemia. Glasgow ≤8 = IOT. Avaliar déficit motor/sensitivo</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">E</div><div><div class="fluxo-title">Exposure — Exposição e ambiente</div><div class="fluxo-desc">Despir completamente, examinar dorso. Prevenir hipotermia com lençóis/cobertores aquecidos</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">F</div><div><div class="fluxo-title">Avaliação secundária — da cabeça aos pés</div><div class="fluxo-desc">Exame físico completo, anamnese AMPLA, radiografias (tórax, pelve, coluna)</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚁 Critérios de transferência: TCE grave, lesão vascular, trauma abdominal penetrante, politrauma</div>
+            <button onclick="trocarModal('modalFluxoTrauma','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
     <!-- ===================== MODAL AVISOS GERAIS ===================== -->
     <div class="overlay" id="modalAvisos">
         <div class="modal" style="max-height:85vh; overflow-y:auto;">
@@ -704,12 +895,15 @@
             if (fluxoNorm === "INTENSO") cor = "bg-warning";
             if (fluxoNorm === "CRITICO") cor = "bg-danger";
 
+            // Normaliza os valores para evitar texto cortado
+            const fluxoDisplay = dados.fluxo.trim().substring(0, 20);
+            const esperaDisplay = dados.espera.trim().substring(0, 20);
             document.getElementById('painelStatus').innerHTML = `
                 <div class="status-item">
-                    <span class="status-indicator ${cor}"></span>FLUXO: ${dados.fluxo}
+                    <span class="status-indicator ${cor}"></span>FLUXO: <strong style="margin-left:4px;">${fluxoDisplay}</strong>
                 </div>
                 <div class="status-item">
-                    <span class="status-indicator bg-warning"></span>ESPERA: ${dados.espera}
+                    <span class="status-indicator bg-warning"></span>ESPERA: <strong style="margin-left:4px;">${esperaDisplay}</strong>
                 </div>
             `;
 

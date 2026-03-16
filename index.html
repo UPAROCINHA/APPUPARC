@@ -192,9 +192,9 @@
     <div class="container">
         <div class="grid">
 
-            <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSbq6ZnMiyajRo7jIert83s9CDKlr0FK0MSJGbCQzbGZufPivuy4wgk1f20sHDcgmysnNgg9H4xmwr5/pubhtml?widget=true&gridlines=false" target="_blank" class="card card-highlight">
+            <div class="card card-highlight" onclick="abrirModal('modalAvisos')">
                 <span class="icon">📢</span>AVISOS GERAIS
-            </a>
+            </div>
 
             <div class="card card-destaque">
                 <span class="icon">🏆</span>
@@ -337,6 +337,23 @@
     </div>
 
     
+    <!-- ===================== MODAL AVISOS GERAIS ===================== -->
+    <div class="overlay" id="modalAvisos">
+        <div class="modal" style="max-height:85vh; overflow-y:auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                <h2 style="color:#1e3a8a; margin:0;">📢 Avisos Gerais</h2>
+                <span id="badgeAvisos" style="background:#ef4444; color:white; font-size:0.7rem; font-weight:800; padding:3px 10px; border-radius:20px; display:none;"></span>
+            </div>
+            <p style="font-size:0.75rem; color:#64748b; margin-top:4px; margin-bottom:16px;">
+                Avisos atualizados em tempo real pela gestão
+            </p>
+            <div id="listaAvisos">
+                <div style="text-align:center; padding:30px; color:#64748b;">⏳ Carregando avisos...</div>
+            </div>
+            <button onclick="fecharModal('modalAvisos')" class="btn-fechar" style="background:#1e3a8a; margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
+
     <!-- ===================== MODAL MENU CALCULADORAS ===================== -->
     <div class="overlay" id="modalCalcMenu">
         <div class="modal" style="max-height:85vh; overflow-y:auto;">
@@ -576,8 +593,10 @@
         // Google Sheets publicada como JSON (sem CORS, sem proxy)
         // Substitua o ID abaixo pelo ID da SUA planilha se mudar
         // -------------------------------------------------------
-        const SHEET_ID  = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
-        const SHEET_GID = '0'; // gid da aba CONFIG_PORTAL
+        const SHEET_ID   = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
+        const SHEET_GID  = '0';         // aba CONFIG_PORTAL
+        const AVISOS_ID  = '2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2';
+        const AVISOS_GID = '0'; // aba AVISOS
 
         // URL JSON pública do Google Sheets (não precisa de API key)
         function getSheetURL() {
@@ -726,6 +745,78 @@
                 "<div style='text-align:center; padding:24px; color:#10b981; font-weight:bold; font-size:1.1rem;'>✅ Tudo em estoque!</div>";
         }
 
+
+
+        // -------------------------------------------------------
+        // Buscar avisos da aba AVISOS
+        // -------------------------------------------------------
+        async function buscarAvisos() {
+            const url = `https://docs.google.com/spreadsheets/d/e/${AVISOS_ID}/pub?gid=${AVISOS_GID}&single=true&output=csv`;
+            const tentativas = [
+                () => fetch(url),
+                () => fetch('https://corsproxy.io/?' + encodeURIComponent(url)),
+                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
+            ];
+            for (let i = 0; i < tentativas.length; i++) {
+                try {
+                    const response = await tentativas[i]();
+                    if (!response.ok) continue;
+                    const text = await response.text();
+                    let csv = text;
+                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
+                    renderizarAvisos(csv);
+                    return;
+                } catch(e) { console.warn('Avisos tentativa ' + (i+1) + ' falhou:', e.message); }
+            }
+        }
+
+        function renderizarAvisos(csv) {
+            const linhas = csv.trim().split('\n');
+            // Linha 0 = cabeçalho (Titulo, Mensagem, Ativo)
+            const avisos = [];
+            for (let i = 1; i < linhas.length; i++) {
+                const cols = parseCSVLine(linhas[i]);
+                const titulo   = (cols[0] || '').trim();
+                const mensagem = (cols[1] || '').trim();
+                const ativo    = (cols[2] || '').trim().toUpperCase();
+                if (titulo && ativo === 'SIM') {
+                    avisos.push({ titulo, mensagem });
+                }
+            }
+
+            const container = document.getElementById('listaAvisos');
+            if (avisos.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:#64748b;">
+                    📭 Nenhum aviso ativo no momento.
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = avisos.map((a, idx) => `
+                <div style="
+                    border-left: 4px solid ${idx % 3 === 0 ? '#3b82f6' : idx % 3 === 1 ? '#f59e0b' : '#ef4444'};
+                    background: ${idx % 3 === 0 ? '#eff6ff' : idx % 3 === 1 ? '#fffbeb' : '#fef2f2'};
+                    border-radius: 0 12px 12px 0;
+                    padding: 14px 16px;
+                    margin-bottom: 10px;
+                ">
+                    <div style="font-weight: 800; font-size: 0.9rem; color: #1e293b; margin-bottom: 4px;">
+                        ${a.titulo}
+                    </div>
+                    ${a.mensagem ? `<div style="font-size: 0.8rem; color: #475569; line-height: 1.5;">${a.mensagem}</div>` : ''}
+                </div>
+            `).join('');
+
+            // Atualiza também o ticker com os títulos dos avisos ativos
+            const titulosTicker = avisos.map(a => '📢 ' + a.titulo).join('  |  ');
+            const tickerEl = document.getElementById('letreiro');
+            if (tickerEl && titulosTicker) {
+                const textoAtual = tickerEl.innerText.split('          ')[0];
+                // Substitui apenas a parte de AVISOS no ticker
+                const novoTexto = textoAtual.replace(/📢 AVISOS:.*?\|/, '📢 ' + avisos.map(a=>a.titulo).join('; ') + '  |');
+                tickerEl.innerText = novoTexto + '          ' + novoTexto;
+            }
+        }
 
         // -------------------------------------------------------
         // Utilitário: troca de modal
@@ -885,8 +976,10 @@
         // -------------------------------------------------------
         setInterval(atualizarRelogio, 1000);
         setInterval(buscarDadosPlanilha, 30000);
+        setInterval(buscarAvisos, 30000);
         atualizarRelogio();
         buscarDadosPlanilha();
+        buscarAvisos();
     </script>
 
 </body>

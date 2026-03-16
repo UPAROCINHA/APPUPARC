@@ -941,49 +941,28 @@
         // -------------------------------------------------------
         // Buscar via fetch com mode no-cors como fallback
         // -------------------------------------------------------
-        async function buscarDadosPlanilha() {
-            const tentativas = [
-                // Tentativa 1: direto
-                () => fetch(getSheetURL()),
-                // Tentativa 2: proxy corsproxy.io
-                () => fetch('https://corsproxy.io/?' + encodeURIComponent(getSheetURL())),
-                // Tentativa 3: proxy allorigins
-                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(getSheetURL())),
-            ];
-
-            for (let i = 0; i < tentativas.length; i++) {
-                try {
-                    const response = await tentativas[i]();
-                    if (!response.ok) continue;
-                    const text = await response.text();
-                    // allorigins retorna JSON com campo "contents"
-                    let csv = text;
-                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
-                    processarCSV(csv);
-                    mostrarStatusConexao(true);
+        function buscarDadosPlanilha() {
+            fetchSheetViaJSONP(SHEET_ID, SHEET_GID, function(rows) {
+                if (!rows || rows.length < 2) {
+                    mostrarStatusConexao(false, 'Sem dados na planilha');
                     return;
-                } catch (e) {
-                    console.warn(`Tentativa ${i+1} falhou:`, e.message);
                 }
-            }
-            mostrarStatusConexao(false, 'Todas as tentativas falharam');
+                const colunas = rows[1]; // linha 2 = dados
+                const dados = {
+                    espera:   (colunas[0] || '---').trim(),
+                    fluxo:    (colunas[1] || 'NORMAL').trim(),
+                    destaque: (colunas[2] || '---').trim(),
+                    faltas:   (colunas[3] || '').trim(),
+                    criticos: (colunas[4] || '').trim(),
+                    avisos:   (colunas[5] || 'Nenhum aviso').trim(),
+                    docs:     (colunas[6] || 'Nenhum documento novo').trim()
+                };
+                renderizarInterface(dados);
+                mostrarStatusConexao(true);
+            });
         }
 
-        function processarCSV(text) {
-            const linhas = text.trim().split('\n');
-            if (linhas.length < 2) throw new Error('Planilha sem dados na linha 2');
-            const colunas = parseCSVLine(linhas[1]);
-            const dados = {
-                espera:   colunas[0] || "---",
-                fluxo:    colunas[1] || "NORMAL",
-                destaque: colunas[2] || "---",
-                faltas:   colunas[3] || "",
-                criticos: colunas[4] || "",
-                avisos:   colunas[5] || "Nenhum aviso no momento",
-                docs:     colunas[6] || "Nenhum documento novo"
-            };
-            renderizarInterface(dados);
-        }
+        // processarCSV substituído por fetchSheetViaJSONP
 
         // -------------------------------------------------------
         // Indicador visual de conexão com a planilha
@@ -1064,6 +1043,41 @@
 
 
 
+
+        // -------------------------------------------------------
+        // Fetch via Google Visualization API (sem CORS, sem proxy)
+        // Funciona com qualquer planilha pública
+        // -------------------------------------------------------
+        function fetchSheetViaJSONP(sheetId, gid, callback) {
+            const cbName = 'gsCallback_' + Date.now();
+            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?gid=${gid}&single=true&output=csv`;
+
+            // Tenta fetch direto primeiro (funciona no GitHub Pages)
+            fetch(url)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(csv => {
+                    const rows = parseCSVToRows(csv);
+                    callback(rows);
+                })
+                .catch(() => {
+                    // Fallback: allorigins
+                    fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
+                        .then(r => r.text())
+                        .then(csv => {
+                            const rows = parseCSVToRows(csv);
+                            callback(rows);
+                        })
+                        .catch(() => callback(null));
+                });
+        }
+
+        function parseCSVToRows(csv) {
+            return csv.trim().split('\n').map(line => parseCSVLine(line));
+        }
+
         // -------------------------------------------------------
         // Buscar documentos da aba DOCUMENTOS na planilha
         // -------------------------------------------------------
@@ -1079,55 +1093,35 @@
             'OUTRO':      { icon: '📎', cor: '#64748b', bg: '#f8fafc' },
         };
 
-        async function buscarDocumentos() {
-            // Usa a mesma planilha dos avisos, aba DOCUMENTOS (gid diferente)
-            // O usuário deve fornecer o GID da aba DOCUMENTOS
+        function buscarDocumentos() {
             const GID_DOCS = window.DOCS_GID || '';
             if (!GID_DOCS) {
                 document.getElementById('listaDocs').innerHTML =
-                    `<div class="doc-vazio">⚙️ Configure o GID da aba DOCUMENTOS no código.<br><br>
-                    <span style="font-size:0.7rem;">Crie a aba DOCUMENTOS na planilha, publique como CSV e informe o GID.</span></div>`;
+                    '<div class="doc-vazio">⚙️ GID da aba DOCUMENTOS não configurado.</div>';
                 return;
             }
-
-            const sheetId = AVISOS_ID; // mesma planilha dos avisos
-            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?gid=${GID_DOCS}&single=true&output=csv`;
-            const tentativas = [
-                () => fetch(url),
-                () => fetch('https://corsproxy.io/?' + encodeURIComponent(url)),
-                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
-            ];
-
-            for (let i = 0; i < tentativas.length; i++) {
-                try {
-                    const response = await tentativas[i]();
-                    if (!response.ok) continue;
-                    const text = await response.text();
-                    let csv = text;
-                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
-                    renderizarDocumentos(csv);
+            fetchSheetViaJSONP(AVISOS_ID, GID_DOCS, function(rows) {
+                if (!rows) {
+                    document.getElementById('listaDocs').innerHTML =
+                        '<div class="doc-vazio">❌ Erro ao carregar documentos.</div>';
                     return;
-                } catch(e) { console.warn('Docs tentativa ' + (i+1) + ' falhou:', e.message); }
-            }
-            document.getElementById('listaDocs').innerHTML =
-                '<div class="doc-vazio">❌ Não foi possível carregar os documentos.</div>';
+                }
+                // Cabeçalho: Categoria | Nome | Descrição | Link | Ativo
+                const docs = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const categoria = (rows[i][0] || 'OUTRO').trim().toUpperCase();
+                    const nome      = (rows[i][1] || '').trim();
+                    const descricao = (rows[i][2] || '').trim();
+                    const link      = (rows[i][3] || '').trim();
+                    const ativo     = (rows[i][4] || '').trim().toUpperCase();
+                    if (nome && link && ativo === 'SIM') docs.push({ categoria, nome, descricao, link });
+                }
+                renderizarDocumentos_rows(docs);
+            });
         }
 
-        function renderizarDocumentos(csv) {
-            const linhas = csv.trim().split('\n');
-            // Cabeçalho: Categoria | Nome | Descrição | Link | Ativo
-            const docs = [];
-            for (let i = 1; i < linhas.length; i++) {
-                const cols = parseCSVLine(linhas[i]);
-                const categoria = (cols[0] || 'OUTRO').trim().toUpperCase();
-                const nome      = (cols[1] || '').trim();
-                const descricao = (cols[2] || '').trim();
-                const link      = (cols[3] || '').trim();
-                const ativo     = (cols[4] || '').trim().toUpperCase();
-                if (nome && link && ativo === 'SIM') {
-                    docs.push({ categoria, nome, descricao, link });
-                }
-            }
+        function renderizarDocumentos_rows(docs) {
+            if (true) {
 
             const container = document.getElementById('listaDocs');
             if (docs.length === 0) {
@@ -1181,23 +1175,46 @@
         // -------------------------------------------------------
         // Buscar avisos da aba AVISOS
         // -------------------------------------------------------
-        async function buscarAvisos() {
-            const url = `https://docs.google.com/spreadsheets/d/e/${AVISOS_ID}/pub?gid=${AVISOS_GID}&single=true&output=csv`;
-            const tentativas = [
-                () => fetch(url),
-                () => fetch('https://corsproxy.io/?' + encodeURIComponent(url)),
-                () => fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url)),
-            ];
-            for (let i = 0; i < tentativas.length; i++) {
-                try {
-                    const response = await tentativas[i]();
-                    if (!response.ok) continue;
-                    const text = await response.text();
-                    let csv = text;
-                    try { const j = JSON.parse(text); if (j.contents) csv = j.contents; } catch(e) {}
-                    renderizarAvisos(csv);
+        function buscarAvisos() {
+            fetchSheetViaJSONP(AVISOS_ID, AVISOS_GID, function(rows) {
+                if (!rows) {
+                    document.getElementById('listaAvisos').innerHTML =
+                        "<div style='text-align:center;padding:30px;color:#ef4444;'>❌ Erro ao carregar avisos.</div>";
                     return;
-                } catch(e) { console.warn('Avisos tentativa ' + (i+1) + ' falhou:', e.message); }
+                }
+                // rows[0] = cabeçalho, rows[1..] = dados
+                const avisos = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const titulo   = (rows[i][0] || '').trim();
+                    const mensagem = (rows[i][1] || '').trim();
+                    const ativo    = (rows[i][2] || '').trim().toUpperCase();
+                    if (titulo && ativo === 'SIM') avisos.push({ titulo, mensagem });
+                }
+                renderizarAvisos_rows(avisos);
+            });
+        }
+
+        function renderizarAvisos_rows(avisos) {
+            const container = document.getElementById('listaAvisos');
+            if (!avisos || avisos.length === 0) {
+                container.innerHTML = "<div style='text-align:center;padding:30px;color:#64748b;'>📭 Nenhum aviso ativo no momento.</div>";
+                return;
+            }
+            container.innerHTML = avisos.map((a, idx) => `
+                <div style="
+                    border-left:4px solid ${idx%3===0?'#3b82f6':idx%3===1?'#f59e0b':'#ef4444'};
+                    background:${idx%3===0?'#eff6ff':idx%3===1?'#fffbeb':'#fef2f2'};
+                    border-radius:0 12px 12px 0; padding:14px 16px; margin-bottom:10px;">
+                    <div style="font-weight:800;font-size:0.9rem;color:#1e293b;margin-bottom:4px;">${a.titulo}</div>
+                    ${a.mensagem ? `<div style="font-size:0.8rem;color:#475569;line-height:1.5;">${a.mensagem}</div>` : ''}
+                </div>`).join('');
+            // Atualizar ticker
+            const titulosTicker = avisos.map(a => '📢 ' + a.titulo).join('  |  ');
+            const tickerEl = document.getElementById('letreiro');
+            if (tickerEl && titulosTicker) {
+                const atual = tickerEl.innerText.split('          ')[0];
+                const novo = atual.replace(/📢 AVISOS:.*?\|/, titulosTicker + '  |');
+                tickerEl.innerText = novo + '          ' + novo;
             }
         }
 

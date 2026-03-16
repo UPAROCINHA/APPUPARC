@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fichas de Notificação — UPA Rocinha</title>
+    <meta name="theme-color" content="#1e3a8a">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4f8; min-height: 100vh; color: #1e293b;
+        }
+        /* HEADER */
+        .header {
+            background: #1e3a8a; color: white;
+            padding: 20px 24px; border-bottom: 4px solid #3b82f6;
+            display: flex; align-items: center; gap: 16px;
+        }
+        .header-back {
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            padding: 8px 14px; border-radius: 10px; font-size: 0.85rem;
+            font-weight: 700; cursor: pointer; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .header-back:hover { background: rgba(255,255,255,0.25); }
+        .header-title { font-size: 1.2rem; font-weight: 900; }
+        .header-sub { font-size: 0.75rem; color: rgba(255,255,255,0.65); margin-top: 2px; }
+
+        /* AVISO */
+        .aviso-legal {
+            background: #fffbeb; border-left: 4px solid #f59e0b;
+            margin: 16px; border-radius: 0 12px 12px 0;
+            padding: 12px 16px; font-size: 0.78rem; color: #78350f; font-weight: 600;
+        }
+
+        /* GRID */
+        .container { padding: 0 16px 32px; max-width: 640px; margin: 0 auto; }
+        .secao-titulo {
+            font-size: 0.68rem; font-weight: 900; letter-spacing: 2px;
+            text-transform: uppercase; color: #94a3b8;
+            margin: 20px 0 10px; padding-left: 4px;
+        }
+        .notif-card {
+            display: flex; align-items: center; gap: 14px;
+            background: white; border-radius: 16px; padding: 16px;
+            margin-bottom: 10px; text-decoration: none; color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 5px solid #e2e8f0;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .notif-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-1px); }
+        .notif-icon { font-size: 2rem; flex-shrink: 0; }
+        .notif-nome { font-weight: 800; font-size: 0.92rem; }
+        .notif-desc { font-size: 0.72rem; color: #64748b; margin-top: 3px; line-height: 1.4; }
+        .notif-seta { margin-left: auto; color: #94a3b8; font-size: 1.2rem; flex-shrink: 0; }
+        .notif-badge {
+            font-size: 0.6rem; font-weight: 800; padding: 2px 8px;
+            border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-top: 4px; display: inline-block;
+        }
+
+        /* Cores por categoria */
+        .cat-doenca    { border-left-color: #ef4444; }
+        .cat-violencia { border-left-color: #8b5cf6; }
+        .cat-trabalho  { border-left-color: #f59e0b; }
+        .cat-geral     { border-left-color: #3b82f6; }
+
+        .badge-compulsorio { background: #fee2e2; color: #991b1b; }
+        .badge-interesse   { background: #ede9fe; color: #5b21b6; }
+        .badge-trabalho    { background: #fef3c7; color: #78350f; }
+
+        footer {
+            text-align: center; padding: 24px; font-size: 0.75rem;
+            color: #94a3b8; font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="index.html" class="header-back">← Voltar</a>
+    <div>
+        <div class="header-title">📋 Fichas de Notificação</div>
+        <div class="header-sub">SINAN — Ministério da Saúde • UPA Rocinha</div>
+    </div>
+</header>
+
+<div class="aviso-legal">
+    ⚠️ Clique na ficha desejada para abrir o PDF oficial do SINAN/MS em nova aba. Imprima, preencha e encaminhe conforme o fluxo da vigilância epidemiológica municipal.
+</div>
+
+<div class="container">
+
+    <!-- DOENÇAS E AGRAVOS -->
+    <div class="secao-titulo">🦠 Doenças e Agravos Compulsórios</div>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Dengue/Ficha_DENGCHIK_FINAL.pdf"
+       target="_blank" class="notif-card cat-doenca">
+        <span class="notif-icon">🦟</span>
+        <div>
+            <div class="notif-nome">Dengue / Chikungunya</div>
+            <div class="notif-desc">Notificação e investigação — casos suspeitos e confirmados</div>
+            <span class="notif-badge badge-compulsorio">Compulsório imediato</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Leptospirose/Leptospirose_v5.pdf"
+       target="_blank" class="notif-card cat-doenca">
+        <span class="notif-icon">🐀</span>
+        <div>
+            <div class="notif-nome">Leptospirose</div>
+            <div class="notif-desc">Ficha de notificação e investigação individual</div>
+            <span class="notif-badge badge-compulsorio">Compulsório</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/febre_maculosa/febre_maculosa_v5.pdf"
+       target="_blank" class="notif-card cat-doenca">
+        <span class="notif-icon">🕷️</span>
+        <div>
+            <div class="notif-nome">Febre Maculosa / Rickettsioses</div>
+            <div class="notif-desc">Ficha de investigação — transmitida por carrapatos</div>
+            <span class="notif-badge badge-compulsorio">Compulsório imediato</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Agravo/SRAG_v4.pdf"
+       target="_blank" class="notif-card cat-doenca">
+        <span class="notif-icon">🫁</span>
+        <div>
+            <div class="notif-nome">SRAG — Síndrome Respiratória Aguda Grave</div>
+            <div class="notif-desc">Hospitalizado — Influenza e outros vírus respiratórios</div>
+            <span class="notif-badge badge-compulsorio">Compulsório</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Agravo/Agravo_v5.pdf"
+       target="_blank" class="notif-card cat-doenca">
+        <span class="notif-icon">🧾</span>
+        <div>
+            <div class="notif-nome">Agravo — Notificação Individual</div>
+            <div class="notif-desc">Ficha genérica para agravos de notificação compulsória</div>
+            <span class="notif-badge badge-compulsorio">Compulsório</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <!-- ATENDIMENTO ANTIRRÁBICO E INTOXICAÇÃO -->
+    <div class="secao-titulo">💉 Atendimentos de Interesse Nacional</div>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Antirrabica/Antirrabica_v5.pdf"
+       target="_blank" class="notif-card cat-geral">
+        <span class="notif-icon">🐕</span>
+        <div>
+            <div class="notif-nome">Atendimento Antirrábico Humano</div>
+            <div class="notif-desc">Profilaxia pós-exposição — mordedura, arranhadura ou lambedura</div>
+            <span class="notif-badge badge-interesse">Interesse nacional</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Intoxicacao_Exogena/Intoxicacao_Exogena_v5.pdf"
+       target="_blank" class="notif-card cat-geral">
+        <span class="notif-icon">☠️</span>
+        <div>
+            <div class="notif-nome">Intoxicação Exógena</div>
+            <div class="notif-desc">Substâncias químicas, agrotóxicos, gases, metais pesados e medicamentos</div>
+            <span class="notif-badge badge-interesse">Interesse nacional</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <!-- VIOLÊNCIA -->
+    <div class="secao-titulo">🚨 Violência</div>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/via/violencia_v5.pdf"
+       target="_blank" class="notif-card cat-violencia">
+        <span class="notif-icon">🆘</span>
+        <div>
+            <div class="notif-nome">Violência Interpessoal / Autoprovocada</div>
+            <div class="notif-desc">Doméstica, sexual, autoprovocada, tortura, trabalho escravo e outras</div>
+            <span class="notif-badge badge-compulsorio">Compulsório</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <!-- SAÚDE DO TRABALHADOR -->
+    <div class="secao-titulo">👷 Saúde do Trabalhador</div>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Acidente_Trabalho_Grave/AT_Grave_v5.pdf"
+       target="_blank" class="notif-card cat-trabalho">
+        <span class="notif-icon">🦺</span>
+        <div>
+            <div class="notif-nome">Acidente de Trabalho Grave</div>
+            <div class="notif-desc">Óbito, amputação ou internação hospitalar relacionada ao trabalho</div>
+            <span class="notif-badge badge-trabalho">Saúde do trabalhador</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/Acidente_Trabalho_Biologico/AT_Biologico_v5.pdf"
+       target="_blank" class="notif-card cat-trabalho">
+        <span class="notif-icon">🩸</span>
+        <div>
+            <div class="notif-nome">Acidente de Trabalho com Material Biológico</div>
+            <div class="notif-desc">Exposição ocupacional a sangue e fluidos — profissionais de saúde</div>
+            <span class="notif-badge badge-trabalho">Saúde do trabalhador</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+    <!-- FICHA GENÉRICA -->
+    <div class="secao-titulo">📄 Ficha Geral</div>
+
+    <a href="https://portalsinan.saude.gov.br/images/documentos/Agravos/NINDIV/Notificacao_Individual_v5.pdf"
+       target="_blank" class="notif-card cat-geral">
+        <span class="notif-icon">📝</span>
+        <div>
+            <div class="notif-nome">Notificação Individual — Ficha Geral SINAN</div>
+            <div class="notif-desc">Use quando não houver ficha específica para o agravo</div>
+            <span class="notif-badge badge-interesse">Uso geral</span>
+        </div>
+        <span class="notif-seta">↗</span>
+    </a>
+
+</div>
+
+<footer>
+    📋 Fichas oficiais SINAN — Ministério da Saúde<br>
+    UPA Rocinha • Atualizado 2026
+</footer>
+
+</body>
+</html>

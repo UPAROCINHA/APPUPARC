@@ -150,6 +150,18 @@
 
 
 
+
+        /* --- SISTEMAS --- */
+        .sistema-btn {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; border-radius: 14px; text-decoration: none;
+            transition: opacity 0.2s; border: none;
+        }
+        .sistema-btn:hover { opacity: 0.8; }
+        .sistema-icon { font-size: 1.6rem; flex-shrink: 0; }
+        .sistema-nome { font-weight: 800; font-size: 0.88rem; color: #1e293b; }
+        .sistema-url  { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+        .sistema-seta { margin-left: auto; font-size: 1.1rem; color: #94a3b8; flex-shrink: 0; }
         /* --- FLUXOGRAMAS --- */
         .fluxo-btn {
             width: 100%; padding: 14px 16px; border: none; border-radius: 12px;
@@ -232,7 +244,7 @@
 
             <div class="card" onclick="abrirModal('modalFluxoMenu')"><span class="icon">📋</span>FLUXOGRAMAS</div>
             <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
-            <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">💻</span>SISTEMAS</div>
+            <div class="card" onclick="abrirModal('modalSistemas')"><span class="icon">💻</span>SISTEMAS</div>
             <div class="card" onclick="alert('Funcionalidade em desenvolvimento')"><span class="icon">📂</span>DOCUMENTOS</div>
 
             <a href="https://uparocinha.github.io/TROCADEPLANTAO/" target="_blank" class="card"><span class="icon">🔄</span>TROCA PLANTÃO</a>
@@ -357,6 +369,79 @@
     </div>
 
     
+
+
+    <!-- ===================== MODAL SISTEMAS ===================== -->
+    <div class="overlay" id="modalSistemas">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💻 Sistemas</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:18px;">Clique para abrir o sistema em nova aba</p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+
+                <a href="http://192.168.1.15:8080/vitai" target="_blank" class="sistema-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;">
+                    <span class="sistema-icon">🏥</span>
+                    <div>
+                        <div class="sistema-nome">Prontuário Eletrônico</div>
+                        <div class="sistema-url">Vitai · Rede interna</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://ser.saude.rj.gov.br/ser/login" target="_blank" class="sistema-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;">
+                    <span class="sistema-icon">📋</span>
+                    <div>
+                        <div class="sistema-nome">SER</div>
+                        <div class="sistema-url">ser.saude.rj.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://web2.smsrio.org/login/index.php#/" target="_blank" class="sistema-btn" style="border-left:5px solid #7c3aed;background:#f5f3ff;">
+                    <span class="sistema-icon">🛏️</span>
+                    <div>
+                        <div class="sistema-nome">SMS — Vaga Zero</div>
+                        <div class="sistema-url">web2.smsrio.org</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://laudos.cientificalab.com.br/laudos/#" target="_blank" class="sistema-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;">
+                    <span class="sistema-icon">🔬</span>
+                    <div>
+                        <div class="sistema-nome">Laboratório</div>
+                        <div class="sistema-url">laudos.cientificalab.com.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://hci.rio.gov.br/auth/sign-in" target="_blank" class="sistema-btn" style="border-left:5px solid #dc2626;background:#fef2f2;">
+                    <span class="sistema-icon">📁</span>
+                    <div>
+                        <div class="sistema-nome">HCI — Histórico Clínico Integrado</div>
+                        <div class="sistema-url">hci.rio.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://cadastro.saude.gov.br/segcartao" target="_blank" class="sistema-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;">
+                    <span class="sistema-icon">💳</span>
+                    <div>
+                        <div class="sistema-nome">CADSUS</div>
+                        <div class="sistema-url">cadastro.saude.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+            </div>
+
+            <div style="margin-top:16px;background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:0.72rem;color:#64748b;text-align:center;">
+                ⚠️ O Prontuário Eletrônico só funciona na <strong>rede interna da UPA</strong>
+            </div>
+
+            <button onclick="fecharModal('modalSistemas')" class="btn-fechar" style="background:#1e3a8a;margin-top:16px;">FECHAR</button>
+        </div>
+    </div>
 
     <!-- ===================== MODAL MENU FLUXOGRAMAS ===================== -->
     <div class="overlay" id="modalFluxoMenu">

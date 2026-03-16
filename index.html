@@ -1206,14 +1206,20 @@
                         "<div style='text-align:center;padding:30px;color:#ef4444;'>❌ Erro ao carregar avisos.</div>";
                     return;
                 }
-                // rows[0] = cabeçalho, rows[1..] = dados
+                console.log('AVISOS rows recebidas:', JSON.stringify(rows));
                 const avisos = [];
-                for (let i = 1; i < rows.length; i++) {
+                // Percorre todas as linhas procurando dados válidos
+                // Pula linhas que parecem cabeçalho (onde col[2] não é SIM/NÃO)
+                for (let i = 0; i < rows.length; i++) {
                     const titulo   = (rows[i][0] || '').trim();
                     const mensagem = (rows[i][1] || '').trim();
-                    const ativo    = (rows[i][2] || '').trim().toUpperCase();
-                    if (titulo && ativo === 'SIM') avisos.push({ titulo, mensagem });
+                    const ativo    = (rows[i][2] || '').trim().toUpperCase()
+                                     .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
+                    if (titulo && (ativo === 'SIM' || ativo === 'S')) {
+                        avisos.push({ titulo, mensagem });
+                    }
                 }
+                console.log('Avisos encontrados:', avisos.length);
                 renderizarAvisos_rows(avisos);
             });
         }

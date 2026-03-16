@@ -908,8 +908,9 @@
         // -------------------------------------------------------
         const SHEET_ID   = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
         const SHEET_GID  = '0';         // aba CONFIG_PORTAL
-        const AVISOS_ID  = '2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2';
+        const AVISOS_ID  = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE'; // ID real da planilha
         const AVISOS_GID = '0'; // aba AVISOS
+        const DOCS_GID_REAL = '849673271'; // aba DOCUMENTOS
 
         // URL JSON pública do Google Sheets (não precisa de API key)
         function getSheetURL() {
@@ -1054,7 +1055,7 @@
             const cbName = 'gsCallback_' + Date.now();
 
             // Monta URL do endpoint gviz/tq — retorna JSON via JSONP
-            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?gid=${gid}&tqx=out:json&tq=select+*`;
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${gid}&tqx=out:json&tq=select+*`;
 
             window[cbName] = function(data) {
                 try {
@@ -1126,7 +1127,7 @@
                     '<div class="doc-vazio">⚙️ GID da aba DOCUMENTOS não configurado.</div>';
                 return;
             }
-            fetchSheetViaJSONP(AVISOS_ID, GID_DOCS, function(rows) {
+            fetchSheetViaJSONP(AVISOS_ID, DOCS_GID_REAL, function(rows) {
                 if (!rows) {
                     document.getElementById('listaDocs').innerHTML =
                         '<div class="doc-vazio">❌ Erro ao carregar documentos.</div>';

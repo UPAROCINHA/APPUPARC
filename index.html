@@ -1048,30 +1048,56 @@
         // Fetch via Google Visualization API (sem CORS, sem proxy)
         // Funciona com qualquer planilha pública
         // -------------------------------------------------------
+        // Busca via JSONP usando o endpoint gviz do Google (sem CORS)
+        // Funciona com qualquer planilha publicada, sem precisar de proxy
         function fetchSheetViaJSONP(sheetId, gid, callback) {
             const cbName = 'gsCallback_' + Date.now();
-            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?gid=${gid}&single=true&output=csv`;
 
-            // Tenta fetch direto primeiro (funciona no GitHub Pages)
-            fetch(url)
-                .then(r => {
-                    if (!r.ok) throw new Error('HTTP ' + r.status);
-                    return r.text();
-                })
-                .then(csv => {
-                    const rows = parseCSVToRows(csv);
+            // Monta URL do endpoint gviz/tq — retorna JSON via JSONP
+            const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?gid=${gid}&tqx=out:json&tq=select+*`;
+
+            window[cbName] = function(data) {
+                try {
+                    const rows = [];
+                    // Linha de cabeçalho
+                    const cols = data.table.cols.map(c => c.label || '');
+                    rows.push(cols);
+                    // Linhas de dados
+                    data.table.rows.forEach(r => {
+                        rows.push(r.c.map(cell => cell ? (cell.v !== null && cell.v !== undefined ? String(cell.v) : '') : ''));
+                    });
                     callback(rows);
-                })
-                .catch(() => {
-                    // Fallback: allorigins
-                    fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url))
-                        .then(r => r.text())
-                        .then(csv => {
-                            const rows = parseCSVToRows(csv);
-                            callback(rows);
-                        })
-                        .catch(() => callback(null));
-                });
+                } catch(e) {
+                    console.error('JSONP parse error:', e);
+                    callback(null);
+                } finally {
+                    delete window[cbName];
+                    const s = document.getElementById(cbName);
+                    if (s) s.remove();
+                }
+            };
+
+            const script = document.createElement('script');
+            script.id = cbName;
+            script.src = url + '&callback=' + cbName;
+            script.onerror = function() {
+                console.error('JSONP script error');
+                callback(null);
+                delete window[cbName];
+                script.remove();
+            };
+            document.head.appendChild(script);
+
+            // Timeout de segurança: 8 segundos
+            setTimeout(() => {
+                if (window[cbName]) {
+                    console.warn('JSONP timeout');
+                    callback(null);
+                    delete window[cbName];
+                    const s = document.getElementById(cbName);
+                    if (s) s.remove();
+                }
+            }, 8000);
         }
 
         function parseCSVToRows(csv) {

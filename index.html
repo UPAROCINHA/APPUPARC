@@ -47,6 +47,49 @@
         .card-highlight { grid-column:span 2; background:linear-gradient(135deg,#3b82f6 0%,#1e3a8a 100%); color:white; border:none; }
         .card-destaque { grid-column:span 2; background:#fffbeb; border:2px solid #fde047; color:#92400e; }
         .card .icon { font-size:2rem; margin-bottom:5px; }
+
+        /* --- PLACAR DE INDICADORES --- */
+        .placar-wrap {
+            width: 92%; max-width: 600px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border-radius: 20px; padding: 18px 20px; margin-bottom: 4px;
+            box-shadow: 0 4px 15px rgba(30,58,138,0.3);
+            box-sizing: border-box;
+        }
+        .placar-titulo {
+            color: rgba(255,255,255,0.7); font-size: 0.7rem;
+            font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        }
+        .placar-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        .placar-item {
+            background: rgba(255,255,255,0.1); border-radius: 14px;
+            padding: 12px 14px; border: 1px solid rgba(255,255,255,0.15);
+        }
+        .placar-item.destaque {
+            grid-column: span 2;
+            background: rgba(255,255,255,0.15);
+        }
+        .placar-label {
+            font-size: 0.68rem; color: rgba(255,255,255,0.65);
+            font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .placar-valor {
+            font-size: 1.6rem; font-weight: 900; color: white; line-height: 1;
+        }
+        .placar-item.destaque .placar-valor { font-size: 1.3rem; }
+        .placar-meta {
+            font-size: 0.68rem; margin-top: 4px; font-weight: 600;
+        }
+        .placar-ok   { color: #86efac; }
+        .placar-warn { color: #fde047; }
+        .placar-bad  { color: #fca5a5; }
+        .placar-mes  {
+            font-size: 0.68rem; color: rgba(255,255,255,0.5);
+            text-align: right; margin-top: 10px; font-style: italic;
+        }
         /* MODAIS */
         .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; }
         .modal { background:white; width:100%; max-width:560px; padding:25px; border-radius:25px; max-height:88vh; overflow-y:auto; box-sizing:border-box; }
@@ -112,6 +155,16 @@
 </header>
 
 <div class="status-bar" id="painelStatus"><div class="status-item">Carregando...</div></div>
+
+
+<!-- PLACAR DE INDICADORES -->
+<div class="placar-wrap" id="placarIndicadores" style="display:none;">
+    <div class="placar-titulo">📊 Indicadores do Mês</div>
+    <div class="placar-grid" id="placarGrid">
+        <!-- preenchido via JS -->
+    </div>
+    <div class="placar-mes" id="placarMes"></div>
+</div>
 
 <div class="container"><div class="grid">
 
@@ -199,7 +252,22 @@
         </div>
         <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:16px;">Documentos atualizados pela gestão</p>
         <div id="listaDocs"><div class="doc-vazio">⏳ Carregando documentos...</div></div>
-        <button onclick="fecharModal('modalDocs')" class="btn-fechar" style="background:#1e3a8a;margin-top:18px;">FECHAR</button>
+
+        <a href="notificacoes.html" target="_blank" style="
+            display:flex; align-items:center; gap:12px;
+            background:#fef2f2; border:2px solid #ef4444;
+            border-radius:14px; padding:16px; margin-top:16px;
+            text-decoration:none; color:#991b1b; font-weight:800; font-size:0.9rem;
+            transition:opacity 0.2s;">
+            <span style="font-size:1.8rem;">📋</span>
+            <div>
+                <div>Fichas de Notificação SINAN</div>
+                <div style="font-size:0.72rem;font-weight:400;color:#b91c1c;margin-top:2px;">Antirrábica, Dengue, SRAG, Violência, Acidente de Trabalho e mais</div>
+            </div>
+            <span style="margin-left:auto;font-size:1.1rem;">↗</span>
+        </a>
+
+        <button onclick="fecharModal('modalDocs')" class="btn-fechar" style="background:#1e3a8a;margin-top:14px;">FECHAR</button>
     </div>
 </div>
 
@@ -425,6 +493,7 @@
     // ============================================================
     const CONFIG_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
     const AVISOS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2/pub?gid=0&single=true&output=csv';
+    const INDICADORES_URL = 'COLE_AQUI_A_URL_CSV_DA_PLANILHA_DE_INDICADORES';
     const DOCS_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPYJ-EWzcOLkqoJqfY5aKbtOSGh6MtqGyfB_JRhJd0XFX6YWE7SD-h4ONywHfg4Rd3IuElOKYfWs7J/pub?gid=0&single=true&output=csv';
 
     // ============================================================
@@ -565,6 +634,80 @@
         badge.textContent = docs.length + ' docs'; badge.style.display = 'inline-block';
     }
 
+
+    // ============================================================
+    // INDICADORES
+    // ============================================================
+    async function buscarIndicadores() {
+        if (INDICADORES_URL === 'COLE_AQUI_A_URL_CSV_DA_PLANILHA_DE_INDICADORES') return;
+        const csv = await fetchCSV(INDICADORES_URL);
+        if (!csv) return;
+        const linhas = csv.trim().split('\n');
+        // Estrutura: linha 1 = cabeçalho, linha 2 = dados
+        // Colunas: Mes | TMA | Atendimentos | Ocupacao | Eventos | Satisfacao
+        // Meta:    linha 3 = metas
+        if (linhas.length < 2) return;
+        const dados = parseCSVLine(linhas[1]);
+        const metas = linhas.length >= 3 ? parseCSVLine(linhas[2]) : [];
+
+        const mes         = (dados[0]||'').trim();
+        const tma         = (dados[1]||'--').trim();  // ex: "45 min"
+        const atend       = (dados[2]||'--').trim();  // ex: "1240"
+        const ocup        = (dados[3]||'--').trim();  // ex: "78%"
+        const eventos     = (dados[4]||'--').trim();  // ex: "3"
+        const satisfacao  = (dados[5]||'--').trim();  // ex: "92%"
+
+        const metaTma     = (metas[1]||'').trim();   // ex: "60 min"
+        const metaAtend   = (metas[2]||'').trim();   // ex: "1200"
+        const metaOcup    = (metas[3]||'').trim();   // ex: "85%"
+        const metaEventos = (metas[4]||'').trim();   // ex: "5"
+        const metaSat     = (metas[5]||'').trim();   // ex: "90%"
+
+        function classMeta(val, meta, menor_melhor) {
+            if (!meta || val === '--') return '';
+            const v = parseFloat(val); const m = parseFloat(meta);
+            if (isNaN(v) || isNaN(m)) return '';
+            if (menor_melhor) return v <= m ? 'placar-ok' : v <= m*1.2 ? 'placar-warn' : 'placar-bad';
+            return v >= m ? 'placar-ok' : v >= m*0.9 ? 'placar-warn' : 'placar-bad';
+        }
+
+        function metaLabel(val, meta, unidade) {
+            if (!meta) return '';
+            return `<div class="placar-meta ${classMeta(val, meta, false)}">Meta: ${meta}${unidade||''}</div>`;
+        }
+
+        document.getElementById('placarGrid').innerHTML = `
+            <div class="placar-item">
+                <div class="placar-label">⏱ Tempo Médio Atend.</div>
+                <div class="placar-valor ${classMeta(tma, metaTma, true)}">${tma}</div>
+                ${metaTma ? `<div class="placar-meta ${classMeta(tma,metaTma,true)}">Meta: ≤${metaTma}</div>` : ''}
+            </div>
+            <div class="placar-item">
+                <div class="placar-label">🏥 Atendimentos</div>
+                <div class="placar-valor ${classMeta(atend, metaAtend, false)}">${atend}</div>
+                ${metaLabel(atend, metaAtend, '')}
+            </div>
+            <div class="placar-item">
+                <div class="placar-label">🛏 Ocupação Leitos</div>
+                <div class="placar-valor ${classMeta(ocup, metaOcup, false)}">${ocup}</div>
+                ${metaLabel(ocup, metaOcup, '%')}
+            </div>
+            <div class="placar-item">
+                <div class="placar-label">⚠️ Eventos Adversos</div>
+                <div class="placar-valor">${eventos}</div>
+                ${metaTma ? `<div class="placar-meta" style="color:rgba(255,255,255,0.5);">Meta: ≤${metaEventos||'--'}</div>` : ''}
+            </div>
+            <div class="placar-item destaque">
+                <div class="placar-label">😊 Satisfação do Paciente</div>
+                <div class="placar-valor ${classMeta(satisfacao, metaSat, false)}">${satisfacao}</div>
+                ${metaLabel(satisfacao, metaSat, '%')}
+            </div>
+        `;
+
+        if (mes) document.getElementById('placarMes').textContent = '📅 Referência: ' + mes;
+        document.getElementById('placarIndicadores').style.display = 'block';
+    }
+
     // ============================================================
     // STATUS CONEXÃO
     // ============================================================
@@ -652,10 +795,12 @@
     setInterval(buscarConfig, 30000);
     setInterval(buscarAvisos, 30000);
     setInterval(buscarDocumentos, 60000);
+    setInterval(buscarIndicadores, 60000);
     atualizarRelogio();
     buscarConfig();
     buscarAvisos();
     buscarDocumentos();
+    buscarIndicadores();
 </script>
 </body>
 </html>

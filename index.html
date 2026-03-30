@@ -1107,14 +1107,16 @@
         // -------------------------------------------------------
         // Google Sheets publicada como JSON (sem CORS, sem proxy)
         // Substitua o ID abaixo pelo ID da SUA planilha se mudar
-        // -------------------------------------------------------
         // Planilha CONFIG/STATUS — publicada como CSV
         const SHEET_CSV_ID  = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
         const SHEET_GID     = '0';
         // Planilha AVISOS — publicada como CSV
         const AVISOS_CSV_ID = '2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2';
         const AVISOS_GID    = '0';
-        // Planilha DOCUMENTOS — ID real da planilha (gviz/tq)
+        // Planilha DOCUMENTOS — publicada como CSV
+        const DOCS_CSV_ID   = '2PACX-1vQYehWMoHQLIaSgCYPNcACpPjbsCknEgODc80e1wIEjlMhcFqMHGjXu9yhgtEkC9Or8EXatmBpE8ITA';
+        const DOCS_GID      = '0';
+        // ID real para gviz (mantido por compatibilidade)
         const AVISOS_ID     = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE';
         const DOCS_GID_REAL = '849673271';
 
@@ -1337,31 +1339,37 @@
             'OUTRO':      { icon: '📎', cor: '#64748b', bg: '#f8fafc' },
         };
 
+        // -------------------------------------------------------
+        // Buscar documentos via CSV publicado
+        // -------------------------------------------------------
         function buscarDocumentos() {
-            const GID_DOCS = window.DOCS_GID || '';
-            if (!GID_DOCS) {
-                document.getElementById('listaDocs').innerHTML =
-                    '<div class="doc-vazio">⚙️ GID da aba DOCUMENTOS não configurado.</div>';
-                return;
-            }
-            fetchSheetViaJSONP(AVISOS_ID, DOCS_GID_REAL, function(rows) {
-                if (!rows) {
+            const url = `https://docs.google.com/spreadsheets/d/e/${DOCS_CSV_ID}/pub?gid=${DOCS_GID}&single=true&output=csv`;
+            fetch(url)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(csv => {
+                    const rows = parseCSVToRows(csv);
+                    const docs = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const categoria = (rows[i][0] || 'OUTRO').trim().toUpperCase();
+                        const nome      = (rows[i][1] || '').trim();
+                        const descricao = (rows[i][2] || '').trim();
+                        const link      = (rows[i][3] || '').trim();
+                        const ativo     = (rows[i][4] || '').trim().toUpperCase()
+                                          .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        if (nome && link && (ativo === 'SIM' || ativo === 'S')) {
+                            docs.push({ categoria, nome, descricao, link });
+                        }
+                    }
+                    renderizarDocumentos_rows(docs);
+                })
+                .catch(err => {
+                    console.error('Erro DOCUMENTOS:', err);
                     document.getElementById('listaDocs').innerHTML =
                         '<div class="doc-vazio">❌ Erro ao carregar documentos.</div>';
-                    return;
-                }
-                // Cabeçalho: Categoria | Nome | Descrição | Link | Ativo
-                const docs = [];
-                for (let i = 1; i < rows.length; i++) {
-                    const categoria = (rows[i][0] || 'OUTRO').trim().toUpperCase();
-                    const nome      = (rows[i][1] || '').trim();
-                    const descricao = (rows[i][2] || '').trim();
-                    const link      = (rows[i][3] || '').trim();
-                    const ativo     = (rows[i][4] || '').trim().toUpperCase();
-                    if (nome && link && ativo === 'SIM') docs.push({ categoria, nome, descricao, link });
-                }
-                renderizarDocumentos_rows(docs);
-            });
+                });
         }
 
         function renderizarDocumentos_rows(docs) {

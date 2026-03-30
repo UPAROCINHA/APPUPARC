@@ -211,6 +211,59 @@
         .calc-select:focus, .calc-input:focus { border-color: #3b82f6; }
 
         footer { padding: 30px; font-size: 0.8rem; color: #64748b; text-align: center; font-weight: bold; }
+
+        /* --- CRONÔMETRO PCR --- */
+        .pcr-timer {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            border-radius: 16px; padding: 16px; margin-bottom: 14px; text-align: center;
+        }
+        .pcr-timer-display {
+            font-size: 3rem; font-weight: 900; color: white; letter-spacing: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .pcr-timer-display.alerta { color: #fbbf24; animation: piscar 0.5s infinite; }
+        @keyframes piscar { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .pcr-timer-label { font-size: 0.75rem; color: #93c5fd; font-weight: 600; margin-top: 4px; }
+        .pcr-timer-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .pcr-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 10px;
+            font-weight: 800; font-size: 0.82rem; cursor: pointer;
+        }
+        .pcr-lap-list {
+            max-height: 120px; overflow-y: auto; background: #f8fafc;
+            border-radius: 10px; padding: 8px; margin-top: 8px; font-size: 0.72rem;
+        }
+        .pcr-lap-item { padding: 4px 0; border-bottom: 1px solid #e2e8f0; color: #475569; }
+
+        /* --- BUSCA --- */
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-input {
+            width: 100%; padding: 11px 14px 11px 38px; border: 1.5px solid #cbd5e1;
+            border-radius: 12px; font-size: 0.85rem; box-sizing: border-box;
+            outline: none; background: white;
+        }
+        .search-input:focus { border-color: #3b82f6; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+
+        /* --- CALCULADORA VENTILATÓRIA --- */
+        .vent-result-box {
+            background: #f0f9ff; border: 1px solid #93c5fd;
+            border-radius: 14px; padding: 14px; margin-top: 12px;
+            display: none;
+        }
+        .vent-result-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; border-bottom: 1px solid #bae6fd; font-size: 0.82rem;
+        }
+        .vent-result-row:last-child { border-bottom: none; }
+        .vent-result-label { color: #0369a1; font-weight: 600; }
+        .vent-result-val { font-weight: 900; color: #1e3a8a; font-size: 0.95rem; }
+
+        /* --- GLASGOW --- */
+        .glasgow-resultado-num {
+            font-size: 3.5rem; font-weight: 900; line-height: 1;
+        }
+        .glasgow-sub { font-size: 0.7rem; color: #475569; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -383,7 +436,46 @@
                 • Em caso de dúvida, acione o médico responsável imediatamente
             </div>
 
-            <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1;">FECHAR</button>
+            <!-- CALCULADORA VENTILATÓRIA INTEGRADA -->
+            <div style="margin-top:18px; background:#f0fdf4; border:2px solid #86efac; border-radius:16px; padding:16px;">
+                <div style="font-weight:900; color:#166534; font-size:0.95rem; margin-bottom:12px;">🫁 Calculadora por Peso</div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:120px;">
+                        <label class="calc-label">Peso (kg)</label>
+                        <input id="vc_peso" type="number" step="0.5" min="0.5" max="200" class="calc-input" placeholder="Ex: 14" oninput="calcVentCalc()">
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <label class="calc-label">Modo</label>
+                        <select id="vc_modo" class="calc-select" onchange="calcVentCalc()">
+                            <option value="adulto">Adulto (≥18 anos)</option>
+                            <option value="pediatrico" selected>Pediátrico (&lt;18 anos)</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:100px;">
+                        <label class="calc-label">FiO₂</label>
+                        <select id="vc_fio2" class="calc-select" onchange="calcVentCalc()">
+                            <option value="40">40%</option>
+                            <option value="50">50%</option>
+                            <option value="60" selected>60%</option>
+                            <option value="80">80%</option>
+                            <option value="100">100%</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="vent-result-box" id="resultadoVentCalc" style="margin-top:12px;">
+                    <div style="text-align:center; font-size:0.7rem; font-weight:800; color:#166534; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Parâmetros Sugeridos</div>
+                    <div class="vent-result-row"><span class="vent-result-label">Vc protetora (6 mL/kg)</span><span class="vent-result-val" id="vc_vc6">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">Vc máximo (8 mL/kg)</span><span class="vent-result-val" id="vc_vc8">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">FR</span><span class="vent-result-val" id="vc_fr">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">PEEP</span><span class="vent-result-val" id="vc_peep">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">PIP máx</span><span class="vent-result-val" id="vc_pip">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">FiO₂</span><span class="vent-result-val" id="vc_fio2_display">—</span></div>
+                </div>
+            </div>
+
+            <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1; margin-top:14px;">FECHAR</button>
         </div>
     </div>
 
@@ -398,9 +490,13 @@
                 <h2 style="color:#1e3a8a;margin:0;">📂 Documentos</h2>
                 <span id="badgeDocs" style="background:#3b82f6;color:white;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;display:none;"></span>
             </div>
-            <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:16px;">
+            <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:12px;">
                 Documentos atualizados pela gestão via planilha
             </p>
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar documento..." oninput="filtrarDocs(this.value)">
+            </div>
             <div id="listaDocs">
                 <div class="doc-vazio">⏳ Carregando documentos...</div>
             </div>
@@ -484,15 +580,19 @@
     <div class="overlay" id="modalFluxoMenu">
         <div class="modal" style="max-height:88vh;overflow-y:auto;">
             <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">📋 Fluxogramas Clínicos</h2>
-            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Protocolos de atendimento rápido</p>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoSepse')"     class="fluxo-btn" style="border-left:5px solid #ef4444;background:#fef2f2;color:#7f1d1d;">🦠 Sepse</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoAVC')"       class="fluxo-btn" style="border-left:5px solid #8b5cf6;background:#f5f3ff;color:#4c1d95;">🧠 AVC / AVE</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoIAM')"       class="fluxo-btn" style="border-left:5px solid #dc2626;background:#fff1f2;color:#7f1d1d;">❤️ Dor Torácica / IAM</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoHAS')"       class="fluxo-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;color:#78350f;">🩺 Crise Hipertensiva</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoPCR')"       class="fluxo-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;color:#1e3a8a;">💓 PCR / RCP</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoConvulsao')" class="fluxo-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;color:#0c4a6e;">⚡ Convulsão</button>
-                <button onclick="trocarModal('modalFluxoMenu','modalFluxoTrauma')"    class="fluxo-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;color:#14532d;">🩹 Trauma</button>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:12px;">Protocolos de atendimento rápido</p>
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar protocolo..." oninput="filtrarFluxos(this.value)">
+            </div>
+            <div id="listaFluxos" style="display:flex;flex-direction:column;gap:10px;">
+                <button data-nome="Sepse" onclick="trocarModal('modalFluxoMenu','modalFluxoSepse')"     class="fluxo-btn" style="border-left:5px solid #ef4444;background:#fef2f2;color:#7f1d1d;">🦠 Sepse</button>
+                <button data-nome="AVC AVE AVC acidente vascular cerebral" onclick="trocarModal('modalFluxoMenu','modalFluxoAVC')"       class="fluxo-btn" style="border-left:5px solid #8b5cf6;background:#f5f3ff;color:#4c1d95;">🧠 AVC / AVE</button>
+                <button data-nome="Dor Torácica IAM infarto" onclick="trocarModal('modalFluxoMenu','modalFluxoIAM')"       class="fluxo-btn" style="border-left:5px solid #dc2626;background:#fff1f2;color:#7f1d1d;">❤️ Dor Torácica / IAM</button>
+                <button data-nome="Crise Hipertensiva HAS hipertensão" onclick="trocarModal('modalFluxoMenu','modalFluxoHAS')"       class="fluxo-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;color:#78350f;">🩺 Crise Hipertensiva</button>
+                <button data-nome="PCR RCP parada cardiorrespiratória" onclick="trocarModal('modalFluxoMenu','modalFluxoPCR')"       class="fluxo-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;color:#1e3a8a;">💓 PCR / RCP</button>
+                <button data-nome="Convulsão epilepsia status epiléptico" onclick="trocarModal('modalFluxoMenu','modalFluxoConvulsao')" class="fluxo-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;color:#0c4a6e;">⚡ Convulsão</button>
+                <button data-nome="Trauma ABCDE politrauma" onclick="trocarModal('modalFluxoMenu','modalFluxoTrauma')"    class="fluxo-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;color:#14532d;">🩹 Trauma</button>
             </div>
             <button onclick="fecharModal('modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:16px;">FECHAR</button>
         </div>
@@ -589,6 +689,19 @@
         <div class="modal" style="max-height:90vh;overflow-y:auto;">
             <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💓 PCR / RCP</h2>
             <div class="fluxo-alerta" style="background:#eff6ff;color:#1e3a8a;">⚠️ Iniciar RCP imediatamente — cada minuto sem compressão reduz sobrevida em 10%</div>
+
+            <!-- CRONÔMETRO PCR -->
+            <div class="pcr-timer">
+                <div class="pcr-timer-label">⏱️ CRONÔMETRO DE RCP</div>
+                <div class="pcr-timer-display" id="pcrTimerDisplay">00:00</div>
+                <div style="font-size:0.7rem; color:#bfdbfe; margin-top:2px;" id="pcrTimerSub">Pressione INICIAR para começar</div>
+                <div class="pcr-timer-btns">
+                    <button class="pcr-btn" style="background:#10b981;color:white;" onclick="pcrTimerToggle()">▶ INICIAR</button>
+                    <button class="pcr-btn" style="background:#f59e0b;color:white;" onclick="pcrTimerLap()">📍 LAP 2min</button>
+                    <button class="pcr-btn" style="background:#ef4444;color:white;" onclick="pcrTimerReset()">↺ RESET</button>
+                </div>
+                <div class="pcr-lap-list" id="pcrLapList" style="display:none;"></div>
+            </div>
             <div class="fluxo-section">Sequência BLS / ACLS</div>
             <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">1</div><div><div class="fluxo-title">Checar responsividade e chamar ajuda</div><div class="fluxo-desc">Estimular, gritar, acionar equipe. Iniciar cronômetro</div></div></div>
             <div class="fluxo-arrow">↓</div>
@@ -681,6 +794,12 @@
                 </button>
                 <button onclick="trocarModal('modalCalcMenu','modalMedInfantil')" style="padding:18px; background:#dcfce7; border:2px solid #16a34a; border-radius:15px; font-size:1rem; font-weight:800; color:#14532d; cursor:pointer; text-align:left;">
                     💉 Cálculo de Medicação Infantil<br><span style="font-size:0.75rem; font-weight:400;">Dose por peso (mg/kg) e gotejamento</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalGlasgow')" style="padding:18px; background:#eff6ff; border:2px solid #3b82f6; border-radius:15px; font-size:1rem; font-weight:800; color:#1e3a8a; cursor:pointer; text-align:left;">
+                    🧠 Escala de Glasgow<br><span style="font-size:0.75rem; font-weight:400;">Avaliação do nível de consciência</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalQSOFA')" style="padding:18px; background:#fef2f2; border:2px solid #ef4444; border-radius:15px; font-size:1rem; font-weight:800; color:#7f1d1d; cursor:pointer; text-align:left;">
+                    🦠 qSOFA — Triagem de Sepse<br><span style="font-size:0.75rem; font-weight:400;">Identificação rápida de disfunção orgânica</span>
                 </button>
             </div>
             <button onclick="fecharModal('modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:18px;">FECHAR</button>
@@ -901,16 +1020,103 @@
 
     <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
 
+    <!-- ===================== MODAL GLASGOW ===================== -->
+    <div class="overlay" id="modalGlasgow">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">🧠 Escala de Glasgow</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Avaliação do nível de consciência — mínimo 3, máximo 15</p>
+
+            <div class="calc-item">
+                <label class="calc-label">👁️ Abertura Ocular</label>
+                <select id="g_ao" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="4">4 – Espontânea</option>
+                    <option value="3">3 – À voz (estímulo verbal)</option>
+                    <option value="2">2 – À dor (estímulo doloroso)</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+            <div class="calc-item">
+                <label class="calc-label">🗣️ Resposta Verbal</label>
+                <select id="g_rv" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="5">5 – Orientada</option>
+                    <option value="4">4 – Confusa</option>
+                    <option value="3">3 – Palavras inadequadas</option>
+                    <option value="2">2 – Sons incompreensíveis</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+            <div class="calc-item">
+                <label class="calc-label">🤲 Resposta Motora</label>
+                <select id="g_rm" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="6">6 – Obedece a comandos</option>
+                    <option value="5">5 – Localiza a dor</option>
+                    <option value="4">4 – Flexão normal (retirada)</option>
+                    <option value="3">3 – Flexão anormal (decorticação)</option>
+                    <option value="2">2 – Extensão (descerebração)</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+
+            <div id="resultadoGlasgow" style="margin-top:16px;padding:18px;border-radius:14px;text-align:center;display:none;"></div>
+
+            <button onclick="limparGlasgow()" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalGlasgow','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL qSOFA ===================== -->
+    <div class="overlay" id="modalQSOFA">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#ef4444;margin-top:0;">🦠 qSOFA — Triagem de Sepse</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Pontuação rápida à beira do leito — ≥2 pontos = alto risco</p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;" id="qsofaForm">
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs1',this)">
+                    <span style="font-size:1.5rem;">🌬️</span>
+                    <span>FR ≥ 22 irpm</span>
+                    <input type="checkbox" id="qs1" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs2',this)">
+                    <span style="font-size:1.5rem;">🧠</span>
+                    <span>Glasgow &lt; 15</span>
+                    <input type="checkbox" id="qs2" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs3',this)">
+                    <span style="font-size:1.5rem;">📉</span>
+                    <span>PAS ≤ 100 mmHg</span>
+                    <input type="checkbox" id="qs3" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+            </div>
+
+            <div id="resultadoQSOFA" style="margin-top:16px;padding:18px;border-radius:14px;text-align:center;display:none;"></div>
+
+            <button onclick="limparQSOFA()" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalQSOFA','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL CALC VENTILATÓRIA (integrada no modalVent) ===================== -->
+
     <script>
         // -------------------------------------------------------
         // Google Sheets publicada como JSON (sem CORS, sem proxy)
         // Substitua o ID abaixo pelo ID da SUA planilha se mudar
         // -------------------------------------------------------
-        const SHEET_ID   = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
-        const SHEET_GID  = '0';         // aba CONFIG_PORTAL
-        const AVISOS_ID  = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE'; // ID real da planilha
-        const AVISOS_GID = '0'; // aba AVISOS
-        const DOCS_GID_REAL = '849673271'; // aba DOCUMENTOS
+        // Planilha CONFIG/STATUS — publicada como CSV
+        const SHEET_CSV_ID  = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
+        const SHEET_GID     = '0';
+        // Planilha AVISOS — publicada como CSV
+        const AVISOS_CSV_ID = '2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2';
+        const AVISOS_GID    = '0';
+        // Planilha DOCUMENTOS — ID real da planilha (gviz/tq)
+        const AVISOS_ID     = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE';
+        const DOCS_GID_REAL = '849673271';
 
         // URL JSON pública do Google Sheets (não precisa de API key)
         function getSheetURL() {
@@ -940,27 +1146,38 @@
         }
 
         // -------------------------------------------------------
-        // Buscar via fetch com mode no-cors como fallback
+        // Buscar CONFIG/STATUS via CSV publicado (formato 2PACX)
         // -------------------------------------------------------
         function buscarDadosPlanilha() {
-            fetchSheetViaJSONP(SHEET_ID, SHEET_GID, function(rows) {
-                if (!rows || rows.length < 2) {
-                    mostrarStatusConexao(false, 'Sem dados na planilha');
-                    return;
-                }
-                const colunas = rows[1]; // linha 2 = dados
-                const dados = {
-                    espera:   (colunas[0] || '---').trim(),
-                    fluxo:    (colunas[1] || 'NORMAL').trim(),
-                    destaque: (colunas[2] || '---').trim(),
-                    faltas:   (colunas[3] || '').trim(),
-                    criticos: (colunas[4] || '').trim(),
-                    avisos:   (colunas[5] || 'Nenhum aviso').trim(),
-                    docs:     (colunas[6] || 'Nenhum documento novo').trim()
-                };
-                renderizarInterface(dados);
-                mostrarStatusConexao(true);
-            });
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_CSV_ID}/pub?gid=${SHEET_GID}&single=true&output=csv`;
+            fetch(url)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(csv => {
+                    const rows = parseCSVToRows(csv);
+                    if (!rows || rows.length < 2) {
+                        mostrarStatusConexao(false, 'Sem dados na planilha CONFIG');
+                        return;
+                    }
+                    const colunas = rows[1]; // linha 2 = dados
+                    const dados = {
+                        espera:   (colunas[0] || '---').trim(),
+                        fluxo:    (colunas[1] || 'NORMAL').trim(),
+                        destaque: (colunas[2] || '---').trim(),
+                        faltas:   (colunas[3] || '').trim(),
+                        criticos: (colunas[4] || '').trim(),
+                        avisos:   (colunas[5] || 'Nenhum aviso').trim(),
+                        docs:     (colunas[6] || 'Nenhum documento novo').trim()
+                    };
+                    renderizarInterface(dados);
+                    mostrarStatusConexao(true);
+                })
+                .catch(err => {
+                    console.error('Erro CONFIG:', err);
+                    mostrarStatusConexao(false, err.message);
+                });
         }
 
         // processarCSV substituído por fetchSheetViaJSONP
@@ -1198,31 +1415,34 @@
         }
 
         // -------------------------------------------------------
-        // Buscar avisos da aba AVISOS
+        // Buscar avisos via CSV publicado
         // -------------------------------------------------------
         function buscarAvisos() {
-            fetchSheetViaJSONP(AVISOS_ID, AVISOS_GID, function(rows) {
-                if (!rows) {
+            const url = `https://docs.google.com/spreadsheets/d/e/${AVISOS_CSV_ID}/pub?gid=${AVISOS_GID}&single=true&output=csv`;
+            fetch(url)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(csv => {
+                    const rows = parseCSVToRows(csv);
+                    const avisos = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const titulo   = (rows[i][0] || '').trim();
+                        const mensagem = (rows[i][1] || '').trim();
+                        const ativo    = (rows[i][2] || '').trim().toUpperCase()
+                                         .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                        if (titulo && (ativo === 'SIM' || ativo === 'S')) {
+                            avisos.push({ titulo, mensagem });
+                        }
+                    }
+                    renderizarAvisos_rows(avisos);
+                })
+                .catch(err => {
+                    console.error('Erro AVISOS:', err);
                     document.getElementById('listaAvisos').innerHTML =
                         "<div style='text-align:center;padding:30px;color:#ef4444;'>❌ Erro ao carregar avisos.</div>";
-                    return;
-                }
-                console.log('AVISOS rows recebidas:', JSON.stringify(rows));
-                const avisos = [];
-                // Percorre todas as linhas procurando dados válidos
-                // Pula linhas que parecem cabeçalho (onde col[2] não é SIM/NÃO)
-                for (let i = 0; i < rows.length; i++) {
-                    const titulo   = (rows[i][0] || '').trim();
-                    const mensagem = (rows[i][1] || '').trim();
-                    const ativo    = (rows[i][2] || '').trim().toUpperCase()
-                                     .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
-                    if (titulo && (ativo === 'SIM' || ativo === 'S')) {
-                        avisos.push({ titulo, mensagem });
-                    }
-                }
-                console.log('Avisos encontrados:', avisos.length);
-                renderizarAvisos_rows(avisos);
-            });
+                });
         }
 
         function renderizarAvisos_rows(avisos) {
@@ -1426,8 +1646,206 @@
         }
 
         // -------------------------------------------------------
-        // Relógio
+        // GLASGOW
         // -------------------------------------------------------
+        function calcGlasgow() {
+            const ao = document.getElementById('g_ao').value;
+            const rv = document.getElementById('g_rv').value;
+            const rm = document.getElementById('g_rm').value;
+            const el = document.getElementById('resultadoGlasgow');
+            if (!ao || !rv || !rm) { el.style.display = 'none'; return; }
+            const total = parseInt(ao) + parseInt(rv) + parseInt(rm);
+            let nivel, cor, bg, conduta;
+            if (total >= 13)      { nivel='Leve';    cor='#064e3b'; bg='#d1fae5'; conduta='Monitorizar. Considerar TC se trauma.'; }
+            else if (total >= 9)  { nivel='Moderado';cor='#92400e'; bg='#fef3c7'; conduta='Avaliação neurológica urgente. Suporte de via aérea em alerta.'; }
+            else                  { nivel='Grave';   cor='#7f1d1d'; bg='#fee2e2'; conduta='IOT indicada (Glasgow ≤8). Chamar equipe imediatamente.'; }
+            el.style.display = 'block'; el.style.background = bg;
+            el.innerHTML = `
+                <div class="glasgow-resultado-num" style="color:${cor};">${total}</div>
+                <div style="font-size:0.7rem;color:#64748b;margin-top:2px;">AO: ${ao} + RV: ${rv} + RM: ${rm}</div>
+                <div style="font-size:1.1rem;font-weight:800;color:${cor};margin-top:6px;">TCE ${nivel}</div>
+                <div style="font-size:0.75rem;color:#475569;margin-top:8px;line-height:1.6;text-align:left;background:white;padding:10px;border-radius:10px;">${conduta}</div>
+                ${total <= 8 ? '<div style="font-size:0.8rem;font-weight:900;color:#7f1d1d;margin-top:8px;padding:8px;background:#fecaca;border-radius:8px;">⚠️ Glasgow ≤ 8 → INDICAÇÃO DE IOT</div>' : ''}
+            `;
+        }
+        function limparGlasgow() {
+            ['g_ao','g_rv','g_rm'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoGlasgow').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // qSOFA
+        // -------------------------------------------------------
+        function toggleQSOFA(id, label) {
+            const cb = document.getElementById(id);
+            cb.checked = !cb.checked;
+            const check = label.querySelector('.qs-check');
+            if (cb.checked) {
+                label.style.borderColor = '#ef4444';
+                label.style.background = '#fef2f2';
+                check.textContent = '●';
+                check.style.color = '#ef4444';
+            } else {
+                label.style.borderColor = '#e2e8f0';
+                label.style.background = 'white';
+                check.textContent = '○';
+                check.style.color = '#cbd5e1';
+            }
+            calcQSOFA();
+        }
+        function calcQSOFA() {
+            const pontos = ['qs1','qs2','qs3'].filter(id => document.getElementById(id).checked).length;
+            const el = document.getElementById('resultadoQSOFA');
+            el.style.display = 'block';
+            let cor, bg, msg, conduta;
+            if (pontos === 0)      { cor='#064e3b'; bg='#d1fae5'; msg='Baixo Risco'; conduta='Manter vigilância. Reavaliar se piora clínica.'; }
+            else if (pontos === 1) { cor='#92400e'; bg='#fef3c7'; msg='Atenção'; conduta='Monitorizar de perto. Investigar foco infeccioso.'; }
+            else                   { cor='#7f1d1d'; bg='#fee2e2'; msg='ALTO RISCO DE SEPSE'; conduta='Acionar protocolo de sepse! Hemoculturas + lactato + ATB em 1h.'; }
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:3rem;font-weight:900;color:${cor};">${pontos}/3</div>
+                <div style="font-size:1rem;font-weight:800;color:${cor};margin-top:4px;">${msg}</div>
+                <div style="font-size:0.76rem;color:#475569;margin-top:8px;line-height:1.6;text-align:left;background:white;padding:10px;border-radius:10px;">${conduta}</div>
+                ${pontos >= 2 ? '<div style="font-size:0.8rem;font-weight:900;color:#7f1d1d;margin-top:8px;padding:8px;background:#fecaca;border-radius:8px;">🚨 qSOFA ≥ 2 → ACIONAR PROTOCOLO DE SEPSE</div>' : ''}
+            `;
+        }
+        function limparQSOFA() {
+            ['qs1','qs2','qs3'].forEach(id => {
+                const cb = document.getElementById(id);
+                cb.checked = false;
+                const label = cb.closest('label') || cb.parentElement;
+                if (label) {
+                    label.style.borderColor = '#e2e8f0';
+                    label.style.background = 'white';
+                    const chk = label.querySelector('.qs-check');
+                    if (chk) { chk.textContent = '○'; chk.style.color = '#cbd5e1'; }
+                }
+            });
+            document.getElementById('resultadoQSOFA').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // CALCULADORA VENTILATÓRIA POR PESO
+        // -------------------------------------------------------
+        function calcVentCalc() {
+            const peso = parseFloat(document.getElementById('vc_peso').value);
+            const modo = document.getElementById('vc_modo').value;
+            const fio2 = document.getElementById('vc_fio2').value;
+            const el   = document.getElementById('resultadoVentCalc');
+            if (!peso || peso <= 0) { el.style.display = 'none'; return; }
+            const vc6 = (peso * 6).toFixed(0);
+            const vc8 = (peso * 8).toFixed(0);
+            let fr, peep, pip;
+            if (modo === 'adulto') {
+                fr   = peso >= 50 ? '12–16' : '14–18';
+                peep = '5–8 cmH₂O';
+                pip  = '< 30 cmH₂O';
+            } else {
+                if      (peso < 5)  { fr = '40–60'; peep = '4–5 cmH₂O'; pip = '14–20 cmH₂O'; }
+                else if (peso < 10) { fr = '30–50'; peep = '4–6 cmH₂O'; pip = '16–24 cmH₂O'; }
+                else if (peso < 18) { fr = '20–30'; peep = '5–6 cmH₂O'; pip = '18–25 cmH₂O'; }
+                else if (peso < 40) { fr = '16–24'; peep = '5–8 cmH₂O'; pip = '18–28 cmH₂O'; }
+                else                { fr = '12–20'; peep = '5–8 cmH₂O'; pip = '20–30 cmH₂O'; }
+            }
+            document.getElementById('vc_vc6').textContent = vc6 + ' mL';
+            document.getElementById('vc_vc8').textContent = vc8 + ' mL';
+            document.getElementById('vc_fr').textContent  = fr + ' irpm';
+            document.getElementById('vc_peep').textContent = peep;
+            document.getElementById('vc_pip').textContent  = pip;
+            document.getElementById('vc_fio2_display').textContent = fio2 + '%';
+            el.style.display = 'block';
+        }
+
+        // -------------------------------------------------------
+        // CRONÔMETRO PCR
+        // -------------------------------------------------------
+        let pcrInterval   = null;
+        let pcrRunning    = false;
+        let pcrSeconds    = 0;
+        let pcrLaps       = [];
+
+        function pcrTimerToggle() {
+            if (pcrRunning) {
+                clearInterval(pcrInterval);
+                pcrRunning = false;
+                document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '▶ CONTINUAR';
+            } else {
+                pcrRunning = true;
+                document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '⏸ PAUSAR';
+                pcrInterval = setInterval(() => {
+                    pcrSeconds++;
+                    const m = String(Math.floor(pcrSeconds / 60)).padStart(2, '0');
+                    const s = String(pcrSeconds % 60).padStart(2, '0');
+                    const display = document.getElementById('pcrTimerDisplay');
+                    display.textContent = m + ':' + s;
+                    // Alerta a cada 2 min
+                    if (pcrSeconds % 120 === 0 && pcrSeconds > 0) {
+                        display.classList.add('alerta');
+                        document.getElementById('pcrTimerSub').textContent = '⚠️ 2 MINUTOS — Checar pulso / Revezar compressor / Avaliar ritmo!';
+                        setTimeout(() => {
+                            display.classList.remove('alerta');
+                            document.getElementById('pcrTimerSub').textContent = 'Em andamento...';
+                        }, 5000);
+                    }
+                }, 1000);
+            }
+        }
+
+        function pcrTimerLap() {
+            if (pcrSeconds === 0) return;
+            const m = String(Math.floor(pcrSeconds / 60)).padStart(2, '0');
+            const s = String(pcrSeconds % 60).padStart(2, '0');
+            pcrLaps.push(`Lap ${pcrLaps.length + 1}: ${m}:${s}`);
+            const list = document.getElementById('pcrLapList');
+            list.style.display = 'block';
+            list.innerHTML = pcrLaps.map(l => `<div class="pcr-lap-item">${l}</div>`).reverse().join('');
+        }
+
+        function pcrTimerReset() {
+            clearInterval(pcrInterval);
+            pcrRunning = false;
+            pcrSeconds = 0;
+            pcrLaps    = [];
+            document.getElementById('pcrTimerDisplay').textContent = '00:00';
+            document.getElementById('pcrTimerDisplay').classList.remove('alerta');
+            document.getElementById('pcrTimerSub').textContent = 'Pressione INICIAR para começar';
+            document.getElementById('pcrLapList').style.display = 'none';
+            document.getElementById('pcrLapList').innerHTML = '';
+            document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '▶ INICIAR';
+        }
+
+        // -------------------------------------------------------
+        // BUSCA EM FLUXOGRAMAS
+        // -------------------------------------------------------
+        function filtrarFluxos(termo) {
+            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            document.querySelectorAll('#listaFluxos button').forEach(btn => {
+                const nome = (btn.dataset.nome || btn.textContent).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                btn.style.display = nome.includes(t) ? '' : 'none';
+            });
+        }
+
+        // -------------------------------------------------------
+        // BUSCA EM DOCUMENTOS
+        // -------------------------------------------------------
+        let _todosDocumentos = [];
+        const _origRenderDocs = typeof renderizarDocumentos_rows !== 'undefined' ? null : null;
+
+        function filtrarDocs(termo) {
+            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (!t) { renderizarDocumentos_rows(_todosDocumentos); return; }
+            const filtrados = _todosDocumentos.filter(d =>
+                (d.nome + d.descricao + d.categoria).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(t)
+            );
+            renderizarDocumentos_rows(filtrados);
+        }
+
+        // Salvar documentos para filtragem
+        const _origRenderDoc = renderizarDocumentos_rows;
+        window.renderizarDocumentos_rows = function(docs) {
+            _todosDocumentos = docs;
+            _origRenderDoc(docs);
+        };
         function atualizarRelogio() {
             const agora = new Date();
             const hora  = agora.getHours();
@@ -1462,6 +1880,13 @@
         buscarDadosPlanilha();
         buscarAvisos();
         buscarDocumentos();
+
+        // -------------------------------------------------------
+        // SERVICE WORKER — Modo Offline
+        // -------------------------------------------------------
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
     </script>
 
 </body>

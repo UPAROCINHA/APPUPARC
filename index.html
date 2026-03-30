@@ -3,804 +3,1873 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Interno UPA Rocinha</title>
+    <title>Portal UPA Rocinha</title>
+
     <link rel="icon" type="image/png" href="logoazul.ico">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
+    
     <style>
         :root {
-            --primary: #1e3a8a; --accent: #3b82f6;
-            --success: #10b981; --warning: #f59e0b;
-            --danger: #ef4444; --glass: rgba(255,255,255,0.9);
+            --primary: #1e3a8a;
+            --accent: #3b82f6; 
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --glass: rgba(255, 255, 255, 0.9);
             --text-main: #1e293b;
         }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            margin: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
             color: var(--text-main);
-            background: linear-gradient(rgba(240,244,248,0.94),rgba(240,244,248,0.94)), url('logoazul.jpeg');
+            background: linear-gradient(rgba(240, 244, 248, 0.94), rgba(240, 244, 248, 0.94)), url('logoazul.jpeg');
             background-size: 250px; background-attachment: fixed;
         }
-        /* TICKER */
-        .ticker-wrap { width:100%; background:#ff9800; color:#000; padding:10px 0; font-size:0.95rem; font-weight:bold; overflow:hidden; white-space:nowrap; border-bottom:2px solid rgba(0,0,0,0.1); }
-        .ticker { display:inline-block; padding-left:100%; animation:ticker-animation 40s linear infinite; }
-        @keyframes ticker-animation { 0%{transform:translate(0,0)} 100%{transform:translate(-100%,0)} }
-        /* HEADER */
-        .header { background-color:#1e3a8a; color:white; width:100%; height:120px; padding:0 30px; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; border-bottom:4px solid #007bff; position:sticky; top:0; z-index:1000; }
-        .header-left { display:flex; flex-direction:column; align-items:center; justify-content:center; }
-        .logo-img { max-width:110px; }
-        .logo-sub { font-size:1.2rem; font-weight:900; letter-spacing:2px; margin-top:5px; text-align:center; width:100%; }
-        .header-right { display:flex; flex-direction:column; align-items:flex-end; }
-        #relogio { font-size:2.8rem; font-weight:900; line-height:1; display:flex; align-items:center; gap:10px; }
-        #data { font-size:0.9rem; font-weight:600; text-transform:uppercase; margin-top:5px; }
-        /* STATUS */
-        .status-bar { width:92%; max-width:600px; background:white; margin-top:20px; padding:15px 20px; border-radius:15px; display:flex; justify-content:space-around; gap:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05); flex-wrap:wrap; }
-        .status-item { font-size:0.82rem; font-weight:600; display:flex; align-items:center; gap:4px; white-space:nowrap; }
-        .status-indicator { width:12px; height:12px; border-radius:50%; margin-right:4px; }
-        .bg-success { background:var(--success); } .bg-warning { background:var(--warning); } .bg-danger { background:var(--danger); }
-        /* GRID */
-        .container { width:92%; max-width:600px; padding:15px 0; }
-        .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-        .card { background:var(--glass); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.5); border-radius:20px; padding:20px 10px; text-align:center; text-decoration:none; color:var(--primary); font-weight:700; font-size:0.78rem; display:flex; flex-direction:column; align-items:center; transition:0.2s; box-shadow:0 4px 6px rgba(0,0,0,0.05); cursor:pointer; word-break:break-word; line-height:1.3; }
-        .card:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,0,0,0.1); }
-        .card-highlight { grid-column:span 2; background:linear-gradient(135deg,#3b82f6 0%,#1e3a8a 100%); color:white; border:none; }
-        .card-destaque { grid-column:span 2; background:#fffbeb; border:2px solid #fde047; color:#92400e; }
-        .card .icon { font-size:2rem; margin-bottom:5px; }
 
-        /* --- PLACAR DE INDICADORES --- */
-        .placar-wrap {
-            width: 92%; max-width: 600px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            border-radius: 20px; padding: 18px 20px; margin-bottom: 4px;
-            box-shadow: 0 4px 15px rgba(30,58,138,0.3);
+        /* --- TICKER LARANJA MÓVEL --- */
+        .ticker-wrap {
+            width: 100%;
+            background: #ff9800;
+            color: #000;
+            padding: 10px 0;
+            font-size: 0.95rem;
+            font-weight: bold;
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-animation 40s linear infinite;
+        }
+        @keyframes ticker-animation {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* --- HEADER AZUL --- */
+        .header {
+            background-color: #1e3a8a; color: white;
+            width: 100%; height: 120px; padding: 0 30px;
+            display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;
+            border-bottom: 4px solid #007bff; position: sticky; top: 0; z-index: 1000;
+        }
+        .header-left { display: flex; flex-direction: column; align-items: center; }
+        .logo-img { max-width: 110px; }
+        .logo-sub { font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; margin-top: 5px; }
+
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; }
+        #relogio { font-size: 2.8rem; font-weight: 900; line-height: 1; display: flex; align-items: center; gap: 10px; }
+        #data { font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-top: 5px; }
+
+        /* --- STATUS & GRID --- */
+        .status-bar {
+            width: 92%; max-width: 600px; background: white; margin-top: 20px; padding: 15px 20px;
+            border-radius: 15px; display: flex; justify-content: space-around; gap: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap;
+        }
+        .status-item { font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .status-indicator { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .bg-success { background: var(--success); }
+        .bg-warning { background: var(--warning); }
+        .bg-danger { background: var(--danger); }
+
+        .container { width: 92%; max-width: 600px; padding: 15px 0; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+        .card {
+            background: var(--glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px; padding: 20px 10px; text-align: center; text-decoration: none;
+            color: var(--primary); font-weight: 700; font-size: 0.78rem;
+            display: flex; flex-direction: column; align-items: center; transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer;
+            word-break: break-word; text-align: center; line-height: 1.3;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .card-highlight { grid-column: span 2; background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%); color: white; border: none; }
+        .card-destaque { grid-column: span 2; background: #fffbeb; border: 2px solid #fde047; color: #92400e; }
+        .card .icon { font-size: 2rem; margin-bottom: 5px; }
+
+        /* --- MODAIS --- */
+        .overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal {
+            background: white; width: 100%; max-width: 560px;
+            padding: 25px; border-radius: 25px;
+            max-height: 88vh; overflow-y: auto;
             box-sizing: border-box;
         }
-        .placar-titulo {
-            color: rgba(255,255,255,0.7); font-size: 0.7rem;
-            font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        .btn-fechar {
+            width: 100%; padding: 14px;
+            border: none; border-radius: 15px;
+            font-weight: bold; font-size: 1rem;
+            cursor: pointer; margin-top: 18px;
+            color: white;
         }
-        .placar-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+
+        /* --- TABELA VENTILATÓRIO --- */
+        .vent-table-wrap { overflow-x: auto; margin-top: 10px; }
+        .vent-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 0.78rem; text-align: center;
+            min-width: 420px;
         }
-        .placar-item {
-            background: rgba(255,255,255,0.1); border-radius: 14px;
-            padding: 12px 14px; border: 1px solid rgba(255,255,255,0.15);
+        .vent-table thead tr {
+            background: #0369a1; color: white;
         }
-        .placar-item.destaque {
-            grid-column: span 2;
-            background: rgba(255,255,255,0.15);
+        .vent-table th {
+            padding: 9px 6px; font-weight: 700;
         }
-        .placar-label {
-            font-size: 0.68rem; color: rgba(255,255,255,0.65);
-            font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+        .vent-table td {
+            padding: 9px 6px; border-bottom: 1px solid #e2e8f0;
         }
-        .placar-valor {
-            font-size: 1.6rem; font-weight: 900; color: white; line-height: 1;
+        .vent-table tbody tr:nth-child(odd) { background: #f0f9ff; }
+        .vent-table tbody tr:hover { background: #bae6fd; transition: 0.15s; }
+        .faixa-nome { font-weight: 800; font-size: 0.82rem; }
+        .faixa-idade { font-size: 0.7rem; color: #64748b; font-weight: 400; }
+
+        .vent-aviso {
+            margin-top: 14px;
+            background: #fffbeb;
+            border: 1px solid #fde047;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.76rem;
+            color: #92400e;
+            line-height: 1.7;
         }
-        .placar-item.destaque .placar-valor { font-size: 1.3rem; }
-        .placar-meta {
-            font-size: 0.68rem; margin-top: 4px; font-weight: 600;
+
+
+
+
+
+        /* --- DOCUMENTOS --- */
+        .doc-categoria {
+            font-size: 0.68rem; font-weight: 900; letter-spacing: 1px;
+            text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+            display: inline-block; margin-bottom: 8px; margin-top: 14px;
         }
-        .placar-ok   { color: #86efac; }
-        .placar-warn { color: #fde047; }
-        .placar-bad  { color: #fca5a5; }
-        .placar-mes  {
-            font-size: 0.68rem; color: rgba(255,255,255,0.5);
-            text-align: right; margin-top: 10px; font-style: italic;
+        .doc-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: 12px; text-decoration: none;
+            border: 1px solid #e2e8f0; background: white;
+            margin-bottom: 8px; transition: box-shadow 0.2s;
         }
-        /* MODAIS */
-        .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center; padding:20px; box-sizing:border-box; }
-        .modal { background:white; width:100%; max-width:560px; padding:25px; border-radius:25px; max-height:88vh; overflow-y:auto; box-sizing:border-box; }
-        .btn-fechar { width:100%; padding:14px; border:none; border-radius:15px; font-weight:bold; font-size:1rem; cursor:pointer; margin-top:18px; color:white; }
-        /* SISTEMAS */
-        .sistema-btn { display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:14px; text-decoration:none; transition:opacity 0.2s; border:none; }
-        .sistema-btn:hover { opacity:0.8; }
-        .sistema-icon { font-size:1.6rem; flex-shrink:0; }
-        .sistema-nome { font-weight:800; font-size:0.88rem; color:#1e293b; }
-        .sistema-url { font-size:0.7rem; color:#64748b; margin-top:2px; }
-        .sistema-seta { margin-left:auto; font-size:1.1rem; color:#94a3b8; flex-shrink:0; }
-        /* DOCUMENTOS */
-        .doc-categoria { font-size:0.68rem; font-weight:900; letter-spacing:1px; text-transform:uppercase; padding:4px 10px; border-radius:20px; display:inline-block; margin-bottom:8px; margin-top:14px; }
-        .doc-item { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; text-decoration:none; border:1px solid #e2e8f0; background:white; margin-bottom:8px; transition:box-shadow 0.2s; }
-        .doc-item:hover { box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-        .doc-item-icon { font-size:1.4rem; flex-shrink:0; }
-        .doc-item-nome { font-weight:700; font-size:0.83rem; color:#1e293b; }
-        .doc-item-desc { font-size:0.7rem; color:#64748b; margin-top:2px; }
-        .doc-item-seta { margin-left:auto; color:#94a3b8; font-size:1rem; flex-shrink:0; }
-        .doc-vazio { text-align:center; padding:30px; color:#94a3b8; font-size:0.85rem; }
-        /* FLUXOGRAMAS */
-        .fluxo-btn { width:100%; padding:14px 16px; border:none; border-radius:12px; font-size:0.95rem; font-weight:800; cursor:pointer; text-align:left; transition:opacity 0.2s; }
-        .fluxo-btn:hover { opacity:0.85; }
-        .fluxo-step { display:flex; gap:12px; align-items:flex-start; margin-bottom:8px; }
-        .fluxo-num { min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.75rem; color:white; flex-shrink:0; }
-        .fluxo-title { font-weight:800; font-size:0.83rem; color:#1e293b; }
-        .fluxo-desc { font-size:0.73rem; color:#475569; margin-top:2px; line-height:1.5; }
-        .fluxo-arrow { text-align:center; color:#94a3b8; font-size:1.1rem; margin:1px 0; }
-        .fluxo-alerta { padding:10px 14px; border-radius:10px; font-size:0.76rem; font-weight:700; margin:10px 0; }
-        .fluxo-section { font-size:0.68rem; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:#94a3b8; margin:12px 0 7px; }
-        /* CALCULADORAS */
-        .calc-item { margin-bottom:12px; }
+        .doc-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .doc-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .doc-item-nome { font-weight: 700; font-size: 0.83rem; color: #1e293b; }
+        .doc-item-desc { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+        .doc-item-seta { margin-left: auto; color: #94a3b8; font-size: 1rem; flex-shrink: 0; }
+        .doc-vazio { text-align:center; padding: 30px; color: #94a3b8; font-size: 0.85rem; }
+        /* --- SISTEMAS --- */
+        .sistema-btn {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 16px; border-radius: 14px; text-decoration: none;
+            transition: opacity 0.2s; border: none;
+        }
+        .sistema-btn:hover { opacity: 0.8; }
+        .sistema-icon { font-size: 1.6rem; flex-shrink: 0; }
+        .sistema-nome { font-weight: 800; font-size: 0.88rem; color: #1e293b; }
+        .sistema-url  { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+        .sistema-seta { margin-left: auto; font-size: 1.1rem; color: #94a3b8; flex-shrink: 0; }
+        /* --- FLUXOGRAMAS --- */
+        .fluxo-btn {
+            width: 100%; padding: 14px 16px; border: none; border-radius: 12px;
+            font-size: 0.95rem; font-weight: 800; cursor: pointer; text-align: left;
+            transition: opacity 0.2s;
+        }
+        .fluxo-btn:hover { opacity: 0.85; }
+        .fluxo-step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+        .fluxo-num {
+            min-width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 0.75rem; color: white; flex-shrink: 0;
+        }
+        .fluxo-title { font-weight: 800; font-size: 0.83rem; color: #1e293b; }
+        .fluxo-desc { font-size: 0.73rem; color: #475569; margin-top: 2px; line-height: 1.5; }
+        .fluxo-arrow { text-align: center; color: #94a3b8; font-size: 1.1rem; margin: 1px 0; }
+        .fluxo-alerta { padding: 10px 14px; border-radius: 10px; font-size: 0.76rem; font-weight: 700; margin: 10px 0; }
+        .fluxo-section { font-size: 0.68rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8; margin: 12px 0 7px; }
+        /* --- CALCULADORAS --- */
+        .calc-item { margin-bottom: 12px; }
         .calc-label { display:block; font-size:0.78rem; font-weight:700; color:#1e293b; margin-bottom:4px; }
-        .calc-select, .calc-input { width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.85rem; color:#1e293b; background:white; box-sizing:border-box; appearance:none; outline:none; }
-        .calc-select:focus, .calc-input:focus { border-color:#3b82f6; }
-        /* VENTILATÓRIO */
-        .vent-table-wrap { overflow-x:auto; margin-top:10px; }
-        .vent-table { width:100%; border-collapse:collapse; font-size:0.78rem; text-align:center; min-width:420px; }
-        .vent-table thead tr { background:#0369a1; color:white; }
-        .vent-table th { padding:9px 6px; font-weight:700; }
-        .vent-table td { padding:9px 6px; border-bottom:1px solid #e2e8f0; }
-        .vent-table tbody tr:nth-child(odd) { background:#f0f9ff; }
-        .vent-table tbody tr:hover { background:#bae6fd; transition:0.15s; }
-        .faixa-nome { font-weight:800; font-size:0.82rem; }
-        .faixa-idade { font-size:0.7rem; color:#64748b; font-weight:400; }
-        .vent-aviso { margin-top:14px; background:#fffbeb; border:1px solid #fde047; border-radius:12px; padding:12px 14px; font-size:0.76rem; color:#92400e; line-height:1.7; }
-        footer { padding:30px; font-size:0.8rem; color:#64748b; text-align:center; font-weight:bold; }
+        .calc-select, .calc-input {
+            width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1;
+            border-radius: 10px; font-size: 0.85rem; color: #1e293b;
+            background: white; box-sizing: border-box;
+            appearance: none; outline: none;
+        }
+        .calc-select:focus, .calc-input:focus { border-color: #3b82f6; }
+
+        footer { padding: 30px; font-size: 0.8rem; color: #64748b; text-align: center; font-weight: bold; }
+
+        /* --- CRONÔMETRO PCR --- */
+        .pcr-timer {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            border-radius: 16px; padding: 16px; margin-bottom: 14px; text-align: center;
+        }
+        .pcr-timer-display {
+            font-size: 3rem; font-weight: 900; color: white; letter-spacing: 4px;
+            font-variant-numeric: tabular-nums;
+        }
+        .pcr-timer-display.alerta { color: #fbbf24; animation: piscar 0.5s infinite; }
+        @keyframes piscar { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .pcr-timer-label { font-size: 0.75rem; color: #93c5fd; font-weight: 600; margin-top: 4px; }
+        .pcr-timer-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .pcr-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 10px;
+            font-weight: 800; font-size: 0.82rem; cursor: pointer;
+        }
+        .pcr-lap-list {
+            max-height: 120px; overflow-y: auto; background: #f8fafc;
+            border-radius: 10px; padding: 8px; margin-top: 8px; font-size: 0.72rem;
+        }
+        .pcr-lap-item { padding: 4px 0; border-bottom: 1px solid #e2e8f0; color: #475569; }
+
+        /* --- BUSCA --- */
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-input {
+            width: 100%; padding: 11px 14px 11px 38px; border: 1.5px solid #cbd5e1;
+            border-radius: 12px; font-size: 0.85rem; box-sizing: border-box;
+            outline: none; background: white;
+        }
+        .search-input:focus { border-color: #3b82f6; }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+
+        /* --- CALCULADORA VENTILATÓRIA --- */
+        .vent-result-box {
+            background: #f0f9ff; border: 1px solid #93c5fd;
+            border-radius: 14px; padding: 14px; margin-top: 12px;
+            display: none;
+        }
+        .vent-result-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; border-bottom: 1px solid #bae6fd; font-size: 0.82rem;
+        }
+        .vent-result-row:last-child { border-bottom: none; }
+        .vent-result-label { color: #0369a1; font-weight: 600; }
+        .vent-result-val { font-weight: 900; color: #1e3a8a; font-size: 0.95rem; }
+
+        /* --- GLASGOW --- */
+        .glasgow-resultado-num {
+            font-size: 3.5rem; font-weight: 900; line-height: 1;
+        }
+        .glasgow-sub { font-size: 0.7rem; color: #475569; margin-top: 4px; }
     </style>
 </head>
 <body>
 
-<div class="ticker-wrap"><div class="ticker" id="letreiro">Sincronizando avisos...</div></div>
-
-<header class="header">
-    <div class="header-left">
-        <img class="logo-img" src="logo.png" alt="Prefeitura Rio">
-        <div class="logo-sub">Sistema Interno</div>
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="letreiro">Sincronizando avisos importantes...</div>
     </div>
-    <div class="header-right">
-        <div id="relogio"><span>☀️</span> 00:00</div>
-        <div id="data">---</div>
-    </div>
-</header>
 
-<div class="status-bar" id="painelStatus"><div class="status-item">Carregando...</div></div>
-
-
-<!-- PLACAR DE INDICADORES -->
-<div class="placar-wrap" id="placarIndicadores" style="display:none;">
-    <div class="placar-titulo">📊 Indicadores do Mês</div>
-    <div class="placar-grid" id="placarGrid">
-        <!-- preenchido via JS -->
-    </div>
-    <div class="placar-mes" id="placarMes"></div>
-</div>
-
-<div class="container"><div class="grid">
-
-    <div class="card card-highlight" onclick="abrirModal('modalAvisos')"><span class="icon">📢</span>AVISOS GERAIS</div>
-    <div class="card card-destaque"><span class="icon">🏆</span><span style="font-size:0.7rem;text-transform:uppercase;">Destaque do Mês</span><div id="txtDestaque" style="font-weight:900;font-size:1.1rem;">---</div></div>
-    <div class="card" onclick="abrirModal('modalPharma')" style="background:#fff1f2;color:#9f1239;"><span class="icon">💊</span>MEDICAMENTOS</div>
-    <div class="card" onclick="abrirModal('modalVent')" style="background:#e0f2fe;color:#0369a1;"><span class="icon">😷</span>SUPORTE VENT.</div>
-    <div class="card" onclick="abrirModal('modalFluxoMenu')"><span class="icon">📋</span>FLUXOGRAMAS</div>
-    <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
-    <div class="card" onclick="abrirModal('modalSistemas')"><span class="icon">💻</span>SISTEMAS</div>
-    <div class="card" onclick="abrirModal('modalDocs')"><span class="icon">📂</span>DOCUMENTOS</div>
-    <a href="https://uparocinha.github.io/TROCADEPLANTAO/" target="_blank" class="card"><span class="icon">🔄</span>TROCA PLANTÃO</a>
-    <a href="https://uparocinha.github.io/PLANTAOEXTRA/" target="_blank" class="card"><span class="icon">➕</span>PLANTÃO EXTRA</a>
-    <a href="https://uparocinha.github.io/NOTIFICAEVENTO/" target="_blank" class="card" style="background:#fef2f2;color:#991b1b;"><span class="icon">⚠️</span>EVENTO ADVERSO</a>
-    <a href="https://forms.gle/NfBnmCjDwH7tdoZu5" target="_blank" class="card"><span class="icon">📄</span>ATESTADO</a>
-
-</div></div>
-
-<!-- MODAL AVISOS -->
-<div class="overlay" id="modalAvisos">
-    <div class="modal">
-        <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">📢 Avisos Gerais</h2>
-        <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:16px;text-align:center;">Avisos atualizados em tempo real pela gestão</p>
-        <div id="listaAvisos"><div style="text-align:center;padding:30px;color:#64748b;">⏳ Carregando avisos...</div></div>
-        <button onclick="fecharModal('modalAvisos')" class="btn-fechar" style="background:#1e3a8a;">FECHAR</button>
-    </div>
-</div>
-
-<!-- MODAL MEDICAMENTOS -->
-<div class="overlay" id="modalPharma">
-    <div class="modal">
-        <h2 style="text-align:center;color:#ef4444;margin-top:0;">💊 Medicamentos</h2>
-        <div id="listaFaltas"></div>
-        <button onclick="fecharModal('modalPharma')" class="btn-fechar" style="background:#94a3b8;">VOLTAR</button>
-    </div>
-</div>
-
-<!-- MODAL SUPORTE VENTILATÓRIO -->
-<div class="overlay" id="modalVent">
-    <div class="modal" style="max-height:90vh;overflow-y:auto;">
-        <h2 style="text-align:center;color:#0369a1;margin-top:0;">😷 Suporte Ventilatório Pediátrico</h2>
-        <p style="font-size:0.75rem;color:#64748b;text-align:center;margin-top:-10px;margin-bottom:14px;">Parâmetros iniciais sugeridos — ajuste conforme resposta clínica</p>
-        <div class="vent-table-wrap">
-            <table class="vent-table">
-                <thead><tr><th>Faixa Etária</th><th>Peso (kg)</th><th>Vc (mL)</th><th>FR (rpm)</th><th>PEEP (cmH₂O)</th><th>PIP (cmH₂O)</th></tr></thead>
-                <tbody>
-                    <tr><td><div class="faixa-nome">RN Prematuro</div><div class="faixa-idade">&lt;37 semanas</div></td><td>0,5–1,5</td><td>3–12</td><td>40–60</td><td>4–5</td><td>14–20</td></tr>
-                    <tr><td><div class="faixa-nome">RN a Termo</div><div class="faixa-idade">0–28 dias</div></td><td>2,5–4</td><td>15–32</td><td>40–60</td><td>4–5</td><td>16–22</td></tr>
-                    <tr><td><div class="faixa-nome">Lactente</div><div class="faixa-idade">1–12 meses</div></td><td>4–10</td><td>24–80</td><td>30–50</td><td>4–6</td><td>16–24</td></tr>
-                    <tr><td><div class="faixa-nome">Pré-escolar</div><div class="faixa-idade">1–5 anos</div></td><td>10–18</td><td>60–144</td><td>20–30</td><td>5–6</td><td>18–25</td></tr>
-                    <tr><td><div class="faixa-nome">Escolar</div><div class="faixa-idade">6–12 anos</div></td><td>18–40</td><td>108–320</td><td>16–24</td><td>5–8</td><td>18–28</td></tr>
-                    <tr><td><div class="faixa-nome">Adolescente</div><div class="faixa-idade">13–17 anos</div></td><td>40–70</td><td>240–560</td><td>12–20</td><td>5–8</td><td>20–30</td></tr>
-                </tbody>
-            </table>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <img class="logo-img" src="logo.png" alt="Prefeitura Rio">
+            <div class="logo-sub">UPA ROCINHA</div>
         </div>
-        <div class="vent-aviso"><strong>⚠️ Lembretes:</strong><br>• Vc ideal: <strong>6–8 mL/kg</strong> de peso predito<br>• Limite PIP: <strong>&lt;30 cmH₂O</strong><br>• SpO₂ alvo: <strong>94–98%</strong><br>• Reavalie gasometria após <strong>30 min</strong></div>
-        <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1;">FECHAR</button>
-    </div>
-</div>
-
-<!-- MODAL SISTEMAS -->
-<div class="overlay" id="modalSistemas">
-    <div class="modal" style="max-height:88vh;overflow-y:auto;">
-        <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💻 Sistemas</h2>
-        <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:18px;">Clique para abrir em nova aba</p>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="http://192.168.1.15:8080/vitai" target="_blank" class="sistema-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;"><span class="sistema-icon">🏥</span><div><div class="sistema-nome">Prontuário Eletrônico</div><div class="sistema-url">Vitai · Rede interna</div></div><span class="sistema-seta">→</span></a>
-            <a href="https://ser.saude.rj.gov.br/ser/login" target="_blank" class="sistema-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;"><span class="sistema-icon">📋</span><div><div class="sistema-nome">SER</div><div class="sistema-url">ser.saude.rj.gov.br</div></div><span class="sistema-seta">→</span></a>
-            <a href="https://web2.smsrio.org/login/index.php#/" target="_blank" class="sistema-btn" style="border-left:5px solid #7c3aed;background:#f5f3ff;"><span class="sistema-icon">🛏️</span><div><div class="sistema-nome">SMS — Vaga Zero</div><div class="sistema-url">web2.smsrio.org</div></div><span class="sistema-seta">→</span></a>
-            <a href="https://laudos.cientificalab.com.br/laudos/#" target="_blank" class="sistema-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;"><span class="sistema-icon">🔬</span><div><div class="sistema-nome">Laboratório</div><div class="sistema-url">laudos.cientificalab.com.br</div></div><span class="sistema-seta">→</span></a>
-            <a href="https://hci.rio.gov.br/auth/sign-in" target="_blank" class="sistema-btn" style="border-left:5px solid #dc2626;background:#fef2f2;"><span class="sistema-icon">📁</span><div><div class="sistema-nome">HCI — Histórico Clínico Integrado</div><div class="sistema-url">hci.rio.gov.br</div></div><span class="sistema-seta">→</span></a>
-            <a href="https://cadastro.saude.gov.br/segcartao" target="_blank" class="sistema-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;"><span class="sistema-icon">💳</span><div><div class="sistema-nome">CADSUS</div><div class="sistema-url">cadastro.saude.gov.br</div></div><span class="sistema-seta">→</span></a>
-        </div>
-        <div style="margin-top:16px;background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:0.72rem;color:#64748b;text-align:center;">⚠️ O Prontuário Eletrônico só funciona na <strong>rede interna da UPA</strong></div>
-        <button onclick="fecharModal('modalSistemas')" class="btn-fechar" style="background:#1e3a8a;margin-top:16px;">FECHAR</button>
-    </div>
-</div>
-
-<!-- MODAL DOCUMENTOS -->
-<div class="overlay" id="modalDocs">
-    <div class="modal" style="max-height:88vh;overflow-y:auto;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-            <h2 style="color:#1e3a8a;margin:0;">📂 Documentos</h2>
-            <span id="badgeDocs" style="background:#3b82f6;color:white;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;display:none;"></span>
-        </div>
-        <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:16px;">Documentos atualizados pela gestão</p>
-        <div id="listaDocs"><div class="doc-vazio">⏳ Carregando documentos...</div></div>
-
-        <a href="notificacoes.html" target="_blank" style="
-            display:flex; align-items:center; gap:12px;
-            background:#fef2f2; border:2px solid #ef4444;
-            border-radius:14px; padding:16px; margin-top:16px;
-            text-decoration:none; color:#991b1b; font-weight:800; font-size:0.9rem;
-            transition:opacity 0.2s;">
-            <span style="font-size:1.8rem;">📋</span>
-            <div>
-                <div>Fichas de Notificação SINAN</div>
-                <div style="font-size:0.72rem;font-weight:400;color:#b91c1c;margin-top:2px;">Antirrábica, Dengue, SRAG, Violência, Acidente de Trabalho e mais</div>
+        <div class="header-right">
+            <div id="relogio">
+                <span id="periodo-icon">☀️</span> 00:00
             </div>
-            <span style="margin-left:auto;font-size:1.1rem;">↗</span>
-        </a>
-
-        <button onclick="fecharModal('modalDocs')" class="btn-fechar" style="background:#1e3a8a;margin-top:14px;">FECHAR</button>
-    </div>
-</div>
-
-<!-- MODAL MENU FLUXOGRAMAS -->
-<div class="overlay" id="modalFluxoMenu">
-    <div class="modal" style="max-height:88vh;overflow-y:auto;">
-        <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">📋 Fluxogramas Clínicos</h2>
-        <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Protocolos de atendimento rápido</p>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoSepse')"     class="fluxo-btn" style="border-left:5px solid #ef4444;background:#fef2f2;color:#7f1d1d;">🦠 Sepse</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoAVC')"       class="fluxo-btn" style="border-left:5px solid #8b5cf6;background:#f5f3ff;color:#4c1d95;">🧠 AVC / AVE</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoIAM')"       class="fluxo-btn" style="border-left:5px solid #dc2626;background:#fff1f2;color:#7f1d1d;">❤️ Dor Torácica / IAM</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoHAS')"       class="fluxo-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;color:#78350f;">🩺 Crise Hipertensiva</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoPCR')"       class="fluxo-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;color:#1e3a8a;">💓 PCR / RCP</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoConvulsao')" class="fluxo-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;color:#0c4a6e;">⚡ Convulsão</button>
-            <button onclick="trocarModal('modalFluxoMenu','modalFluxoTrauma')"    class="fluxo-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;color:#14532d;">🩹 Trauma</button>
+            <div id="data">---</div>
         </div>
-        <button onclick="fecharModal('modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:16px;">FECHAR</button>
+    </header>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar" id="painelStatus">
+        <div class="status-item">Carregando dados...</div>
     </div>
-</div>
 
-<!-- FLUXO SEPSE -->
-<div class="overlay" id="modalFluxoSepse"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#ef4444;margin-top:0;">🦠 Protocolo de Sepse</h2>
-    <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ Cada hora sem antibiótico aumenta a mortalidade em ~7%</div>
-    <div class="fluxo-section">Bundle da 1ª hora</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">1</div><div><div class="fluxo-title">Identificar suspeita clínica</div><div class="fluxo-desc">Infecção + qSOFA ≥2: FR≥22, Glasgow&lt;15 ou PAS≤100 mmHg</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">2</div><div><div class="fluxo-title">Coletar hemoculturas (x2)</div><div class="fluxo-desc">Colher antes do ATB — não atrasar o antibiótico pela coleta</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">3</div><div><div class="fluxo-title">Dosar lactato</div><div class="fluxo-desc">≥2 mmol/L = hipoperfusão | ≥4 mmol/L = choque séptico</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">4</div><div><div class="fluxo-title">Antibioticoterapia empírica</div><div class="fluxo-desc">Iniciar em até 1h. Escolher conforme foco provável</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">5</div><div><div class="fluxo-title">Ressuscitação volêmica</div><div class="fluxo-desc">SF 0,9% ou Ringer Lactato 30 mL/kg em até 3h se hipotensão ou lactato ≥4</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">6</div><div><div class="fluxo-title">Vasopressor se PAM &lt;65 mmHg</div><div class="fluxo-desc">Noradrenalina preferencial. Acesso venoso central se possível</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 Metas: PAM ≥65 | Diurese ≥0,5 mL/kg/h | Lactato clearance ≥10% em 2h</div>
-    <button onclick="trocarModal('modalFluxoSepse','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+    <!-- GRID DE CARDS -->
+    <div class="container">
+        <div class="grid">
 
-<!-- FLUXO AVC -->
-<div class="overlay" id="modalFluxoAVC"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#8b5cf6;margin-top:0;">🧠 Protocolo AVC / AVE</h2>
-    <div class="fluxo-alerta" style="background:#ede9fe;color:#4c1d95;">⚠️ "Tempo é cérebro" — 1,9 milhão de neurônios morrem por minuto</div>
-    <div class="fluxo-section">Triagem e avaliação</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">1</div><div><div class="fluxo-title">Aplicar escala FAST</div><div class="fluxo-desc">Face (assimetria) | Arm (fraqueza) | Speech (fala) | Time (registrar hora)</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">2</div><div><div class="fluxo-title">Registrar hora exata do início</div><div class="fluxo-desc">Janela trombólise: até 4,5h | Trombectomia: até 24h</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">3</div><div><div class="fluxo-title">Acesso venoso + exames urgentes</div><div class="fluxo-desc">Glicemia, coagulograma, hemograma. Corrigir glicemia &lt;60 ou &gt;400 antes</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">4</div><div><div class="fluxo-title">TC de crânio sem contraste — URGENTE</div><div class="fluxo-desc">Diferenciar isquêmico de hemorrágico antes de qualquer conduta</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA, SatO2, ECG. Manter SatO2 ≥94%. Cabeceira 30° se rebaixamento</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">6</div><div><div class="fluxo-title">Acionar neurologista / SAMU</div><div class="fluxo-desc">Alteplase 0,9 mg/kg (máx 90mg) se isquêmico e dentro da janela</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚫 NÃO reduzir PA agressivamente — exceto &gt;220x120 (isquêmico) ou &gt;180x105 (hemorrágico)</div>
-    <button onclick="trocarModal('modalFluxoAVC','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <div class="card card-highlight" onclick="abrirModal('modalAvisos')">
+                <span class="icon">📢</span>AVISOS GERAIS
+            </div>
 
-<!-- FLUXO IAM -->
-<div class="overlay" id="modalFluxoIAM"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#dc2626;margin-top:0;">❤️ Dor Torácica / IAM</h2>
-    <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ ECG deve ser realizado em até 10 minutos da chegada</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">1</div><div><div class="fluxo-title">ECG 12 derivações — imediato</div><div class="fluxo-desc">Identificar supradesnivelamento ST (IAMCSST) ou BRE novo</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">2</div><div><div class="fluxo-title">Acesso venoso + monitorização</div><div class="fluxo-desc">PA, FC, SatO2. Oxigênio se SatO2 &lt;94%</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">3</div><div><div class="fluxo-title">AAS 200mg VO — mastigar</div><div class="fluxo-desc">Se não houver contraindicação. Dose de ataque imediata</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">Colher troponina, CK-MB, BNP</div><div class="fluxo-desc">Hemograma, coagulograma, eletrólitos, função renal</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">5</div><div><div class="fluxo-title">Morfina / Nitrato se dor intensa</div><div class="fluxo-desc">Nitrato: contraindicado se PAS &lt;90. Morfina: 2-4mg EV</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">6</div><div><div class="fluxo-title">Acionar hemodinâmica / transferência</div><div class="fluxo-desc">IAMCSST: angioplastia em até 90min (porta-balão)</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 MONAB: Morfina | Oxigênio | Nitrato | AAS | Beta-bloqueador</div>
-    <button onclick="trocarModal('modalFluxoIAM','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <div class="card card-destaque">
+                <span class="icon">🏆</span>
+                <span style="font-size: 0.7rem; text-transform: uppercase;">Destaque do Mês</span>
+                <div id="txtDestaque" style="font-weight: 900; font-size: 1.1rem;">---</div>
+            </div>
 
-<!-- FLUXO HAS -->
-<div class="overlay" id="modalFluxoHAS"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#f59e0b;margin-top:0;">🩺 Crise Hipertensiva</h2>
-    <div class="fluxo-alerta" style="background:#fffbeb;color:#78350f;">⚠️ Urgência: PA elevada SEM lesão de órgão-alvo | Emergência: COM lesão</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">1</div><div><div class="fluxo-title">Aferir PA em ambos os membros</div><div class="fluxo-desc">PAS ≥180 e/ou PAD ≥120 mmHg = crise hipertensiva</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">2</div><div><div class="fluxo-title">Avaliar lesão de órgão-alvo</div><div class="fluxo-desc">Neurológico | Cardíaco | Renal | Ocular</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">3</div><div><div class="fluxo-title">URGÊNCIA hipertensiva</div><div class="fluxo-desc">Captopril 25mg SL ou VO | Meta: reduzir 25% em 24-48h</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">EMERGÊNCIA hipertensiva</div><div class="fluxo-desc">Nitroprussiato EV ou Labetalol EV | Reduzir 25% na 1ª hora | UTI</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA a cada 15-30 min. ECG, função renal</div></div></div>
-    <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">🚫 NÃO reduzir PA rapidamente na urgência — risco de isquemia</div>
-    <button onclick="trocarModal('modalFluxoHAS','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <div class="card" onclick="abrirModal('modalPharma')" style="background: #fff1f2; color: #9f1239;">
+                <span class="icon">💊</span>MEDICAMENTOS
+            </div>
 
-<!-- FLUXO PCR -->
-<div class="overlay" id="modalFluxoPCR"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💓 PCR / RCP</h2>
-    <div class="fluxo-alerta" style="background:#eff6ff;color:#1e3a8a;">⚠️ Cada minuto sem compressão reduz sobrevida em 10%</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">1</div><div><div class="fluxo-title">Checar responsividade e chamar ajuda</div><div class="fluxo-desc">Estimular, gritar, acionar equipe. Iniciar cronômetro</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">2</div><div><div class="fluxo-title">Compressões torácicas — IMEDIATO</div><div class="fluxo-desc">100-120/min | 5-6cm de profundidade | Mínimo de interrupções</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">3</div><div><div class="fluxo-title">Desfibrilador — ligar imediatamente</div><div class="fluxo-desc">Ritmos chocáveis: FV e TV sem pulso</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">4</div><div><div class="fluxo-title">Via aérea e ventilação</div><div class="fluxo-desc">30:2 sem via aérea avançada | Com IOT: 10 vent/min</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">5</div><div><div class="fluxo-title">Adrenalina 1mg EV a cada 3-5 min</div><div class="fluxo-desc">AESP/Assistolia: adrenalina o mais rápido possível</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">6</div><div><div class="fluxo-title">Tratar causas reversíveis — 5H5T</div><div class="fluxo-desc">Hipóxia, Hipovolemia, H+, Hipo/Hipercalemia, Hipotermia | Tamponamento, Tensão, Trombose, Tóxicos</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔄 Checar pulso a cada 2 min. Revezar compressor a cada 2 min</div>
-    <button onclick="trocarModal('modalFluxoPCR','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <div class="card" onclick="abrirModal('modalVent')" style="background: #e0f2fe; color: #0369a1;">
+                <span class="icon">😷</span>SUPORTE VENT.
+            </div>
 
-<!-- FLUXO CONVULSÃO -->
-<div class="overlay" id="modalFluxoConvulsao"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#0369a1;margin-top:0;">⚡ Protocolo de Convulsão</h2>
-    <div class="fluxo-alerta" style="background:#f0f9ff;color:#0c4a6e;">⚠️ Status epiléptico = convulsão &gt;5 min ou 2 crises sem recuperação</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">1</div><div><div class="fluxo-title">Proteger e posicionar</div><div class="fluxo-desc">Decúbito lateral, afastar objetos, NÃO conter forçadamente</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">2</div><div><div class="fluxo-title">Via aérea e O2</div><div class="fluxo-desc">O2 por máscara. Aspirar se necessário. SatO2 ≥94%</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">3</div><div><div class="fluxo-title">Glicemia capilar imediata</div><div class="fluxo-desc">Se &lt;60: glicose 50% 50mL EV (adulto)</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">4</div><div><div class="fluxo-title">Benzodiazepínico — 1ª linha (0-5 min)</div><div class="fluxo-desc">Diazepam 10mg EV | Midazolam 10mg IM | Diazepam 20mg retal</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">5</div><div><div class="fluxo-title">2ª linha se refratário (5-20 min)</div><div class="fluxo-desc">Fenitoína 20mg/kg EV | Valproato 40mg/kg EV | Fenobarbital 20mg/kg EV</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">6</div><div><div class="fluxo-title">Status refratário (&gt;30 min) — UTI</div><div class="fluxo-desc">Midazolam ou Propofol em infusão contínua. IOT</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔍 Investigar: HIC, meningite, distúrbio metabólico, intoxicação</div>
-    <button onclick="trocarModal('modalFluxoConvulsao','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <div class="card" onclick="abrirModal('modalFluxoMenu')"><span class="icon">📋</span>FLUXOGRAMAS</div>
+            <div class="card" onclick="abrirModal('modalCalcMenu')"><span class="icon">🧮</span>CALCULADORAS</div>
+            <div class="card" onclick="abrirModal('modalSistemas')"><span class="icon">💻</span>SISTEMAS</div>
+            <div class="card" onclick="abrirModal('modalDocs')"><span class="icon">📂</span>DOCUMENTOS</div>
 
-<!-- FLUXO TRAUMA -->
-<div class="overlay" id="modalFluxoTrauma"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#16a34a;margin-top:0;">🩹 Protocolo de Trauma</h2>
-    <div class="fluxo-alerta" style="background:#f0fdf4;color:#14532d;">⚠️ Avaliação primária pelo método ABCDE</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">A</div><div><div class="fluxo-title">Airway — Via aérea com proteção cervical</div><div class="fluxo-desc">Colar cervical. Aspirar, posicionar, IOT se necessário</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">B</div><div><div class="fluxo-title">Breathing — Ventilação</div><div class="fluxo-desc">Ausculta, inspeção. Tratar pneumotórax, hemotórax, tórax instável</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">C</div><div><div class="fluxo-title">Circulation — Controle de hemorragia</div><div class="fluxo-desc">Compressão direta, torniquete. 2 acessos calibrosos</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">D</div><div><div class="fluxo-title">Disability — Neurológico</div><div class="fluxo-desc">Glasgow, pupilas, glicemia. Glasgow ≤8 = IOT</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">E</div><div><div class="fluxo-title">Exposure — Exposição completa</div><div class="fluxo-desc">Despir, examinar dorso. Prevenir hipotermia</div></div></div>
-    <div class="fluxo-arrow">↓</div>
-    <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">F</div><div><div class="fluxo-title">Avaliação secundária</div><div class="fluxo-desc">Exame físico completo, anamnese AMPLA, radiografias</div></div></div>
-    <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚁 Critérios de transferência: TCE grave, lesão vascular, politrauma</div>
-    <button onclick="trocarModal('modalFluxoTrauma','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
-</div></div>
+            <a href="https://uparocinha.github.io/TROCADEPLANTAO/" target="_blank" class="card"><span class="icon">🔄</span>TROCA PLANTÃO</a>
+            <a href="https://uparocinha.github.io/PLANTAOEXTRA/" target="_blank" class="card"><span class="icon">➕</span>PLANTÃO EXTRA</a>
+            <a href="https://uparocinha.github.io/NOTIFICAEVENTO/" target="_blank" class="card" style="background: #fef2f2; color: #991b1b;"><span class="icon">⚠️</span>EVENTO ADVERSO</a>
+            <a href="https://forms.gle/NfBnmCjDwH7tdoZu5" target="_blank" class="card"><span class="icon">📄</span>ATESTADO</a>
 
-<!-- MODAL MENU CALCULADORAS -->
-<div class="overlay" id="modalCalcMenu">
-    <div class="modal" style="max-height:85vh;overflow-y:auto;">
-        <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">🧮 Calculadoras</h2>
-        <p style="text-align:center;font-size:0.8rem;color:#64748b;margin-top:-10px;">Selecione a calculadora desejada</p>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
-            <button onclick="trocarModal('modalCalcMenu','modalBraden')" style="padding:18px;background:#fef3c7;border:2px solid #f59e0b;border-radius:15px;font-size:1rem;font-weight:800;color:#92400e;cursor:pointer;text-align:left;">🛏️ Escala de Braden<br><span style="font-size:0.75rem;font-weight:400;">Risco de lesão por pressão</span></button>
-            <button onclick="trocarModal('modalCalcMenu','modalMorse')" style="padding:18px;background:#ede9fe;border:2px solid #7c3aed;border-radius:15px;font-size:1rem;font-weight:800;color:#4c1d95;cursor:pointer;text-align:left;">🚶 Escala de Morse<br><span style="font-size:0.75rem;font-weight:400;">Risco de queda</span></button>
-            <button onclick="trocarModal('modalCalcMenu','modalMedInfantil')" style="padding:18px;background:#dcfce7;border:2px solid #16a34a;border-radius:15px;font-size:1rem;font-weight:800;color:#14532d;cursor:pointer;text-align:left;">💉 Cálculo de Medicação Infantil<br><span style="font-size:0.75rem;font-weight:400;">Dose por peso (mg/kg) e gotejamento</span></button>
         </div>
-        <button onclick="fecharModal('modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:18px;">FECHAR</button>
     </div>
-</div>
 
-<!-- MODAL BRADEN -->
-<div class="overlay" id="modalBraden"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#92400e;margin-top:0;">🛏️ Escala de Braden</h2>
-    <div class="calc-item"><label class="calc-label">1. Percepção Sensorial</label><select id="b1" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Completamente limitada</option><option value="2">2 – Muito limitada</option><option value="3">3 – Levemente limitada</option><option value="4">4 – Nenhuma limitação</option></select></div>
-    <div class="calc-item"><label class="calc-label">2. Umidade</label><select id="b2" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Constantemente úmida</option><option value="2">2 – Muito úmida</option><option value="3">3 – Ocasionalmente úmida</option><option value="4">4 – Raramente úmida</option></select></div>
-    <div class="calc-item"><label class="calc-label">3. Atividade</label><select id="b3" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Acamado</option><option value="2">2 – Restrito à cadeira</option><option value="3">3 – Anda ocasionalmente</option><option value="4">4 – Anda frequentemente</option></select></div>
-    <div class="calc-item"><label class="calc-label">4. Mobilidade</label><select id="b4" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Completamente imóvel</option><option value="2">2 – Muito limitada</option><option value="3">3 – Levemente limitada</option><option value="4">4 – Sem limitações</option></select></div>
-    <div class="calc-item"><label class="calc-label">5. Nutrição</label><select id="b5" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Muito pobre</option><option value="2">2 – Inadequada</option><option value="3">3 – Adequada</option><option value="4">4 – Excelente</option></select></div>
-    <div class="calc-item"><label class="calc-label">6. Fricção e Cisalhamento</label><select id="b6" class="calc-select" onchange="calcBraden()"><option value="">-- selecione --</option><option value="1">1 – Problema</option><option value="2">2 – Problema em potencial</option><option value="3">3 – Nenhum problema</option></select></div>
-    <div id="resultadoBraden" style="margin-top:16px;padding:16px;border-radius:14px;text-align:center;display:none;"></div>
-    <button onclick="['b1','b2','b3','b4','b5','b6'].forEach(id=>document.getElementById(id).value='');document.getElementById('resultadoBraden').style.display='none'" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
-    <button onclick="trocarModal('modalBraden','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
-</div></div>
-
-<!-- MODAL MORSE -->
-<div class="overlay" id="modalMorse"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#4c1d95;margin-top:0;">🚶 Escala de Morse</h2>
-    <div class="calc-item"><label class="calc-label">1. Histórico de quedas nos últimos 3 meses</label><select id="m1" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Não</option><option value="25">25 – Sim</option></select></div>
-    <div class="calc-item"><label class="calc-label">2. Diagnóstico secundário</label><select id="m2" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Não</option><option value="15">15 – Sim</option></select></div>
-    <div class="calc-item"><label class="calc-label">3. Auxílio para deambulação</label><select id="m3" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Nenhum / acamado</option><option value="15">15 – Muleta / bengala / andador</option><option value="30">30 – Apoia-se em mobília</option></select></div>
-    <div class="calc-item"><label class="calc-label">4. Terapia intravenosa / heparina</label><select id="m4" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Não</option><option value="20">20 – Sim</option></select></div>
-    <div class="calc-item"><label class="calc-label">5. Marcha / transferência</label><select id="m5" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Normal / acamado</option><option value="10">10 – Fraca</option><option value="20">20 – Comprometida</option></select></div>
-    <div class="calc-item"><label class="calc-label">6. Estado mental</label><select id="m6" class="calc-select" onchange="calcMorse()"><option value="">-- selecione --</option><option value="0">0 – Orientado</option><option value="15">15 – Superestima capacidade</option></select></div>
-    <div id="resultadoMorse" style="margin-top:16px;padding:16px;border-radius:14px;text-align:center;display:none;"></div>
-    <button onclick="['m1','m2','m3','m4','m5','m6'].forEach(id=>document.getElementById(id).value='');document.getElementById('resultadoMorse').style.display='none'" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
-    <button onclick="trocarModal('modalMorse','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
-</div></div>
-
-<!-- MODAL MEDICAÇÃO INFANTIL -->
-<div class="overlay" id="modalMedInfantil"><div class="modal" style="max-height:90vh;overflow-y:auto;">
-    <h2 style="text-align:center;color:#14532d;margin-top:0;">💉 Medicação Infantil</h2>
-    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:14px;padding:16px;margin-bottom:16px;">
-        <p style="font-weight:800;color:#14532d;margin:0 0 12px;">📌 Dose por Peso (mg/kg)</p>
-        <div class="calc-item"><label class="calc-label">Peso do paciente (kg)</label><input id="med_peso" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 12.5" oninput="calcMedInfantil()"></div>
-        <div class="calc-item"><label class="calc-label">Dose prescrita (mg/kg/dose)</label><input id="med_dose_kg" type="number" step="0.01" min="0" class="calc-input" placeholder="Ex: 10" oninput="calcMedInfantil()"></div>
-        <div class="calc-item"><label class="calc-label">Concentração do medicamento (mg/mL)</label><input id="med_conc" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 50" oninput="calcMedInfantil()"></div>
-        <div id="resultadoDose" style="margin-top:12px;padding:14px;border-radius:12px;background:#dcfce7;display:none;text-align:center;"></div>
+    <!-- ===================== MODAL MEDICAMENTOS ===================== -->
+    <div class="overlay" id="modalPharma">
+        <div class="modal">
+            <h2 style="text-align:center; color:#ef4444; margin-top:0;">💊 Medicamentos</h2>
+            <div id="listaFaltas"></div>
+            <button onclick="fecharModal('modalPharma')" class="btn-fechar" style="background:#94a3b8;">VOLTAR</button>
+        </div>
     </div>
-    <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:14px;padding:16px;">
-        <p style="font-weight:800;color:#1e3a8a;margin:0 0 12px;">💧 Gotejamento</p>
-        <div class="calc-item"><label class="calc-label">Volume total (mL)</label><input id="got_vol" type="number" step="1" min="0" class="calc-input" placeholder="Ex: 100" oninput="calcGotejamento()"></div>
-        <div class="calc-item"><label class="calc-label">Tempo de infusão (horas)</label><input id="got_tempo" type="number" step="0.5" min="0" class="calc-input" placeholder="Ex: 2" oninput="calcGotejamento()"></div>
-        <div class="calc-item"><label class="calc-label">Tipo de equipo</label><select id="got_equipo" class="calc-select" onchange="calcGotejamento()"><option value="20">Macrogotas (20 gts/mL)</option><option value="60">Microgotas (60 gts/mL)</option></select></div>
-        <div id="resultadoGot" style="margin-top:12px;padding:14px;border-radius:12px;background:#dbeafe;display:none;text-align:center;"></div>
+
+    <!-- ===================== MODAL SUPORTE VENTILATÓRIO ===================== -->
+    <div class="overlay" id="modalVent">
+        <div class="modal">
+            <h2 style="text-align:center; color:#0369a1; margin-top:0;">😷 Suporte Ventilatório Pediátrico</h2>
+            <p style="font-size:0.75rem; color:#64748b; text-align:center; margin-top:-10px; margin-bottom:14px;">
+                Parâmetros iniciais sugeridos — ajuste conforme resposta clínica
+            </p>
+
+            <div class="vent-table-wrap">
+                <table class="vent-table">
+                    <thead>
+                        <tr>
+                            <th>Faixa Etária</th>
+                            <th>Peso (kg)</th>
+                            <th>Vc (mL)</th>
+                            <th>FR (rpm)</th>
+                            <th>PEEP (cmH₂O)</th>
+                            <th>PIP (cmH₂O)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">RN Prematuro</div>
+                                <div class="faixa-idade">&lt; 37 semanas</div>
+                            </td>
+                            <td>0,5 – 1,5</td>
+                            <td>3 – 12</td>
+                            <td>40 – 60</td>
+                            <td>4 – 5</td>
+                            <td>14 – 20</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">RN a Termo</div>
+                                <div class="faixa-idade">0 – 28 dias</div>
+                            </td>
+                            <td>2,5 – 4</td>
+                            <td>15 – 32</td>
+                            <td>40 – 60</td>
+                            <td>4 – 5</td>
+                            <td>16 – 22</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Lactente</div>
+                                <div class="faixa-idade">1 – 12 meses</div>
+                            </td>
+                            <td>4 – 10</td>
+                            <td>24 – 80</td>
+                            <td>30 – 50</td>
+                            <td>4 – 6</td>
+                            <td>16 – 24</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Pré-escolar</div>
+                                <div class="faixa-idade">1 – 5 anos</div>
+                            </td>
+                            <td>10 – 18</td>
+                            <td>60 – 144</td>
+                            <td>20 – 30</td>
+                            <td>5 – 6</td>
+                            <td>18 – 25</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Escolar</div>
+                                <div class="faixa-idade">6 – 12 anos</div>
+                            </td>
+                            <td>18 – 40</td>
+                            <td>108 – 320</td>
+                            <td>16 – 24</td>
+                            <td>5 – 8</td>
+                            <td>18 – 28</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="faixa-nome">Adolescente</div>
+                                <div class="faixa-idade">13 – 17 anos</div>
+                            </td>
+                            <td>40 – 70</td>
+                            <td>240 – 560</td>
+                            <td>12 – 20</td>
+                            <td>5 – 8</td>
+                            <td>20 – 30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="vent-aviso">
+                <strong>⚠️ Lembretes importantes:</strong><br>
+                • Vc ideal: <strong>6 – 8 mL/kg</strong> de peso predito<br>
+                • Limite PIP: <strong>&lt; 30 cmH₂O</strong> sempre que possível<br>
+                • Ajustar FiO₂ para SpO₂ <strong>94 – 98%</strong><br>
+                • Reavalie gasometria após <strong>30 min</strong> de ventilação<br>
+                • Em caso de dúvida, acione o médico responsável imediatamente
+            </div>
+
+            <!-- CALCULADORA VENTILATÓRIA INTEGRADA -->
+            <div style="margin-top:18px; background:#f0fdf4; border:2px solid #86efac; border-radius:16px; padding:16px;">
+                <div style="font-weight:900; color:#166534; font-size:0.95rem; margin-bottom:12px;">🫁 Calculadora por Peso</div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:120px;">
+                        <label class="calc-label">Peso (kg)</label>
+                        <input id="vc_peso" type="number" step="0.5" min="0.5" max="200" class="calc-input" placeholder="Ex: 14" oninput="calcVentCalc()">
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <label class="calc-label">Modo</label>
+                        <select id="vc_modo" class="calc-select" onchange="calcVentCalc()">
+                            <option value="adulto">Adulto (≥18 anos)</option>
+                            <option value="pediatrico" selected>Pediátrico (&lt;18 anos)</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:100px;">
+                        <label class="calc-label">FiO₂</label>
+                        <select id="vc_fio2" class="calc-select" onchange="calcVentCalc()">
+                            <option value="40">40%</option>
+                            <option value="50">50%</option>
+                            <option value="60" selected>60%</option>
+                            <option value="80">80%</option>
+                            <option value="100">100%</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="vent-result-box" id="resultadoVentCalc" style="margin-top:12px;">
+                    <div style="text-align:center; font-size:0.7rem; font-weight:800; color:#166534; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">Parâmetros Sugeridos</div>
+                    <div class="vent-result-row"><span class="vent-result-label">Vc protetora (6 mL/kg)</span><span class="vent-result-val" id="vc_vc6">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">Vc máximo (8 mL/kg)</span><span class="vent-result-val" id="vc_vc8">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">FR</span><span class="vent-result-val" id="vc_fr">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">PEEP</span><span class="vent-result-val" id="vc_peep">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">PIP máx</span><span class="vent-result-val" id="vc_pip">—</span></div>
+                    <div class="vent-result-row"><span class="vent-result-label">FiO₂</span><span class="vent-result-val" id="vc_fio2_display">—</span></div>
+                </div>
+            </div>
+
+            <button onclick="fecharModal('modalVent')" class="btn-fechar" style="background:#0369a1; margin-top:14px;">FECHAR</button>
+        </div>
     </div>
-    <button onclick="['med_peso','med_dose_kg','med_conc','got_vol','got_tempo'].forEach(id=>document.getElementById(id).value='');document.getElementById('resultadoDose').style.display='none';document.getElementById('resultadoGot').style.display='none'" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:14px;">🔄 LIMPAR</button>
-    <button onclick="trocarModal('modalMedInfantil','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
-</div></div>
 
-<footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
+    
 
-<script>
-    // ============================================================
-    // CONFIGURAÇÃO DAS PLANILHAS
-    // ============================================================
-    const CONFIG_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh/pub?gid=0&single=true&output=csv';
-    const AVISOS_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSdPTMmKdd5Ggo6hJdY-23eQ175pYv9o6akAQ41WdVf_x6UvwjgZKiEHaOOgigki7xZon3pkcSKOYg2/pub?gid=0&single=true&output=csv';
-    const INDICADORES_URL = 'COLE_AQUI_A_URL_CSV_DA_PLANILHA_DE_INDICADORES';
-    const DOCS_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTPYJ-EWzcOLkqoJqfY5aKbtOSGh6MtqGyfB_JRhJd0XFX6YWE7SD-h4ONywHfg4Rd3IuElOKYfWs7J/pub?gid=0&single=true&output=csv';
 
-    // ============================================================
-    // FETCH ROBUSTO: tenta direto, depois allorigins
-    // ============================================================
-    async function fetchCSV(url) {
-        try {
-            const r = await fetch(url);
-            if (r.ok) return await r.text();
-        } catch(e) {}
-        try {
-            const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
-            if (r.ok) return await r.text();
-        } catch(e) {}
-        return null;
-    }
 
-    function parseCSVLine(line) {
-        const result = []; let current = ''; let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-            const ch = line[i];
-            if (ch === '"') { inQuotes = !inQuotes; }
-            else if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
-            else { current += ch; }
+    <!-- ===================== MODAL DOCUMENTOS ===================== -->
+    <div class="overlay" id="modalDocs">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                <h2 style="color:#1e3a8a;margin:0;">📂 Documentos</h2>
+                <span id="badgeDocs" style="background:#3b82f6;color:white;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;display:none;"></span>
+            </div>
+            <p style="font-size:0.75rem;color:#64748b;margin-top:4px;margin-bottom:12px;">
+                Documentos atualizados pela gestão via planilha
+            </p>
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar documento..." oninput="filtrarDocs(this.value)">
+            </div>
+            <div id="listaDocs">
+                <div class="doc-vazio">⏳ Carregando documentos...</div>
+            </div>
+            <button onclick="fecharModal('modalDocs')" class="btn-fechar" style="background:#1e3a8a;margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL SISTEMAS ===================== -->
+    <div class="overlay" id="modalSistemas">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💻 Sistemas</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:18px;">Clique para abrir o sistema em nova aba</p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+
+                <a href="http://192.168.1.15:8080/vitai" target="_blank" class="sistema-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;">
+                    <span class="sistema-icon">🏥</span>
+                    <div>
+                        <div class="sistema-nome">Prontuário Eletrônico</div>
+                        <div class="sistema-url">Vitai · Rede interna</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://ser.saude.rj.gov.br/ser/login" target="_blank" class="sistema-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;">
+                    <span class="sistema-icon">📋</span>
+                    <div>
+                        <div class="sistema-nome">SER</div>
+                        <div class="sistema-url">ser.saude.rj.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://web2.smsrio.org/login/index.php#/" target="_blank" class="sistema-btn" style="border-left:5px solid #7c3aed;background:#f5f3ff;">
+                    <span class="sistema-icon">🛏️</span>
+                    <div>
+                        <div class="sistema-nome">SMS — Vaga Zero</div>
+                        <div class="sistema-url">web2.smsrio.org</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://laudos.cientificalab.com.br/laudos/#" target="_blank" class="sistema-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;">
+                    <span class="sistema-icon">🔬</span>
+                    <div>
+                        <div class="sistema-nome">Laboratório</div>
+                        <div class="sistema-url">laudos.cientificalab.com.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://hci.rio.gov.br/auth/sign-in" target="_blank" class="sistema-btn" style="border-left:5px solid #dc2626;background:#fef2f2;">
+                    <span class="sistema-icon">📁</span>
+                    <div>
+                        <div class="sistema-nome">HCI — Histórico Clínico Integrado</div>
+                        <div class="sistema-url">hci.rio.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+                <a href="https://cadastro.saude.gov.br/segcartao" target="_blank" class="sistema-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;">
+                    <span class="sistema-icon">💳</span>
+                    <div>
+                        <div class="sistema-nome">CADSUS</div>
+                        <div class="sistema-url">cadastro.saude.gov.br</div>
+                    </div>
+                    <span class="sistema-seta">→</span>
+                </a>
+
+            </div>
+
+            <div style="margin-top:16px;background:#f1f5f9;border-radius:10px;padding:10px 14px;font-size:0.72rem;color:#64748b;text-align:center;">
+                ⚠️ O Prontuário Eletrônico só funciona na <strong>rede interna da UPA</strong>
+            </div>
+
+            <button onclick="fecharModal('modalSistemas')" class="btn-fechar" style="background:#1e3a8a;margin-top:16px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MENU FLUXOGRAMAS ===================== -->
+    <div class="overlay" id="modalFluxoMenu">
+        <div class="modal" style="max-height:88vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">📋 Fluxogramas Clínicos</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:12px;">Protocolos de atendimento rápido</p>
+            <div class="search-wrap">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Buscar protocolo..." oninput="filtrarFluxos(this.value)">
+            </div>
+            <div id="listaFluxos" style="display:flex;flex-direction:column;gap:10px;">
+                <button data-nome="Sepse" onclick="trocarModal('modalFluxoMenu','modalFluxoSepse')"     class="fluxo-btn" style="border-left:5px solid #ef4444;background:#fef2f2;color:#7f1d1d;">🦠 Sepse</button>
+                <button data-nome="AVC AVE AVC acidente vascular cerebral" onclick="trocarModal('modalFluxoMenu','modalFluxoAVC')"       class="fluxo-btn" style="border-left:5px solid #8b5cf6;background:#f5f3ff;color:#4c1d95;">🧠 AVC / AVE</button>
+                <button data-nome="Dor Torácica IAM infarto" onclick="trocarModal('modalFluxoMenu','modalFluxoIAM')"       class="fluxo-btn" style="border-left:5px solid #dc2626;background:#fff1f2;color:#7f1d1d;">❤️ Dor Torácica / IAM</button>
+                <button data-nome="Crise Hipertensiva HAS hipertensão" onclick="trocarModal('modalFluxoMenu','modalFluxoHAS')"       class="fluxo-btn" style="border-left:5px solid #f59e0b;background:#fffbeb;color:#78350f;">🩺 Crise Hipertensiva</button>
+                <button data-nome="PCR RCP parada cardiorrespiratória" onclick="trocarModal('modalFluxoMenu','modalFluxoPCR')"       class="fluxo-btn" style="border-left:5px solid #1e3a8a;background:#eff6ff;color:#1e3a8a;">💓 PCR / RCP</button>
+                <button data-nome="Convulsão epilepsia status epiléptico" onclick="trocarModal('modalFluxoMenu','modalFluxoConvulsao')" class="fluxo-btn" style="border-left:5px solid #0369a1;background:#f0f9ff;color:#0c4a6e;">⚡ Convulsão</button>
+                <button data-nome="Trauma ABCDE politrauma" onclick="trocarModal('modalFluxoMenu','modalFluxoTrauma')"    class="fluxo-btn" style="border-left:5px solid #16a34a;background:#f0fdf4;color:#14532d;">🩹 Trauma</button>
+            </div>
+            <button onclick="fecharModal('modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:16px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- SEPSE -->
+    <div class="overlay" id="modalFluxoSepse">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#ef4444;margin-top:0;">🦠 Protocolo de Sepse</h2>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ Cada hora sem antibiótico aumenta a mortalidade em ~7%</div>
+            <div class="fluxo-section">Bundle da 1ª hora</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">1</div><div><div class="fluxo-title">Identificar suspeita clínica</div><div class="fluxo-desc">Infecção + qSOFA ≥2: FR≥22, Glasgow&lt;15 ou PAS≤100 mmHg</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">2</div><div><div class="fluxo-title">Coletar hemoculturas (x2)</div><div class="fluxo-desc">Colher antes do ATB — não atrasar o antibiótico pela coleta</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">3</div><div><div class="fluxo-title">Dosar lactato</div><div class="fluxo-desc">≥2 mmol/L = hipoperfusão | ≥4 mmol/L = choque séptico</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">4</div><div><div class="fluxo-title">Antibioticoterapia empírica</div><div class="fluxo-desc">Iniciar em até 1h. Escolher conforme foco provável</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">5</div><div><div class="fluxo-title">Ressuscitação volêmica</div><div class="fluxo-desc">SF 0,9% ou Ringer Lactato 30 mL/kg em até 3h se hipotensão ou lactato ≥4</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#ef4444;">6</div><div><div class="fluxo-title">Vasopressor se PAM &lt; 65 mmHg</div><div class="fluxo-desc">Noradrenalina preferencial. Acesso venoso central se possível</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 Metas: PAM ≥65 | Diurese ≥0,5 mL/kg/h | Lactato clearance ≥10% em 2h</div>
+            <button onclick="trocarModal('modalFluxoSepse','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- AVC -->
+    <div class="overlay" id="modalFluxoAVC">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#8b5cf6;margin-top:0;">🧠 Protocolo AVC / AVE</h2>
+            <div class="fluxo-alerta" style="background:#ede9fe;color:#4c1d95;">⚠️ "Tempo é cérebro" — 1,9 milhão de neurônios morrem por minuto</div>
+            <div class="fluxo-section">Triagem e avaliação</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">1</div><div><div class="fluxo-title">Aplicar escala FAST</div><div class="fluxo-desc">Face (assimetria) | Arm (fraqueza) | Speech (fala alterada) | Time (registrar hora)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">2</div><div><div class="fluxo-title">Registrar hora exata do início</div><div class="fluxo-desc">Janela trombólise: até 4,5h | Trombectomia: até 24h</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">3</div><div><div class="fluxo-title">Acesso venoso + exames urgentes</div><div class="fluxo-desc">Glicemia, coagulograma, hemograma, eletrólitos. Glicemia &lt;60 ou &gt;400 = corrigir antes</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">4</div><div><div class="fluxo-title">TC de crânio sem contraste — URGENTE</div><div class="fluxo-desc">Diferenciar AVC isquêmico de hemorrágico antes de qualquer conduta</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA, SatO2, ECG. Manter SatO2 ≥94%. Cabeceira 30° se rebaixamento</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#8b5cf6;">6</div><div><div class="fluxo-title">Acionar neurologista / SAMU regulação</div><div class="fluxo-desc">Para avaliação de trombólise (Alteplase 0,9 mg/kg, máx 90mg) ou transferência</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚫 NÃO reduzir PA agressivamente (exceto se &gt;220x120 no isquêmico ou &gt;180x105 no hemorrágico)</div>
+            <button onclick="trocarModal('modalFluxoAVC','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- IAM -->
+    <div class="overlay" id="modalFluxoIAM">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#dc2626;margin-top:0;">❤️ Dor Torácica / IAM</h2>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">⚠️ Todo ECG deve ser realizado em até 10 minutos da chegada</div>
+            <div class="fluxo-section">Avaliação inicial</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">1</div><div><div class="fluxo-title">ECG 12 derivações — imediato</div><div class="fluxo-desc">Identificar supradesnivelamento de ST (IAMCSST) ou bloqueio de ramo novo</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">2</div><div><div class="fluxo-title">Acesso venoso + monitorização</div><div class="fluxo-desc">PA, FC, SatO2, oximetria. Oxigênio se SatO2 &lt;94%</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">3</div><div><div class="fluxo-title">AAS 200mg VO — mastigar</div><div class="fluxo-desc">Se não houver contraindicação. Dose de ataque imediata</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">Colher troponina, CK-MB, BNP</div><div class="fluxo-desc">Hemograma, coagulograma, eletrólitos, função renal</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">5</div><div><div class="fluxo-title">Morfina / Nitrato se dor intensa</div><div class="fluxo-desc">Nitrato: contraindicado se PAS &lt;90 ou uso de sildenafil. Morfina: 2-4mg EV</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">6</div><div><div class="fluxo-title">Acionar hemodinâmica / transferência</div><div class="fluxo-desc">IAMCSST: angioplastia em até 90min (porta-balão). Se indisponível: trombólise</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🎯 Mnemônico MONAB: Morfina | Oxigênio | Nitrato | AAS | Beta-bloqueador</div>
+            <button onclick="trocarModal('modalFluxoIAM','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- CRISE HIPERTENSIVA -->
+    <div class="overlay" id="modalFluxoHAS">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#f59e0b;margin-top:0;">🩺 Crise Hipertensiva</h2>
+            <div class="fluxo-alerta" style="background:#fffbeb;color:#78350f;">⚠️ Urgência: PA elevada sem lesão de órgão-alvo | Emergência: PA elevada COM lesão</div>
+            <div class="fluxo-section">Classificação e conduta</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">1</div><div><div class="fluxo-title">Aferir PA em ambos os membros</div><div class="fluxo-desc">Confirmar com 2 medidas. PAS ≥180 e/ou PAD ≥120 mmHg = crise hipertensiva</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">2</div><div><div class="fluxo-title">Avaliar lesão de órgão-alvo</div><div class="fluxo-desc">Neurológico (cefaleia, confusão, AVC) | Cardíaco (dor, dispneia) | Renal (oligúria) | Ocular (turvação)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">3</div><div><div class="fluxo-title">URGÊNCIA hipertensiva</div><div class="fluxo-desc">Captopril 25mg SL ou VO | Meta: reduzir 25% em 24-48h. Sem pressa excessiva</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#dc2626;">4</div><div><div class="fluxo-title">EMERGÊNCIA hipertensiva</div><div class="fluxo-desc">Nitroprussiato EV ou Labetalol EV | Reduzir PA 25% na 1ª hora. UTI/internação</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#f59e0b;">5</div><div><div class="fluxo-title">Monitorização contínua</div><div class="fluxo-desc">PA a cada 15-30 min. ECG, função renal, fundo de olho se disponível</div></div></div>
+            <div class="fluxo-alerta" style="background:#fee2e2;color:#7f1d1d;">🚫 NÃO reduzir PA rapidamente na urgência — risco de isquemia cerebral e coronariana</div>
+            <button onclick="trocarModal('modalFluxoHAS','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- PCR -->
+    <div class="overlay" id="modalFluxoPCR">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">💓 PCR / RCP</h2>
+            <div class="fluxo-alerta" style="background:#eff6ff;color:#1e3a8a;">⚠️ Iniciar RCP imediatamente — cada minuto sem compressão reduz sobrevida em 10%</div>
+
+            <!-- CRONÔMETRO PCR -->
+            <div class="pcr-timer">
+                <div class="pcr-timer-label">⏱️ CRONÔMETRO DE RCP</div>
+                <div class="pcr-timer-display" id="pcrTimerDisplay">00:00</div>
+                <div style="font-size:0.7rem; color:#bfdbfe; margin-top:2px;" id="pcrTimerSub">Pressione INICIAR para começar</div>
+                <div class="pcr-timer-btns">
+                    <button class="pcr-btn" style="background:#10b981;color:white;" onclick="pcrTimerToggle()">▶ INICIAR</button>
+                    <button class="pcr-btn" style="background:#f59e0b;color:white;" onclick="pcrTimerLap()">📍 LAP 2min</button>
+                    <button class="pcr-btn" style="background:#ef4444;color:white;" onclick="pcrTimerReset()">↺ RESET</button>
+                </div>
+                <div class="pcr-lap-list" id="pcrLapList" style="display:none;"></div>
+            </div>
+            <div class="fluxo-section">Sequência BLS / ACLS</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">1</div><div><div class="fluxo-title">Checar responsividade e chamar ajuda</div><div class="fluxo-desc">Estimular, gritar, acionar equipe. Iniciar cronômetro</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">2</div><div><div class="fluxo-title">Compressões torácicas — IMEDIATO</div><div class="fluxo-desc">100-120/min | Profundidade 5-6cm | Permitir reexpansão total | Mínimo de interrupções</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">3</div><div><div class="fluxo-title">Desfibrilador — ligar imediatamente</div><div class="fluxo-desc">Ritmos chocáveis: FV e TV sem pulso. Choque assim que disponível</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">4</div><div><div class="fluxo-title">Via aérea e ventilação</div><div class="fluxo-desc">30:2 sem via aérea avançada | Com IOT: 10 vent/min sem pausar compressões</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">5</div><div><div class="fluxo-title">Adrenalina 1mg EV a cada 3-5 min</div><div class="fluxo-desc">Ritmos não chocáveis (AESP/Assistolia): adrenalina o mais rápido possível</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#1e3a8a;">6</div><div><div class="fluxo-title">Tratar causas reversíveis — 5H5T</div><div class="fluxo-desc">Hipóxia, Hipovolemia, H+ (acidose), Hipo/Hipercalemia, Hipotermia | Tamponamento, Tensão (pneumotórax), Trombose (IAM/TEP), Tóxicos</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔄 Checar pulso a cada 2 min. Revezar compressor a cada 2 min para evitar fadiga</div>
+            <button onclick="trocarModal('modalFluxoPCR','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- CONVULSÃO -->
+    <div class="overlay" id="modalFluxoConvulsao">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#0369a1;margin-top:0;">⚡ Protocolo de Convulsão</h2>
+            <div class="fluxo-alerta" style="background:#f0f9ff;color:#0c4a6e;">⚠️ Status epiléptico = convulsão &gt;5 min ou 2 crises sem recuperação. Emergência!</div>
+            <div class="fluxo-section">Conduta imediata</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">1</div><div><div class="fluxo-title">Proteger e posicionar</div><div class="fluxo-desc">Decúbito lateral, afastar objetos, NÃO conter forçadamente, NÃO colocar nada na boca</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">2</div><div><div class="fluxo-title">Via aérea e O2</div><div class="fluxo-desc">O2 por máscara ou cateter. Aspirar secreções se necessário. SatO2 ≥94%</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">3</div><div><div class="fluxo-title">Glicemia capilar imediata</div><div class="fluxo-desc">Hipoglicemia = causa tratável. Se &lt;60: glicose 50% 50mL EV (adulto)</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">4</div><div><div class="fluxo-title">Benzodiazepínico — 1ª linha (0-5 min)</div><div class="fluxo-desc">Diazepam 10mg EV lento | Midazolam 10mg IM | Diazepam 20mg retal</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">5</div><div><div class="fluxo-title">2ª linha se refratário (5-20 min)</div><div class="fluxo-desc">Fenitoína 20mg/kg EV (máx 50mg/min) | Valproato 40mg/kg EV | Fenobarbital 20mg/kg EV</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#0369a1;">6</div><div><div class="fluxo-title">Status refratário (&gt;30 min) — UTI</div><div class="fluxo-desc">Midazolam ou Propofol em infusão contínua. IOT e monitorização EEG</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🔍 Investigar causa: HIC, meningite, distúrbio metabólico, intoxicação, abstinência</div>
+            <button onclick="trocarModal('modalFluxoConvulsao','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- TRAUMA -->
+    <div class="overlay" id="modalFluxoTrauma">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#16a34a;margin-top:0;">🩹 Protocolo de Trauma</h2>
+            <div class="fluxo-alerta" style="background:#f0fdf4;color:#14532d;">⚠️ Avaliação primária pelo método ABCDE — tratar ameaças à vida na ordem encontrada</div>
+            <div class="fluxo-section">Avaliação primária — ABCDE</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">A</div><div><div class="fluxo-title">Airway — Via aérea com proteção cervical</div><div class="fluxo-desc">Colar cervical. Aspirar, posicionar, IOT se necessário. Falar com paciente = via aérea pérvia</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">B</div><div><div class="fluxo-title">Breathing — Ventilação e respiração</div><div class="fluxo-desc">Ausculta, inspeção, palpação. Tratar pneumotórax hipertensivo, hemotórax, tórax instável</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">C</div><div><div class="fluxo-title">Circulation — Controle de hemorragia</div><div class="fluxo-desc">Compressão direta, torniquete. 2 acessos calibrosos. Reposição: cristaloide + hemoderivados</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">D</div><div><div class="fluxo-title">Disability — Neurológico</div><div class="fluxo-desc">Glasgow, pupilas, glicemia. Glasgow ≤8 = IOT. Avaliar déficit motor/sensitivo</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">E</div><div><div class="fluxo-title">Exposure — Exposição e ambiente</div><div class="fluxo-desc">Despir completamente, examinar dorso. Prevenir hipotermia com lençóis/cobertores aquecidos</div></div></div>
+            <div class="fluxo-arrow">↓</div>
+            <div class="fluxo-step"><div class="fluxo-num" style="background:#16a34a;">F</div><div><div class="fluxo-title">Avaliação secundária — da cabeça aos pés</div><div class="fluxo-desc">Exame físico completo, anamnese AMPLA, radiografias (tórax, pelve, coluna)</div></div></div>
+            <div class="fluxo-alerta" style="background:#fef3c7;color:#78350f;">🚁 Critérios de transferência: TCE grave, lesão vascular, trauma abdominal penetrante, politrauma</div>
+            <button onclick="trocarModal('modalFluxoTrauma','modalFluxoMenu')" class="btn-fechar" style="background:#94a3b8;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL AVISOS GERAIS ===================== -->
+    <div class="overlay" id="modalAvisos">
+        <div class="modal" style="max-height:85vh; overflow-y:auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                <h2 style="color:#1e3a8a; margin:0;">📢 Avisos Gerais</h2>
+                <span id="badgeAvisos" style="background:#ef4444; color:white; font-size:0.7rem; font-weight:800; padding:3px 10px; border-radius:20px; display:none;"></span>
+            </div>
+            <p style="font-size:0.75rem; color:#64748b; margin-top:4px; margin-bottom:16px;">
+                Avisos atualizados em tempo real pela gestão
+            </p>
+            <div id="listaAvisos">
+                <div style="text-align:center; padding:30px; color:#64748b;">⏳ Carregando avisos...</div>
+            </div>
+            <button onclick="fecharModal('modalAvisos')" class="btn-fechar" style="background:#1e3a8a; margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MENU CALCULADORAS ===================== -->
+    <div class="overlay" id="modalCalcMenu">
+        <div class="modal" style="max-height:85vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#1e3a8a; margin-top:0;">🧮 Calculadoras</h2>
+            <p style="text-align:center; font-size:0.8rem; color:#64748b; margin-top:-10px;">Selecione a calculadora desejada</p>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+                <button onclick="trocarModal('modalCalcMenu','modalBraden')" style="padding:18px; background:#fef3c7; border:2px solid #f59e0b; border-radius:15px; font-size:1rem; font-weight:800; color:#92400e; cursor:pointer; text-align:left;">
+                    🛏️ Escala de Braden<br><span style="font-size:0.75rem; font-weight:400;">Risco de lesão por pressão</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalMorse')" style="padding:18px; background:#ede9fe; border:2px solid #7c3aed; border-radius:15px; font-size:1rem; font-weight:800; color:#4c1d95; cursor:pointer; text-align:left;">
+                    🚶 Escala de Morse<br><span style="font-size:0.75rem; font-weight:400;">Risco de queda</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalMedInfantil')" style="padding:18px; background:#dcfce7; border:2px solid #16a34a; border-radius:15px; font-size:1rem; font-weight:800; color:#14532d; cursor:pointer; text-align:left;">
+                    💉 Cálculo de Medicação Infantil<br><span style="font-size:0.75rem; font-weight:400;">Dose por peso (mg/kg) e gotejamento</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalGlasgow')" style="padding:18px; background:#eff6ff; border:2px solid #3b82f6; border-radius:15px; font-size:1rem; font-weight:800; color:#1e3a8a; cursor:pointer; text-align:left;">
+                    🧠 Escala de Glasgow<br><span style="font-size:0.75rem; font-weight:400;">Avaliação do nível de consciência</span>
+                </button>
+                <button onclick="trocarModal('modalCalcMenu','modalQSOFA')" style="padding:18px; background:#fef2f2; border:2px solid #ef4444; border-radius:15px; font-size:1rem; font-weight:800; color:#7f1d1d; cursor:pointer; text-align:left;">
+                    🦠 qSOFA — Triagem de Sepse<br><span style="font-size:0.75rem; font-weight:400;">Identificação rápida de disfunção orgânica</span>
+                </button>
+            </div>
+            <button onclick="fecharModal('modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:18px;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL BRADEN ===================== -->
+    <div class="overlay" id="modalBraden">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#92400e; margin-top:0;">🛏️ Escala de Braden</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Avaliação de risco de lesão por pressão</p>
+
+            <div id="bradenForm">
+                <!-- 1. Percepção Sensorial -->
+                <div class="calc-item">
+                    <label class="calc-label">1. Percepção Sensorial</label>
+                    <select id="b1" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Completamente limitada</option>
+                        <option value="2">2 – Muito limitada</option>
+                        <option value="3">3 – Levemente limitada</option>
+                        <option value="4">4 – Nenhuma limitação</option>
+                    </select>
+                </div>
+                <!-- 2. Umidade -->
+                <div class="calc-item">
+                    <label class="calc-label">2. Umidade</label>
+                    <select id="b2" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Constantemente úmida</option>
+                        <option value="2">2 – Muito úmida</option>
+                        <option value="3">3 – Ocasionalmente úmida</option>
+                        <option value="4">4 – Raramente úmida</option>
+                    </select>
+                </div>
+                <!-- 3. Atividade -->
+                <div class="calc-item">
+                    <label class="calc-label">3. Atividade</label>
+                    <select id="b3" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Acamado</option>
+                        <option value="2">2 – Restrito à cadeira</option>
+                        <option value="3">3 – Anda ocasionalmente</option>
+                        <option value="4">4 – Anda frequentemente</option>
+                    </select>
+                </div>
+                <!-- 4. Mobilidade -->
+                <div class="calc-item">
+                    <label class="calc-label">4. Mobilidade</label>
+                    <select id="b4" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Completamente imóvel</option>
+                        <option value="2">2 – Muito limitada</option>
+                        <option value="3">3 – Levemente limitada</option>
+                        <option value="4">4 – Sem limitações</option>
+                    </select>
+                </div>
+                <!-- 5. Nutrição -->
+                <div class="calc-item">
+                    <label class="calc-label">5. Nutrição</label>
+                    <select id="b5" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Muito pobre</option>
+                        <option value="2">2 – Inadequada</option>
+                        <option value="3">3 – Adequada</option>
+                        <option value="4">4 – Excelente</option>
+                    </select>
+                </div>
+                <!-- 6. Fricção e Cisalhamento -->
+                <div class="calc-item">
+                    <label class="calc-label">6. Fricção e Cisalhamento</label>
+                    <select id="b6" class="calc-select" onchange="calcBraden()">
+                        <option value="">-- selecione --</option>
+                        <option value="1">1 – Problema</option>
+                        <option value="2">2 – Problema em potencial</option>
+                        <option value="3">3 – Nenhum problema aparente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="resultadoBraden" style="margin-top:16px; padding:16px; border-radius:14px; text-align:center; display:none;">
+            </div>
+
+            <button onclick="limparBraden()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalBraden','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MORSE ===================== -->
+    <div class="overlay" id="modalMorse">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#4c1d95; margin-top:0;">🚶 Escala de Morse</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Avaliação de risco de queda</p>
+
+            <div id="morseForm">
+                <!-- 1. Histórico de quedas -->
+                <div class="calc-item">
+                    <label class="calc-label">1. Histórico de quedas nos últimos 3 meses</label>
+                    <select id="m1" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="25">25 – Sim</option>
+                    </select>
+                </div>
+                <!-- 2. Diagnóstico secundário -->
+                <div class="calc-item">
+                    <label class="calc-label">2. Diagnóstico secundário</label>
+                    <select id="m2" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="15">15 – Sim</option>
+                    </select>
+                </div>
+                <!-- 3. Auxílio para deambulação -->
+                <div class="calc-item">
+                    <label class="calc-label">3. Auxílio para deambulação</label>
+                    <select id="m3" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Nenhum / acamado / cadeira de rodas</option>
+                        <option value="15">15 – Muleta / bengala / andador</option>
+                        <option value="30">30 – Apoia-se em mobília</option>
+                    </select>
+                </div>
+                <!-- 4. Terapia intravenosa -->
+                <div class="calc-item">
+                    <label class="calc-label">4. Terapia intravenosa / heparina</label>
+                    <select id="m4" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Não</option>
+                        <option value="20">20 – Sim</option>
+                    </select>
+                </div>
+                <!-- 5. Marcha -->
+                <div class="calc-item">
+                    <label class="calc-label">5. Marcha / transferência</label>
+                    <select id="m5" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Normal / acamado / imóvel</option>
+                        <option value="10">10 – Fraca</option>
+                        <option value="20">20 – Comprometida / cambaleante</option>
+                    </select>
+                </div>
+                <!-- 6. Estado mental -->
+                <div class="calc-item">
+                    <label class="calc-label">6. Estado mental</label>
+                    <select id="m6" class="calc-select" onchange="calcMorse()">
+                        <option value="">-- selecione --</option>
+                        <option value="0">0 – Orientado / coerente</option>
+                        <option value="15">15 – Superestima capacidade / esquece limitações</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="resultadoMorse" style="margin-top:16px; padding:16px; border-radius:14px; text-align:center; display:none;">
+            </div>
+
+            <button onclick="limparMorse()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalMorse','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL MEDICAÇÃO INFANTIL ===================== -->
+    <div class="overlay" id="modalMedInfantil">
+        <div class="modal" style="max-height:90vh; overflow-y:auto;">
+            <h2 style="text-align:center; color:#14532d; margin-top:0;">💉 Medicação Infantil</h2>
+            <p style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:-10px; margin-bottom:16px;">Cálculo de dose por peso e gotejamento</p>
+
+            <!-- SEÇÃO 1: Dose por peso -->
+            <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:14px; padding:16px; margin-bottom:16px;">
+                <p style="font-weight:800; color:#14532d; margin:0 0 12px;">📌 Dose por Peso (mg/kg)</p>
+
+                <div class="calc-item">
+                    <label class="calc-label">Peso do paciente (kg)</label>
+                    <input id="med_peso" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 12.5" oninput="calcMedInfantil()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Dose prescrita (mg/kg/dose)</label>
+                    <input id="med_dose_kg" type="number" step="0.01" min="0" class="calc-input" placeholder="Ex: 10" oninput="calcMedInfantil()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Concentração do medicamento (mg/mL)</label>
+                    <input id="med_conc" type="number" step="0.1" min="0" class="calc-input" placeholder="Ex: 50 (Dipirona 500mg/10mL = 50mg/mL)" oninput="calcMedInfantil()">
+                </div>
+
+                <div id="resultadoDose" style="margin-top:12px; padding:14px; border-radius:12px; background:#dcfce7; display:none; text-align:center;">
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: Gotejamento -->
+            <div style="background:#eff6ff; border:1px solid #93c5fd; border-radius:14px; padding:16px;">
+                <p style="font-weight:800; color:#1e3a8a; margin:0 0 12px;">💧 Gotejamento / Velocidade de Infusão</p>
+
+                <div class="calc-item">
+                    <label class="calc-label">Volume total (mL)</label>
+                    <input id="got_vol" type="number" step="1" min="0" class="calc-input" placeholder="Ex: 100" oninput="calcGotejamento()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Tempo de infusão (horas)</label>
+                    <input id="got_tempo" type="number" step="0.5" min="0" class="calc-input" placeholder="Ex: 2" oninput="calcGotejamento()">
+                </div>
+                <div class="calc-item">
+                    <label class="calc-label">Tipo de equipo</label>
+                    <select id="got_equipo" class="calc-select" onchange="calcGotejamento()">
+                        <option value="20">Macrogotas (20 gts/mL)</option>
+                        <option value="60">Microgotas (60 gts/mL)</option>
+                    </select>
+                </div>
+
+                <div id="resultadoGot" style="margin-top:12px; padding:14px; border-radius:12px; background:#dbeafe; display:none; text-align:center;">
+                </div>
+            </div>
+
+            <button onclick="limparMedInfantil()" class="btn-fechar" style="background:#e2e8f0; color:#1e293b; margin-top:14px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalMedInfantil','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8; margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+
+    <footer>&copy; 2026 UPA ROCINHA • GESTÃO INTELIGENTE</footer>
+
+    <!-- ===================== MODAL GLASGOW ===================== -->
+    <div class="overlay" id="modalGlasgow">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#1e3a8a;margin-top:0;">🧠 Escala de Glasgow</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Avaliação do nível de consciência — mínimo 3, máximo 15</p>
+
+            <div class="calc-item">
+                <label class="calc-label">👁️ Abertura Ocular</label>
+                <select id="g_ao" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="4">4 – Espontânea</option>
+                    <option value="3">3 – À voz (estímulo verbal)</option>
+                    <option value="2">2 – À dor (estímulo doloroso)</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+            <div class="calc-item">
+                <label class="calc-label">🗣️ Resposta Verbal</label>
+                <select id="g_rv" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="5">5 – Orientada</option>
+                    <option value="4">4 – Confusa</option>
+                    <option value="3">3 – Palavras inadequadas</option>
+                    <option value="2">2 – Sons incompreensíveis</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+            <div class="calc-item">
+                <label class="calc-label">🤲 Resposta Motora</label>
+                <select id="g_rm" class="calc-select" onchange="calcGlasgow()">
+                    <option value="">-- selecione --</option>
+                    <option value="6">6 – Obedece a comandos</option>
+                    <option value="5">5 – Localiza a dor</option>
+                    <option value="4">4 – Flexão normal (retirada)</option>
+                    <option value="3">3 – Flexão anormal (decorticação)</option>
+                    <option value="2">2 – Extensão (descerebração)</option>
+                    <option value="1">1 – Ausente</option>
+                </select>
+            </div>
+
+            <div id="resultadoGlasgow" style="margin-top:16px;padding:18px;border-radius:14px;text-align:center;display:none;"></div>
+
+            <button onclick="limparGlasgow()" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalGlasgow','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL qSOFA ===================== -->
+    <div class="overlay" id="modalQSOFA">
+        <div class="modal" style="max-height:90vh;overflow-y:auto;">
+            <h2 style="text-align:center;color:#ef4444;margin-top:0;">🦠 qSOFA — Triagem de Sepse</h2>
+            <p style="text-align:center;font-size:0.75rem;color:#64748b;margin-top:-10px;margin-bottom:16px;">Pontuação rápida à beira do leito — ≥2 pontos = alto risco</p>
+
+            <div style="display:flex;flex-direction:column;gap:10px;" id="qsofaForm">
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs1',this)">
+                    <span style="font-size:1.5rem;">🌬️</span>
+                    <span>FR ≥ 22 irpm</span>
+                    <input type="checkbox" id="qs1" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs2',this)">
+                    <span style="font-size:1.5rem;">🧠</span>
+                    <span>Glasgow &lt; 15</span>
+                    <input type="checkbox" id="qs2" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:12px;border:2px solid #e2e8f0;background:white;cursor:pointer;font-size:0.88rem;font-weight:700;color:#1e293b;" onclick="toggleQSOFA('qs3',this)">
+                    <span style="font-size:1.5rem;">📉</span>
+                    <span>PAS ≤ 100 mmHg</span>
+                    <input type="checkbox" id="qs3" style="display:none;" onchange="calcQSOFA()">
+                    <span class="qs-check" style="margin-left:auto;font-size:1.3rem;color:#cbd5e1;">○</span>
+                </label>
+            </div>
+
+            <div id="resultadoQSOFA" style="margin-top:16px;padding:18px;border-radius:14px;text-align:center;display:none;"></div>
+
+            <button onclick="limparQSOFA()" class="btn-fechar" style="background:#e2e8f0;color:#1e293b;margin-top:12px;">🔄 LIMPAR</button>
+            <button onclick="trocarModal('modalQSOFA','modalCalcMenu')" class="btn-fechar" style="background:#94a3b8;margin-top:8px;">← VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL CALC VENTILATÓRIA (integrada no modalVent) ===================== -->
+
+    <script>
+        // -------------------------------------------------------
+        // Google Sheets publicada como JSON (sem CORS, sem proxy)
+        // Substitua o ID abaixo pelo ID da SUA planilha se mudar
+        // -------------------------------------------------------
+        const SHEET_ID   = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
+        const SHEET_GID  = '0';         // aba CONFIG_PORTAL
+        const AVISOS_ID  = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE'; // ID real da planilha
+        const AVISOS_GID = '0'; // aba AVISOS
+        const DOCS_GID_REAL = '849673271'; // aba DOCUMENTOS
+
+        // URL JSON pública do Google Sheets (não precisa de API key)
+        function getSheetURL() {
+            return `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?gid=${SHEET_GID}&single=true&output=csv`;
         }
-        result.push(current.trim());
-        return result;
-    }
 
-    // ============================================================
-    // CONFIG PORTAL
-    // ============================================================
-    async function buscarConfig() {
-        const csv = await fetchCSV(CONFIG_URL);
-        if (!csv) { mostrarStatusConexao(false, 'Erro ao carregar config'); return; }
-        const linhas = csv.trim().split('\n');
-        if (linhas.length < 2) return;
-        const c = parseCSVLine(linhas[1]);
-        const dados = {
-            espera: (c[0]||'---').trim(), fluxo: (c[1]||'NORMAL').trim(),
-            destaque: (c[2]||'---').trim(), faltas: (c[3]||'').trim(),
-            criticos: (c[4]||'').trim(), avisos: (c[5]||'').trim(),
-            docs: (c[6]||'').trim()
+        // -------------------------------------------------------
+        // Parse de CSV seguro: lida com vírgulas dentro de aspas
+        // -------------------------------------------------------
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+                if (ch === '"') {
+                    inQuotes = !inQuotes;
+                } else if (ch === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += ch;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        // -------------------------------------------------------
+        // Buscar via fetch com mode no-cors como fallback
+        // -------------------------------------------------------
+        function buscarDadosPlanilha() {
+            fetchSheetViaJSONP(SHEET_ID, SHEET_GID, function(rows) {
+                if (!rows || rows.length < 2) {
+                    mostrarStatusConexao(false, 'Sem dados na planilha');
+                    return;
+                }
+                const colunas = rows[1]; // linha 2 = dados
+                const dados = {
+                    espera:   (colunas[0] || '---').trim(),
+                    fluxo:    (colunas[1] || 'NORMAL').trim(),
+                    destaque: (colunas[2] || '---').trim(),
+                    faltas:   (colunas[3] || '').trim(),
+                    criticos: (colunas[4] || '').trim(),
+                    avisos:   (colunas[5] || 'Nenhum aviso').trim(),
+                    docs:     (colunas[6] || 'Nenhum documento novo').trim()
+                };
+                renderizarInterface(dados);
+                mostrarStatusConexao(true);
+            });
+        }
+
+        // processarCSV substituído por fetchSheetViaJSONP
+
+        // -------------------------------------------------------
+        // Indicador visual de conexão com a planilha
+        // -------------------------------------------------------
+        function mostrarStatusConexao(ok, msg) {
+            const existe = document.getElementById('conexaoStatus');
+            if (existe) existe.remove();
+            const div = document.createElement('div');
+            div.id = 'conexaoStatus';
+            div.style.cssText = `
+                position: fixed; bottom: 12px; right: 12px;
+                background: ${ok ? '#10b981' : '#ef4444'};
+                color: white; font-size: 0.72rem; font-weight: bold;
+                padding: 6px 12px; border-radius: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                z-index: 9999;
+            `;
+            div.title = ok ? 'Planilha sincronizada!' : ('Erro: ' + msg);
+            div.textContent = ok ? '🟢 Planilha OK' : '🔴 Erro na Planilha';
+            document.body.appendChild(div);
+            if (ok) setTimeout(() => { if(div) div.remove(); }, 5000);
+        }
+
+        // -------------------------------------------------------
+        // Renderizar dados na interface
+        // -------------------------------------------------------
+        function renderizarInterface(dados) {
+            let cor = "bg-success";
+            const fluxoNorm = dados.fluxo.trim().toUpperCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // remove acentos
+            if (fluxoNorm === "INTENSO") cor = "bg-warning";
+            if (fluxoNorm === "CRITICO") cor = "bg-danger";
+
+            // Normaliza os valores para evitar texto cortado
+            const fluxoDisplay = dados.fluxo.trim().substring(0, 20);
+            const esperaDisplay = dados.espera.trim().substring(0, 20);
+            document.getElementById('painelStatus').innerHTML = `
+                <div class="status-item">
+                    <span class="status-indicator ${cor}"></span>FLUXO: <strong style="margin-left:4px;">${fluxoDisplay}</strong>
+                </div>
+                <div class="status-item">
+                    <span class="status-indicator bg-warning"></span>ESPERA: <strong style="margin-left:4px;">${esperaDisplay}</strong>
+                </div>
+            `;
+
+            document.getElementById('txtDestaque').innerText = dados.destaque;
+
+            const textoTicker =
+                `🚨 FLUXO: ${dados.fluxo}` +
+                `  |  📢 AVISOS: ${dados.avisos}` +
+                `  |  📂 NOVOS DOCUMENTOS: ${dados.docs}` +
+                `  |  🕒 ESPERA: ${dados.espera}`;
+            document.getElementById('letreiro').innerText = textoTicker + '          ' + textoTicker;
+
+            let htmlMeds = "";
+            if (dados.faltas) {
+                dados.faltas.split(';').forEach(i => {
+                    const item = i.trim();
+                    if (item) htmlMeds += `
+                        <div style="padding:10px 12px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:8px;">
+                            ❌ <span>${item}</span> <strong style="margin-left:auto; color:#ef4444;">FALTA</strong>
+                        </div>`;
+                });
+            }
+            if (dados.criticos) {
+                dados.criticos.split(';').forEach(i => {
+                    const item = i.trim();
+                    if (item) htmlMeds += `
+                        <div style="padding:10px 12px; border-bottom:1px solid #fca5a5; background:#fff1f2; display:flex; align-items:center; gap:8px;">
+                            🚨 <span>${item}</span> <strong style="margin-left:auto; color:#dc2626;">CRÍTICO</strong>
+                        </div>`;
+                });
+            }
+            document.getElementById('listaFaltas').innerHTML = htmlMeds ||
+                "<div style='text-align:center; padding:24px; color:#10b981; font-weight:bold; font-size:1.1rem;'>✅ Tudo em estoque!</div>";
+        }
+
+
+
+
+
+        // -------------------------------------------------------
+        // Fetch via Google Visualization API (sem CORS, sem proxy)
+        // Funciona com qualquer planilha pública
+        // -------------------------------------------------------
+        // Busca via JSONP usando o endpoint gviz do Google (sem CORS)
+        // Funciona com qualquer planilha publicada, sem precisar de proxy
+        function fetchSheetViaJSONP(sheetId, gid, callback) {
+            const cbName = 'gsCallback_' + Date.now();
+
+            // Monta URL do endpoint gviz/tq — retorna JSON via JSONP
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?gid=${gid}&tqx=out:json&tq=select+*`;
+
+            window[cbName] = function(data) {
+                try {
+                    const rows = [];
+                    // Linha de cabeçalho
+                    const cols = data.table.cols.map(c => c.label || '');
+                    rows.push(cols);
+                    // Linhas de dados
+                    data.table.rows.forEach(r => {
+                        rows.push(r.c.map(cell => cell ? (cell.v !== null && cell.v !== undefined ? String(cell.v) : '') : ''));
+                    });
+                    callback(rows);
+                } catch(e) {
+                    console.error('JSONP parse error:', e);
+                    callback(null);
+                } finally {
+                    delete window[cbName];
+                    const s = document.getElementById(cbName);
+                    if (s) s.remove();
+                }
+            };
+
+            const script = document.createElement('script');
+            script.id = cbName;
+            script.src = url + '&callback=' + cbName;
+            script.onerror = function() {
+                console.error('JSONP script error');
+                callback(null);
+                delete window[cbName];
+                script.remove();
+            };
+            document.head.appendChild(script);
+
+            // Timeout de segurança: 8 segundos
+            setTimeout(() => {
+                if (window[cbName]) {
+                    console.warn('JSONP timeout');
+                    callback(null);
+                    delete window[cbName];
+                    const s = document.getElementById(cbName);
+                    if (s) s.remove();
+                }
+            }, 8000);
+        }
+
+        function parseCSVToRows(csv) {
+            return csv.trim().split('\n').map(line => parseCSVLine(line));
+        }
+
+        // -------------------------------------------------------
+        // Buscar documentos da aba DOCUMENTOS na planilha
+        // -------------------------------------------------------
+        const DOCS_ID  = ''; // Deixar vazio = usa a mesma planilha dos avisos
+        // Estrutura da planilha: Categoria | Nome | Descrição | Link | Ativo
+
+        const CATEGORIA_CONFIG = {
+            'POP':        { icon: '📘', cor: '#1e3a8a', bg: '#eff6ff' },
+            'PROTOCOLO':  { icon: '📗', cor: '#16a34a', bg: '#f0fdf4' },
+            'FORMULARIO': { icon: '📄', cor: '#7c3aed', bg: '#f5f3ff' },
+            'ATA':        { icon: '📝', cor: '#f59e0b', bg: '#fffbeb' },
+            'MANUAL':     { icon: '🔧', cor: '#dc2626', bg: '#fef2f2' },
+            'OUTRO':      { icon: '📎', cor: '#64748b', bg: '#f8fafc' },
         };
-        // Status bar
-        let cor = 'bg-success';
-        const fn = dados.fluxo.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-        if (fn === 'INTENSO') cor = 'bg-warning';
-        if (fn === 'CRITICO') cor = 'bg-danger';
-        document.getElementById('painelStatus').innerHTML = `
-            <div class="status-item"><span class="status-indicator ${cor}"></span>FLUXO: <strong>${dados.fluxo.substring(0,20)}</strong></div>
-            <div class="status-item"><span class="status-indicator bg-warning"></span>ESPERA: <strong>${dados.espera.substring(0,20)}</strong></div>`;
-        // Destaque
-        document.getElementById('txtDestaque').innerText = dados.destaque;
-        // Ticker
-        const t = `🚨 FLUXO: ${dados.fluxo}  |  📢 AVISOS: ${dados.avisos||'Nenhum'}  |  📂 DOCS: ${dados.docs||'Nenhum'}  |  🕒 ESPERA: ${dados.espera}`;
-        document.getElementById('letreiro').innerText = t + '          ' + t;
-        // Medicamentos
-        let html = '';
-        if (dados.faltas) dados.faltas.split(';').forEach(i => { if(i.trim()) html += `<div style="padding:10px 12px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px;">❌ <span>${i.trim()}</span><strong style="margin-left:auto;color:#ef4444;">FALTA</strong></div>`; });
-        if (dados.criticos) dados.criticos.split(';').forEach(i => { if(i.trim()) html += `<div style="padding:10px 12px;border-bottom:1px solid #fca5a5;background:#fff1f2;display:flex;align-items:center;gap:8px;">🚨 <span>${i.trim()}</span><strong style="margin-left:auto;color:#dc2626;">CRÍTICO</strong></div>`; });
-        document.getElementById('listaFaltas').innerHTML = html || "<div style='text-align:center;padding:24px;color:#10b981;font-weight:bold;'>✅ Tudo em estoque!</div>";
-        mostrarStatusConexao(true);
-    }
 
-    // ============================================================
-    // AVISOS
-    // ============================================================
-    async function buscarAvisos() {
-        const csv = await fetchCSV(AVISOS_URL);
-        const container = document.getElementById('listaAvisos');
-        if (!csv) { container.innerHTML = "<div style='text-align:center;padding:30px;color:#ef4444;'>❌ Erro ao carregar avisos.</div>"; return; }
-        const linhas = csv.trim().split('\n');
-        const avisos = [];
-        for (let i = 1; i < linhas.length; i++) {
-            const c = parseCSVLine(linhas[i]);
-            const titulo   = (c[0]||'').trim();
-            const mensagem = (c[1]||'').trim();
-            const ativo    = (c[2]||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-            if (titulo && ativo === 'SIM') avisos.push({ titulo, mensagem });
+        function buscarDocumentos() {
+            const GID_DOCS = window.DOCS_GID || '';
+            if (!GID_DOCS) {
+                document.getElementById('listaDocs').innerHTML =
+                    '<div class="doc-vazio">⚙️ GID da aba DOCUMENTOS não configurado.</div>';
+                return;
+            }
+            fetchSheetViaJSONP(AVISOS_ID, DOCS_GID_REAL, function(rows) {
+                if (!rows) {
+                    document.getElementById('listaDocs').innerHTML =
+                        '<div class="doc-vazio">❌ Erro ao carregar documentos.</div>';
+                    return;
+                }
+                // Cabeçalho: Categoria | Nome | Descrição | Link | Ativo
+                const docs = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const categoria = (rows[i][0] || 'OUTRO').trim().toUpperCase();
+                    const nome      = (rows[i][1] || '').trim();
+                    const descricao = (rows[i][2] || '').trim();
+                    const link      = (rows[i][3] || '').trim();
+                    const ativo     = (rows[i][4] || '').trim().toUpperCase();
+                    if (nome && link && ativo === 'SIM') docs.push({ categoria, nome, descricao, link });
+                }
+                renderizarDocumentos_rows(docs);
+            });
         }
-        if (avisos.length === 0) { container.innerHTML = "<div style='text-align:center;padding:30px;color:#64748b;'>📭 Nenhum aviso ativo.</div>"; return; }
-        container.innerHTML = avisos.map((a,i) => `
-            <div style="border-left:4px solid ${i%3===0?'#3b82f6':i%3===1?'#f59e0b':'#ef4444'};background:${i%3===0?'#eff6ff':i%3===1?'#fffbeb':'#fef2f2'};border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:10px;">
-                <div style="font-weight:800;font-size:0.9rem;color:#1e293b;margin-bottom:4px;">${a.titulo}</div>
-                ${a.mensagem?`<div style="font-size:0.8rem;color:#475569;line-height:1.5;">${a.mensagem}</div>`:''}
-            </div>`).join('');
-    }
 
-    // ============================================================
-    // DOCUMENTOS
-    // ============================================================
-    const CATEGORIA_CFG = {
-        'POP':        {icon:'📘',cor:'#1e3a8a',bg:'#eff6ff'},
-        'PROTOCOLO':  {icon:'📗',cor:'#16a34a',bg:'#f0fdf4'},
-        'FORMULARIO': {icon:'📄',cor:'#7c3aed',bg:'#f5f3ff'},
-        'ATA':        {icon:'📝',cor:'#f59e0b',bg:'#fffbeb'},
-        'MANUAL':     {icon:'🔧',cor:'#dc2626',bg:'#fef2f2'},
-        'OUTRO':      {icon:'📎',cor:'#64748b',bg:'#f8fafc'},
-    };
-    const NOMES_CAT = {
-        'POP':'POPs — Procedimentos Operacionais Padrão','PROTOCOLO':'Protocolos Clínicos',
-        'FORMULARIO':'Formulários e Fichas','ATA':'Atas e Resoluções',
-        'MANUAL':'Manuais de Equipamentos','OUTRO':'Outros Documentos'
-    };
+        function renderizarDocumentos_rows(docs) {
+            const container = document.getElementById('listaDocs');
+            if (docs.length === 0) {
+                container.innerHTML = '<div class="doc-vazio">📭 Nenhum documento disponível no momento.</div>';
+                return;
+            }
 
-    async function buscarDocumentos() {
-        const container = document.getElementById('listaDocs');
-        if (DOCS_URL === 'COLE_AQUI_A_URL_CSV_DA_PLANILHA_DE_DOCUMENTOS') {
-            container.innerHTML = '<div class="doc-vazio">⚙️ Aguardando URL da planilha de documentos.</div>'; return;
+            // Agrupar por categoria
+            const grupos = {};
+            docs.forEach(d => {
+                if (!grupos[d.categoria]) grupos[d.categoria] = [];
+                grupos[d.categoria].push(d);
+            });
+
+            const nomesCategorias = {
+                'POP': 'POPs — Procedimentos Operacionais Padrão',
+                'PROTOCOLO': 'Protocolos Clínicos',
+                'FORMULARIO': 'Formulários e Fichas',
+                'ATA': 'Atas e Resoluções',
+                'MANUAL': 'Manuais de Equipamentos',
+                'OUTRO': 'Outros Documentos',
+            };
+
+            let html = '';
+            Object.keys(grupos).forEach(cat => {
+                const cfg = CATEGORIA_CONFIG[cat] || CATEGORIA_CONFIG['OUTRO'];
+                html += `<div class="doc-categoria" style="background:${cfg.bg};color:${cfg.cor};">
+                    ${cfg.icon} ${nomesCategorias[cat] || cat}
+                </div>`;
+                grupos[cat].forEach(doc => {
+                    html += `
+                        <a href="${doc.link}" target="_blank" class="doc-item">
+                            <span class="doc-item-icon">${cfg.icon}</span>
+                            <div>
+                                <div class="doc-item-nome">${doc.nome}</div>
+                                ${doc.descricao ? `<div class="doc-item-desc">${doc.descricao}</div>` : ''}
+                            </div>
+                            <span class="doc-item-seta">↗</span>
+                        </a>`;
+                });
+            });
+
+            container.innerHTML = html;
+
+            // Badge com total de documentos
+            const badge = document.getElementById('badgeDocs');
+            badge.textContent = docs.length + ' docs';
+            badge.style.display = 'inline-block';
         }
-        const csv = await fetchCSV(DOCS_URL);
-        if (!csv) { container.innerHTML = '<div class="doc-vazio">❌ Erro ao carregar documentos.</div>'; return; }
-        const linhas = csv.trim().split('\n');
-        const docs = [];
-        for (let i = 1; i < linhas.length; i++) {
-            const c = parseCSVLine(linhas[i]);
-            const cat   = (c[0]||'OUTRO').trim().toUpperCase();
-            const nome  = (c[1]||'').trim();
-            const desc  = (c[2]||'').trim();
-            const link  = (c[3]||'').trim();
-            const ativo = (c[4]||'').trim().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-            if (nome && link && ativo === 'SIM') docs.push({cat, nome, desc, link});
+
+        // -------------------------------------------------------
+        // Buscar avisos da aba AVISOS
+        // -------------------------------------------------------
+        function buscarAvisos() {
+            fetchSheetViaJSONP(AVISOS_ID, AVISOS_GID, function(rows) {
+                if (!rows) {
+                    document.getElementById('listaAvisos').innerHTML =
+                        "<div style='text-align:center;padding:30px;color:#ef4444;'>❌ Erro ao carregar avisos.</div>";
+                    return;
+                }
+                console.log('AVISOS rows recebidas:', JSON.stringify(rows));
+                const avisos = [];
+                // Percorre todas as linhas procurando dados válidos
+                // Pula linhas que parecem cabeçalho (onde col[2] não é SIM/NÃO)
+                for (let i = 0; i < rows.length; i++) {
+                    const titulo   = (rows[i][0] || '').trim();
+                    const mensagem = (rows[i][1] || '').trim();
+                    const ativo    = (rows[i][2] || '').trim().toUpperCase()
+                                     .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // remove acentos
+                    if (titulo && (ativo === 'SIM' || ativo === 'S')) {
+                        avisos.push({ titulo, mensagem });
+                    }
+                }
+                console.log('Avisos encontrados:', avisos.length);
+                renderizarAvisos_rows(avisos);
+            });
         }
-        if (docs.length === 0) { container.innerHTML = '<div class="doc-vazio">📭 Nenhum documento disponível.</div>'; return; }
-        const grupos = {};
-        docs.forEach(d => { if (!grupos[d.cat]) grupos[d.cat]=[]; grupos[d.cat].push(d); });
-        let html = '';
-        Object.keys(grupos).forEach(cat => {
-            const cfg = CATEGORIA_CFG[cat] || CATEGORIA_CFG['OUTRO'];
-            html += `<div class="doc-categoria" style="background:${cfg.bg};color:${cfg.cor};">${cfg.icon} ${NOMES_CAT[cat]||cat}</div>`;
-            grupos[cat].forEach(d => {
-                html += `<a href="${d.link}" target="_blank" class="doc-item"><span class="doc-item-icon">${cfg.icon}</span><div><div class="doc-item-nome">${d.nome}</div>${d.desc?`<div class="doc-item-desc">${d.desc}</div>`:''}</div><span class="doc-item-seta">↗</span></a>`;
+
+        function renderizarAvisos_rows(avisos) {
+            const container = document.getElementById('listaAvisos');
+            if (!avisos || avisos.length === 0) {
+                container.innerHTML = "<div style='text-align:center;padding:30px;color:#64748b;'>📭 Nenhum aviso ativo no momento.</div>";
+                return;
+            }
+            container.innerHTML = avisos.map((a, idx) => `
+                <div style="
+                    border-left:4px solid ${idx%3===0?'#3b82f6':idx%3===1?'#f59e0b':'#ef4444'};
+                    background:${idx%3===0?'#eff6ff':idx%3===1?'#fffbeb':'#fef2f2'};
+                    border-radius:0 12px 12px 0; padding:14px 16px; margin-bottom:10px;">
+                    <div style="font-weight:800;font-size:0.9rem;color:#1e293b;margin-bottom:4px;">${a.titulo}</div>
+                    ${a.mensagem ? `<div style="font-size:0.8rem;color:#475569;line-height:1.5;">${a.mensagem}</div>` : ''}
+                </div>`).join('');
+            // Atualizar ticker
+            const titulosTicker = avisos.map(a => '📢 ' + a.titulo).join('  |  ');
+            const tickerEl = document.getElementById('letreiro');
+            if (tickerEl && titulosTicker) {
+                const atual = tickerEl.innerText.split('          ')[0];
+                const novo = atual.replace(/📢 AVISOS:.*?\|/, titulosTicker + '  |');
+                tickerEl.innerText = novo + '          ' + novo;
+            }
+        }
+
+        function renderizarAvisos(csv) {
+            const linhas = csv.trim().split('\n');
+            // Linha 0 = cabeçalho (Titulo, Mensagem, Ativo)
+            const avisos = [];
+            for (let i = 1; i < linhas.length; i++) {
+                const cols = parseCSVLine(linhas[i]);
+                const titulo   = (cols[0] || '').trim();
+                const mensagem = (cols[1] || '').trim();
+                const ativo    = (cols[2] || '').trim().toUpperCase();
+                if (titulo && ativo === 'SIM') {
+                    avisos.push({ titulo, mensagem });
+                }
+            }
+
+            const container = document.getElementById('listaAvisos');
+            if (avisos.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:#64748b;">
+                    📭 Nenhum aviso ativo no momento.
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = avisos.map((a, idx) => `
+                <div style="
+                    border-left: 4px solid ${idx % 3 === 0 ? '#3b82f6' : idx % 3 === 1 ? '#f59e0b' : '#ef4444'};
+                    background: ${idx % 3 === 0 ? '#eff6ff' : idx % 3 === 1 ? '#fffbeb' : '#fef2f2'};
+                    border-radius: 0 12px 12px 0;
+                    padding: 14px 16px;
+                    margin-bottom: 10px;
+                ">
+                    <div style="font-weight: 800; font-size: 0.9rem; color: #1e293b; margin-bottom: 4px;">
+                        ${a.titulo}
+                    </div>
+                    ${a.mensagem ? `<div style="font-size: 0.8rem; color: #475569; line-height: 1.5;">${a.mensagem}</div>` : ''}
+                </div>
+            `).join('');
+
+            // Atualiza também o ticker com os títulos dos avisos ativos
+            const titulosTicker = avisos.map(a => '📢 ' + a.titulo).join('  |  ');
+            const tickerEl = document.getElementById('letreiro');
+            if (tickerEl && titulosTicker) {
+                const textoAtual = tickerEl.innerText.split('          ')[0];
+                // Substitui apenas a parte de AVISOS no ticker
+                const novoTexto = textoAtual.replace(/📢 AVISOS:.*?\|/, '📢 ' + avisos.map(a=>a.titulo).join('; ') + '  |');
+                tickerEl.innerText = novoTexto + '          ' + novoTexto;
+            }
+        }
+
+        // -------------------------------------------------------
+        // Utilitário: troca de modal
+        // -------------------------------------------------------
+        function trocarModal(fechar, abrir) {
+            fecharModal(fechar);
+            abrirModal(abrir);
+        }
+
+        // -------------------------------------------------------
+        // BRADEN
+        // -------------------------------------------------------
+        function calcBraden() {
+            const ids = ['b1','b2','b3','b4','b5','b6'];
+            let total = 0, todos = true;
+            ids.forEach(id => {
+                const v = document.getElementById(id).value;
+                if (!v) { todos = false; } else { total += parseInt(v); }
+            });
+            const el = document.getElementById('resultadoBraden');
+            if (!todos) { el.style.display = 'none'; return; }
+
+            let risco, cor, bg;
+            if (total <= 9)       { risco = 'Risco Muito Alto';  cor = '#7f1d1d'; bg = '#fee2e2'; }
+            else if (total <= 12) { risco = 'Risco Alto';        cor = '#991b1b'; bg = '#fecaca'; }
+            else if (total <= 14) { risco = 'Risco Moderado';    cor = '#92400e'; bg = '#fef3c7'; }
+            else if (total <= 18) { risco = 'Risco Baixo';       cor = '#065f46'; bg = '#d1fae5'; }
+            else                  { risco = 'Sem Risco';         cor = '#064e3b'; bg = '#a7f3d0'; }
+
+            el.style.display = 'block';
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:2rem; font-weight:900; color:${cor};">${total}</div>
+                <div style="font-size:1rem; font-weight:800; color:${cor}; margin-top:4px;">${risco}</div>
+                <div style="font-size:0.72rem; color:#475569; margin-top:6px;">Pontuação de 6 a 23 — quanto menor, maior o risco</div>
+            `;
+        }
+
+        function limparBraden() {
+            ['b1','b2','b3','b4','b5','b6'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoBraden').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // MORSE
+        // -------------------------------------------------------
+        function calcMorse() {
+            const ids = ['m1','m2','m3','m4','m5','m6'];
+            let total = 0, todos = true;
+            ids.forEach(id => {
+                const v = document.getElementById(id).value;
+                if (v === '') { todos = false; } else { total += parseInt(v); }
+            });
+            const el = document.getElementById('resultadoMorse');
+            if (!todos) { el.style.display = 'none'; return; }
+
+            let risco, cor, bg, conduta;
+            if (total < 25)       { risco = 'Risco Baixo';   cor = '#064e3b'; bg = '#d1fae5'; conduta = 'Nenhuma intervenção necessária'; }
+            else if (total <= 50) { risco = 'Risco Médio';   cor = '#92400e'; bg = '#fef3c7'; conduta = 'Implementar precauções padrão de queda'; }
+            else                  { risco = 'Risco Alto';    cor = '#7f1d1d'; bg = '#fee2e2'; conduta = 'Implementar protocolo de alto risco de queda'; }
+
+            el.style.display = 'block';
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:2rem; font-weight:900; color:${cor};">${total}</div>
+                <div style="font-size:1rem; font-weight:800; color:${cor}; margin-top:4px;">${risco}</div>
+                <div style="font-size:0.75rem; color:#475569; margin-top:6px; font-style:italic;">${conduta}</div>
+            `;
+        }
+
+        function limparMorse() {
+            ['m1','m2','m3','m4','m5','m6'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoMorse').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // MEDICAÇÃO INFANTIL — Dose por peso
+        // -------------------------------------------------------
+        function calcMedInfantil() {
+            const peso    = parseFloat(document.getElementById('med_peso').value);
+            const doseKg  = parseFloat(document.getElementById('med_dose_kg').value);
+            const conc    = parseFloat(document.getElementById('med_conc').value);
+            const el      = document.getElementById('resultadoDose');
+
+            if (!peso || !doseKg) { el.style.display = 'none'; return; }
+
+            const doseMg = peso * doseKg;
+            let html = `
+                <div style="font-size:0.8rem; color:#166534;">Dose total:</div>
+                <div style="font-size:1.8rem; font-weight:900; color:#14532d;">${doseMg.toFixed(2)} mg</div>
+            `;
+            if (conc > 0) {
+                const volML = doseMg / conc;
+                html += `<div style="font-size:1rem; font-weight:700; color:#166534; margin-top:6px;">= ${volML.toFixed(2)} mL</div>`;
+            }
+            el.style.display = 'block';
+            el.innerHTML = html;
+        }
+
+        // -------------------------------------------------------
+        // MEDICAÇÃO INFANTIL — Gotejamento
+        // -------------------------------------------------------
+        function calcGotejamento() {
+            const vol    = parseFloat(document.getElementById('got_vol').value);
+            const tempo  = parseFloat(document.getElementById('got_tempo').value);
+            const equipo = parseInt(document.getElementById('got_equipo').value);
+            const el     = document.getElementById('resultadoGot');
+
+            if (!vol || !tempo) { el.style.display = 'none'; return; }
+
+            const mlHora  = vol / tempo;
+            const gtsMin  = (vol * equipo) / (tempo * 60);
+
+            el.style.display = 'block';
+            el.innerHTML = `
+                <div style="font-size:0.8rem; color:#1e3a8a;">Velocidade de infusão:</div>
+                <div style="font-size:1.6rem; font-weight:900; color:#1e3a8a;">${mlHora.toFixed(1)} mL/h</div>
+                <div style="font-size:1rem; font-weight:700; color:#1d4ed8; margin-top:4px;">${gtsMin.toFixed(0)} gts/min</div>
+                <div style="font-size:0.7rem; color:#475569; margin-top:4px;">${equipo === 60 ? 'Microgotas (60 gts/mL)' : 'Macrogotas (20 gts/mL)'}</div>
+            `;
+        }
+
+        function limparMedInfantil() {
+            ['med_peso','med_dose_kg','med_conc','got_vol','got_tempo'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('got_equipo').value = '20';
+            document.getElementById('resultadoDose').style.display = 'none';
+            document.getElementById('resultadoGot').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // GLASGOW
+        // -------------------------------------------------------
+        function calcGlasgow() {
+            const ao = document.getElementById('g_ao').value;
+            const rv = document.getElementById('g_rv').value;
+            const rm = document.getElementById('g_rm').value;
+            const el = document.getElementById('resultadoGlasgow');
+            if (!ao || !rv || !rm) { el.style.display = 'none'; return; }
+            const total = parseInt(ao) + parseInt(rv) + parseInt(rm);
+            let nivel, cor, bg, conduta;
+            if (total >= 13)      { nivel='Leve';    cor='#064e3b'; bg='#d1fae5'; conduta='Monitorizar. Considerar TC se trauma.'; }
+            else if (total >= 9)  { nivel='Moderado';cor='#92400e'; bg='#fef3c7'; conduta='Avaliação neurológica urgente. Suporte de via aérea em alerta.'; }
+            else                  { nivel='Grave';   cor='#7f1d1d'; bg='#fee2e2'; conduta='IOT indicada (Glasgow ≤8). Chamar equipe imediatamente.'; }
+            el.style.display = 'block'; el.style.background = bg;
+            el.innerHTML = `
+                <div class="glasgow-resultado-num" style="color:${cor};">${total}</div>
+                <div style="font-size:0.7rem;color:#64748b;margin-top:2px;">AO: ${ao} + RV: ${rv} + RM: ${rm}</div>
+                <div style="font-size:1.1rem;font-weight:800;color:${cor};margin-top:6px;">TCE ${nivel}</div>
+                <div style="font-size:0.75rem;color:#475569;margin-top:8px;line-height:1.6;text-align:left;background:white;padding:10px;border-radius:10px;">${conduta}</div>
+                ${total <= 8 ? '<div style="font-size:0.8rem;font-weight:900;color:#7f1d1d;margin-top:8px;padding:8px;background:#fecaca;border-radius:8px;">⚠️ Glasgow ≤ 8 → INDICAÇÃO DE IOT</div>' : ''}
+            `;
+        }
+        function limparGlasgow() {
+            ['g_ao','g_rv','g_rm'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('resultadoGlasgow').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // qSOFA
+        // -------------------------------------------------------
+        function toggleQSOFA(id, label) {
+            const cb = document.getElementById(id);
+            cb.checked = !cb.checked;
+            const check = label.querySelector('.qs-check');
+            if (cb.checked) {
+                label.style.borderColor = '#ef4444';
+                label.style.background = '#fef2f2';
+                check.textContent = '●';
+                check.style.color = '#ef4444';
+            } else {
+                label.style.borderColor = '#e2e8f0';
+                label.style.background = 'white';
+                check.textContent = '○';
+                check.style.color = '#cbd5e1';
+            }
+            calcQSOFA();
+        }
+        function calcQSOFA() {
+            const pontos = ['qs1','qs2','qs3'].filter(id => document.getElementById(id).checked).length;
+            const el = document.getElementById('resultadoQSOFA');
+            el.style.display = 'block';
+            let cor, bg, msg, conduta;
+            if (pontos === 0)      { cor='#064e3b'; bg='#d1fae5'; msg='Baixo Risco'; conduta='Manter vigilância. Reavaliar se piora clínica.'; }
+            else if (pontos === 1) { cor='#92400e'; bg='#fef3c7'; msg='Atenção'; conduta='Monitorizar de perto. Investigar foco infeccioso.'; }
+            else                   { cor='#7f1d1d'; bg='#fee2e2'; msg='ALTO RISCO DE SEPSE'; conduta='Acionar protocolo de sepse! Hemoculturas + lactato + ATB em 1h.'; }
+            el.style.background = bg;
+            el.innerHTML = `
+                <div style="font-size:3rem;font-weight:900;color:${cor};">${pontos}/3</div>
+                <div style="font-size:1rem;font-weight:800;color:${cor};margin-top:4px;">${msg}</div>
+                <div style="font-size:0.76rem;color:#475569;margin-top:8px;line-height:1.6;text-align:left;background:white;padding:10px;border-radius:10px;">${conduta}</div>
+                ${pontos >= 2 ? '<div style="font-size:0.8rem;font-weight:900;color:#7f1d1d;margin-top:8px;padding:8px;background:#fecaca;border-radius:8px;">🚨 qSOFA ≥ 2 → ACIONAR PROTOCOLO DE SEPSE</div>' : ''}
+            `;
+        }
+        function limparQSOFA() {
+            ['qs1','qs2','qs3'].forEach(id => {
+                const cb = document.getElementById(id);
+                cb.checked = false;
+                const label = cb.closest('label') || cb.parentElement;
+                if (label) {
+                    label.style.borderColor = '#e2e8f0';
+                    label.style.background = 'white';
+                    const chk = label.querySelector('.qs-check');
+                    if (chk) { chk.textContent = '○'; chk.style.color = '#cbd5e1'; }
+                }
+            });
+            document.getElementById('resultadoQSOFA').style.display = 'none';
+        }
+
+        // -------------------------------------------------------
+        // CALCULADORA VENTILATÓRIA POR PESO
+        // -------------------------------------------------------
+        function calcVentCalc() {
+            const peso = parseFloat(document.getElementById('vc_peso').value);
+            const modo = document.getElementById('vc_modo').value;
+            const fio2 = document.getElementById('vc_fio2').value;
+            const el   = document.getElementById('resultadoVentCalc');
+            if (!peso || peso <= 0) { el.style.display = 'none'; return; }
+            const vc6 = (peso * 6).toFixed(0);
+            const vc8 = (peso * 8).toFixed(0);
+            let fr, peep, pip;
+            if (modo === 'adulto') {
+                fr   = peso >= 50 ? '12–16' : '14–18';
+                peep = '5–8 cmH₂O';
+                pip  = '< 30 cmH₂O';
+            } else {
+                if      (peso < 5)  { fr = '40–60'; peep = '4–5 cmH₂O'; pip = '14–20 cmH₂O'; }
+                else if (peso < 10) { fr = '30–50'; peep = '4–6 cmH₂O'; pip = '16–24 cmH₂O'; }
+                else if (peso < 18) { fr = '20–30'; peep = '5–6 cmH₂O'; pip = '18–25 cmH₂O'; }
+                else if (peso < 40) { fr = '16–24'; peep = '5–8 cmH₂O'; pip = '18–28 cmH₂O'; }
+                else                { fr = '12–20'; peep = '5–8 cmH₂O'; pip = '20–30 cmH₂O'; }
+            }
+            document.getElementById('vc_vc6').textContent = vc6 + ' mL';
+            document.getElementById('vc_vc8').textContent = vc8 + ' mL';
+            document.getElementById('vc_fr').textContent  = fr + ' irpm';
+            document.getElementById('vc_peep').textContent = peep;
+            document.getElementById('vc_pip').textContent  = pip;
+            document.getElementById('vc_fio2_display').textContent = fio2 + '%';
+            el.style.display = 'block';
+        }
+
+        // -------------------------------------------------------
+        // CRONÔMETRO PCR
+        // -------------------------------------------------------
+        let pcrInterval   = null;
+        let pcrRunning    = false;
+        let pcrSeconds    = 0;
+        let pcrLaps       = [];
+
+        function pcrTimerToggle() {
+            if (pcrRunning) {
+                clearInterval(pcrInterval);
+                pcrRunning = false;
+                document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '▶ CONTINUAR';
+            } else {
+                pcrRunning = true;
+                document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '⏸ PAUSAR';
+                pcrInterval = setInterval(() => {
+                    pcrSeconds++;
+                    const m = String(Math.floor(pcrSeconds / 60)).padStart(2, '0');
+                    const s = String(pcrSeconds % 60).padStart(2, '0');
+                    const display = document.getElementById('pcrTimerDisplay');
+                    display.textContent = m + ':' + s;
+                    // Alerta a cada 2 min
+                    if (pcrSeconds % 120 === 0 && pcrSeconds > 0) {
+                        display.classList.add('alerta');
+                        document.getElementById('pcrTimerSub').textContent = '⚠️ 2 MINUTOS — Checar pulso / Revezar compressor / Avaliar ritmo!';
+                        setTimeout(() => {
+                            display.classList.remove('alerta');
+                            document.getElementById('pcrTimerSub').textContent = 'Em andamento...';
+                        }, 5000);
+                    }
+                }, 1000);
+            }
+        }
+
+        function pcrTimerLap() {
+            if (pcrSeconds === 0) return;
+            const m = String(Math.floor(pcrSeconds / 60)).padStart(2, '0');
+            const s = String(pcrSeconds % 60).padStart(2, '0');
+            pcrLaps.push(`Lap ${pcrLaps.length + 1}: ${m}:${s}`);
+            const list = document.getElementById('pcrLapList');
+            list.style.display = 'block';
+            list.innerHTML = pcrLaps.map(l => `<div class="pcr-lap-item">${l}</div>`).reverse().join('');
+        }
+
+        function pcrTimerReset() {
+            clearInterval(pcrInterval);
+            pcrRunning = false;
+            pcrSeconds = 0;
+            pcrLaps    = [];
+            document.getElementById('pcrTimerDisplay').textContent = '00:00';
+            document.getElementById('pcrTimerDisplay').classList.remove('alerta');
+            document.getElementById('pcrTimerSub').textContent = 'Pressione INICIAR para começar';
+            document.getElementById('pcrLapList').style.display = 'none';
+            document.getElementById('pcrLapList').innerHTML = '';
+            document.querySelector('[onclick="pcrTimerToggle()"]').textContent = '▶ INICIAR';
+        }
+
+        // -------------------------------------------------------
+        // BUSCA EM FLUXOGRAMAS
+        // -------------------------------------------------------
+        function filtrarFluxos(termo) {
+            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            document.querySelectorAll('#listaFluxos button').forEach(btn => {
+                const nome = (btn.dataset.nome || btn.textContent).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                btn.style.display = nome.includes(t) ? '' : 'none';
+            });
+        }
+
+        // -------------------------------------------------------
+        // BUSCA EM DOCUMENTOS
+        // -------------------------------------------------------
+        let _todosDocumentos = [];
+        const _origRenderDocs = typeof renderizarDocumentos_rows !== 'undefined' ? null : null;
+
+        function filtrarDocs(termo) {
+            const t = termo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (!t) { renderizarDocumentos_rows(_todosDocumentos); return; }
+            const filtrados = _todosDocumentos.filter(d =>
+                (d.nome + d.descricao + d.categoria).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(t)
+            );
+            renderizarDocumentos_rows(filtrados);
+        }
+
+        // Salvar documentos para filtragem
+        const _origRenderDoc = renderizarDocumentos_rows;
+        window.renderizarDocumentos_rows = function(docs) {
+            _todosDocumentos = docs;
+            _origRenderDoc(docs);
+        };
+        function atualizarRelogio() {
+            const agora = new Date();
+            const hora  = agora.getHours();
+            const icone = (hora >= 6 && hora < 18) ? "☀️" : "🌙";
+            const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('relogio').innerHTML = `<span>${icone}</span> ${horaFormatada}`;
+            document.getElementById('data').textContent  =
+                agora.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+        }
+
+        // -------------------------------------------------------
+        // Modais
+        // -------------------------------------------------------
+        function abrirModal(id)  { document.getElementById(id).style.display = 'flex'; }
+        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        document.querySelectorAll('.overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) fecharModal(this.id);
             });
         });
-        container.innerHTML = html;
-        const badge = document.getElementById('badgeDocs');
-        badge.textContent = docs.length + ' docs'; badge.style.display = 'inline-block';
-    }
 
+        // -------------------------------------------------------
+        // Iniciar
+        // -------------------------------------------------------
+        window.DOCS_GID = '849673271'; // GID da aba DOCUMENTOS
+        setInterval(atualizarRelogio, 1000);
+        setInterval(buscarDadosPlanilha, 30000);
+        setInterval(buscarAvisos, 30000);
+        setInterval(buscarDocumentos, 60000);
+        atualizarRelogio();
+        buscarDadosPlanilha();
+        buscarAvisos();
+        buscarDocumentos();
 
-    // ============================================================
-    // INDICADORES
-    // ============================================================
-    async function buscarIndicadores() {
-        if (INDICADORES_URL === 'COLE_AQUI_A_URL_CSV_DA_PLANILHA_DE_INDICADORES') return;
-        const csv = await fetchCSV(INDICADORES_URL);
-        if (!csv) return;
-        const linhas = csv.trim().split('\n');
-        // Estrutura: linha 1 = cabeçalho, linha 2 = dados
-        // Colunas: Mes | TMA | Atendimentos | Ocupacao | Eventos | Satisfacao
-        // Meta:    linha 3 = metas
-        if (linhas.length < 2) return;
-        const dados = parseCSVLine(linhas[1]);
-        const metas = linhas.length >= 3 ? parseCSVLine(linhas[2]) : [];
-
-        const mes         = (dados[0]||'').trim();
-        const tma         = (dados[1]||'--').trim();  // ex: "45 min"
-        const atend       = (dados[2]||'--').trim();  // ex: "1240"
-        const ocup        = (dados[3]||'--').trim();  // ex: "78%"
-        const eventos     = (dados[4]||'--').trim();  // ex: "3"
-        const satisfacao  = (dados[5]||'--').trim();  // ex: "92%"
-
-        const metaTma     = (metas[1]||'').trim();   // ex: "60 min"
-        const metaAtend   = (metas[2]||'').trim();   // ex: "1200"
-        const metaOcup    = (metas[3]||'').trim();   // ex: "85%"
-        const metaEventos = (metas[4]||'').trim();   // ex: "5"
-        const metaSat     = (metas[5]||'').trim();   // ex: "90%"
-
-        function classMeta(val, meta, menor_melhor) {
-            if (!meta || val === '--') return '';
-            const v = parseFloat(val); const m = parseFloat(meta);
-            if (isNaN(v) || isNaN(m)) return '';
-            if (menor_melhor) return v <= m ? 'placar-ok' : v <= m*1.2 ? 'placar-warn' : 'placar-bad';
-            return v >= m ? 'placar-ok' : v >= m*0.9 ? 'placar-warn' : 'placar-bad';
+        // -------------------------------------------------------
+        // SERVICE WORKER — Modo Offline
+        // -------------------------------------------------------
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
         }
+    </script>
 
-        function metaLabel(val, meta, unidade) {
-            if (!meta) return '';
-            return `<div class="placar-meta ${classMeta(val, meta, false)}">Meta: ${meta}${unidade||''}</div>`;
-        }
-
-        document.getElementById('placarGrid').innerHTML = `
-            <div class="placar-item">
-                <div class="placar-label">⏱ Tempo Médio Atend.</div>
-                <div class="placar-valor ${classMeta(tma, metaTma, true)}">${tma}</div>
-                ${metaTma ? `<div class="placar-meta ${classMeta(tma,metaTma,true)}">Meta: ≤${metaTma}</div>` : ''}
-            </div>
-            <div class="placar-item">
-                <div class="placar-label">🏥 Atendimentos</div>
-                <div class="placar-valor ${classMeta(atend, metaAtend, false)}">${atend}</div>
-                ${metaLabel(atend, metaAtend, '')}
-            </div>
-            <div class="placar-item">
-                <div class="placar-label">🛏 Ocupação Leitos</div>
-                <div class="placar-valor ${classMeta(ocup, metaOcup, false)}">${ocup}</div>
-                ${metaLabel(ocup, metaOcup, '%')}
-            </div>
-            <div class="placar-item">
-                <div class="placar-label">⚠️ Eventos Adversos</div>
-                <div class="placar-valor">${eventos}</div>
-                ${metaTma ? `<div class="placar-meta" style="color:rgba(255,255,255,0.5);">Meta: ≤${metaEventos||'--'}</div>` : ''}
-            </div>
-            <div class="placar-item destaque">
-                <div class="placar-label">😊 Satisfação do Paciente</div>
-                <div class="placar-valor ${classMeta(satisfacao, metaSat, false)}">${satisfacao}</div>
-                ${metaLabel(satisfacao, metaSat, '%')}
-            </div>
-        `;
-
-        if (mes) document.getElementById('placarMes').textContent = '📅 Referência: ' + mes;
-        document.getElementById('placarIndicadores').style.display = 'block';
-    }
-
-    // ============================================================
-    // STATUS CONEXÃO
-    // ============================================================
-    function mostrarStatusConexao(ok, msg) {
-        const ex = document.getElementById('conexaoStatus'); if (ex) ex.remove();
-        const div = document.createElement('div'); div.id = 'conexaoStatus';
-        div.style.cssText = `position:fixed;bottom:12px;right:12px;background:${ok?'#10b981':'#ef4444'};color:white;font-size:0.72rem;font-weight:bold;padding:6px 12px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:9999;`;
-        div.textContent = ok ? '🟢 Planilha OK' : '🔴 Erro na Planilha';
-        document.body.appendChild(div);
-        if (ok) setTimeout(() => div.remove(), 5000);
-    }
-
-    // ============================================================
-    // CALCULADORAS
-    // ============================================================
-    function calcBraden() {
-        const ids = ['b1','b2','b3','b4','b5','b6']; let total=0, todos=true;
-        ids.forEach(id => { const v=document.getElementById(id).value; if(!v){todos=false;}else{total+=parseInt(v);} });
-        const el = document.getElementById('resultadoBraden'); if (!todos){el.style.display='none';return;}
-        let risco,cor,bg;
-        if(total<=9){risco='Risco Muito Alto';cor='#7f1d1d';bg='#fee2e2';}
-        else if(total<=12){risco='Risco Alto';cor='#991b1b';bg='#fecaca';}
-        else if(total<=14){risco='Risco Moderado';cor='#92400e';bg='#fef3c7';}
-        else if(total<=18){risco='Risco Baixo';cor='#065f46';bg='#d1fae5';}
-        else{risco='Sem Risco';cor='#064e3b';bg='#a7f3d0';}
-        el.style.display='block'; el.style.background=bg;
-        el.innerHTML=`<div style="font-size:2rem;font-weight:900;color:${cor};">${total}</div><div style="font-size:1rem;font-weight:800;color:${cor};margin-top:4px;">${risco}</div><div style="font-size:0.72rem;color:#475569;margin-top:6px;">Pontuação de 6 a 23 — quanto menor, maior o risco</div>`;
-    }
-
-    function calcMorse() {
-        const ids = ['m1','m2','m3','m4','m5','m6']; let total=0, todos=true;
-        ids.forEach(id => { const v=document.getElementById(id).value; if(v===''){todos=false;}else{total+=parseInt(v);} });
-        const el = document.getElementById('resultadoMorse'); if (!todos){el.style.display='none';return;}
-        let risco,cor,bg,conduta;
-        if(total<25){risco='Risco Baixo';cor='#064e3b';bg='#d1fae5';conduta='Nenhuma intervenção necessária';}
-        else if(total<=50){risco='Risco Médio';cor='#92400e';bg='#fef3c7';conduta='Implementar precauções padrão de queda';}
-        else{risco='Risco Alto';cor='#7f1d1d';bg='#fee2e2';conduta='Implementar protocolo de alto risco de queda';}
-        el.style.display='block'; el.style.background=bg;
-        el.innerHTML=`<div style="font-size:2rem;font-weight:900;color:${cor};">${total}</div><div style="font-size:1rem;font-weight:800;color:${cor};margin-top:4px;">${risco}</div><div style="font-size:0.75rem;color:#475569;margin-top:6px;font-style:italic;">${conduta}</div>`;
-    }
-
-    function calcMedInfantil() {
-        const peso=parseFloat(document.getElementById('med_peso').value);
-        const doseKg=parseFloat(document.getElementById('med_dose_kg').value);
-        const conc=parseFloat(document.getElementById('med_conc').value);
-        const el=document.getElementById('resultadoDose');
-        if(!peso||!doseKg){el.style.display='none';return;}
-        const doseMg=peso*doseKg;
-        let html=`<div style="font-size:0.8rem;color:#166534;">Dose total:</div><div style="font-size:1.8rem;font-weight:900;color:#14532d;">${doseMg.toFixed(2)} mg</div>`;
-        if(conc>0) html+=`<div style="font-size:1rem;font-weight:700;color:#166534;margin-top:6px;">= ${(doseMg/conc).toFixed(2)} mL</div>`;
-        el.style.display='block'; el.innerHTML=html;
-    }
-
-    function calcGotejamento() {
-        const vol=parseFloat(document.getElementById('got_vol').value);
-        const tempo=parseFloat(document.getElementById('got_tempo').value);
-        const equipo=parseInt(document.getElementById('got_equipo').value);
-        const el=document.getElementById('resultadoGot');
-        if(!vol||!tempo){el.style.display='none';return;}
-        el.style.display='block';
-        el.innerHTML=`<div style="font-size:0.8rem;color:#1e3a8a;">Velocidade de infusão:</div><div style="font-size:1.6rem;font-weight:900;color:#1e3a8a;">${(vol/tempo).toFixed(1)} mL/h</div><div style="font-size:1rem;font-weight:700;color:#1d4ed8;margin-top:4px;">${((vol*equipo)/(tempo*60)).toFixed(0)} gts/min</div><div style="font-size:0.7rem;color:#475569;margin-top:4px;">${equipo===60?'Microgotas':'Macrogotas'}</div>`;
-    }
-
-    // ============================================================
-    // RELÓGIO
-    // ============================================================
-    function atualizarRelogio() {
-        const agora=new Date(), hora=agora.getHours();
-        document.getElementById('relogio').innerHTML=`<span>${hora>=6&&hora<18?'☀️':'🌙'}</span> ${agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
-        document.getElementById('data').textContent=agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
-    }
-
-    // ============================================================
-    // MODAIS
-    // ============================================================
-    function abrirModal(id) { document.getElementById(id).style.display='flex'; }
-    function fecharModal(id) { document.getElementById(id).style.display='none'; }
-    function trocarModal(fechar,abrir) { fecharModal(fechar); abrirModal(abrir); }
-    document.querySelectorAll('.overlay').forEach(o => { o.addEventListener('click', function(e){ if(e.target===this) fecharModal(this.id); }); });
-
-    // ============================================================
-    // INICIAR
-    // ============================================================
-    setInterval(atualizarRelogio, 1000);
-    setInterval(buscarConfig, 30000);
-    setInterval(buscarAvisos, 30000);
-    setInterval(buscarDocumentos, 60000);
-    setInterval(buscarIndicadores, 60000);
-    atualizarRelogio();
-    buscarConfig();
-    buscarAvisos();
-    buscarDocumentos();
-    buscarIndicadores();
-</script>
 </body>
 </html>

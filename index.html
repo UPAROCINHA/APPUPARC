@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Interno UPA Rocinha</title>
+    <title>Portal UPA Rocinha</title>
 
     <link rel="icon" type="image/png" href="logoazul.ico">
     <link rel="apple-touch-icon" href="logo.png">
@@ -36,7 +36,7 @@
             background: #ff9800;
             color: #000;
             padding: 10px 0;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             overflow: hidden;
             white-space: nowrap;
@@ -45,7 +45,7 @@
         .ticker {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker-animation 20s linear infinite;
+            animation: ticker-animation 40s linear infinite;
         }
         @keyframes ticker-animation {
             0% { transform: translate(0, 0); }
@@ -275,9 +275,9 @@
 
     <!-- HEADER -->
     <header class="header">
-        <div class="header-center">
+        <div class="header-left">
             <img class="logo-img" src="logo.png" alt="Prefeitura Rio">
-            <div class="logo-sub">PORTAL INTERNO UPA ROCINHA</div>
+            <div class="logo-sub">UPA ROCINHA</div>
         </div>
         <div class="header-right">
             <div id="relogio">
@@ -1881,12 +1881,10 @@
         buscarAvisos();
         buscarDocumentos();
 
-        // -------------------------------------------------------
-        // SERVICE WORKER — Modo Offline
-        // -------------------------------------------------------
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
+        // Service Worker desativado — remova o sw.js do repositório se presente
+        // if ('serviceWorker' in navigator) {
+        //     navigator.serviceWorker.register('sw.js').catch(() => {});
+        // }
     </script>
 
 </body>

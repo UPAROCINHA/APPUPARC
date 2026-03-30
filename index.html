@@ -1108,11 +1108,14 @@
         // Google Sheets publicada como JSON (sem CORS, sem proxy)
         // Substitua o ID abaixo pelo ID da SUA planilha se mudar
         // -------------------------------------------------------
-        const SHEET_ID   = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
-        const SHEET_GID  = '0';         // aba CONFIG_PORTAL
-        const AVISOS_ID  = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE'; // ID real da planilha
-        const AVISOS_GID = '0'; // aba AVISOS
-        const DOCS_GID_REAL = '849673271'; // aba DOCUMENTOS
+        // Planilha CONFIG/STATUS — publicada como CSV (Arquivo > Publicar na web > CSV)
+        const SHEET_CSV_ID = '2PACX-1vTXOEhns5oANJ2loLk2cu2LBPf6PdDF5KSEmAIvLcintKhuAzULKu9fkR4Vk_79wiG5-eecqUXPZWlh';
+        const SHEET_GID    = '0';
+        // Planilha AVISOS — ID real da planilha (gviz/tq)
+        const AVISOS_ID    = '1vrkePMHjn4R-hzSOiCA9RwghNq6u1jI0q78J7oWbdWE';
+        const AVISOS_GID   = '0';
+        // Planilha DOCUMENTOS
+        const DOCS_GID_REAL = '849673271';
 
         // URL JSON pública do Google Sheets (não precisa de API key)
         function getSheetURL() {
@@ -1142,27 +1145,38 @@
         }
 
         // -------------------------------------------------------
-        // Buscar via fetch com mode no-cors como fallback
+        // Buscar CONFIG/STATUS via CSV publicado (formato 2PACX)
         // -------------------------------------------------------
         function buscarDadosPlanilha() {
-            fetchSheetViaJSONP(SHEET_ID, SHEET_GID, function(rows) {
-                if (!rows || rows.length < 2) {
-                    mostrarStatusConexao(false, 'Sem dados na planilha');
-                    return;
-                }
-                const colunas = rows[1]; // linha 2 = dados
-                const dados = {
-                    espera:   (colunas[0] || '---').trim(),
-                    fluxo:    (colunas[1] || 'NORMAL').trim(),
-                    destaque: (colunas[2] || '---').trim(),
-                    faltas:   (colunas[3] || '').trim(),
-                    criticos: (colunas[4] || '').trim(),
-                    avisos:   (colunas[5] || 'Nenhum aviso').trim(),
-                    docs:     (colunas[6] || 'Nenhum documento novo').trim()
-                };
-                renderizarInterface(dados);
-                mostrarStatusConexao(true);
-            });
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_CSV_ID}/pub?gid=${SHEET_GID}&single=true&output=csv`;
+            fetch(url)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(csv => {
+                    const rows = parseCSVToRows(csv);
+                    if (!rows || rows.length < 2) {
+                        mostrarStatusConexao(false, 'Sem dados na planilha CONFIG');
+                        return;
+                    }
+                    const colunas = rows[1]; // linha 2 = dados
+                    const dados = {
+                        espera:   (colunas[0] || '---').trim(),
+                        fluxo:    (colunas[1] || 'NORMAL').trim(),
+                        destaque: (colunas[2] || '---').trim(),
+                        faltas:   (colunas[3] || '').trim(),
+                        criticos: (colunas[4] || '').trim(),
+                        avisos:   (colunas[5] || 'Nenhum aviso').trim(),
+                        docs:     (colunas[6] || 'Nenhum documento novo').trim()
+                    };
+                    renderizarInterface(dados);
+                    mostrarStatusConexao(true);
+                })
+                .catch(err => {
+                    console.error('Erro CONFIG:', err);
+                    mostrarStatusConexao(false, err.message);
+                });
         }
 
         // processarCSV substituído por fetchSheetViaJSONP
